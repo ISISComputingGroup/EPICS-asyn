@@ -4,7 +4,7 @@ record(calc,"$(P)$(R)_P$(PORT)_A$(A)_calc") {
     field(CALC, "(A<99)?(A+1):0")
     field(INPA,"$(P)$(R)_P$(PORT)_A$(A)_calc NPP NMS")
     field(FLNK,"$(P)$(R)_P$(PORT)_A$(A)_so")
-    field(EGU, "Counts")
+    field(EGU, "count")
     field(HOPR, "10")
     field(FLNK,"$(P)$(R)_P$(PORT)_A$(A)_so")
 }

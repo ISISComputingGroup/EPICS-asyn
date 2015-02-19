@@ -88,7 +88,7 @@ record(calc,"$(P)$(R)_P$(PORT)_srqCount") {
     field(CALC, "A+B")
     field(INPA, "$(P)$(R)_P$(PORT)_srqCount")
     field(INPB,"1")
-    field(EGU, "interrupts")
+    field(EGU, "interrupt")
 }
 
 record(bo,"$(P)$(R)_P$(PORT)_XXXJUNK") {

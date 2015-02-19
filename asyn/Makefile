@@ -167,12 +167,12 @@ ifneq ($(EPICS_LIBCOM_ONLY),YES)
 endif
 
 SRC_DIRS += $(ASYN)/vxi11
-ifeq ($(OS_CLASS), WIN32)
-  asyn_SRCS += drvVxi11Win32.c
-else
+#ifeq ($(OS_CLASS), WIN32)
+#  asyn_SRCS += drvVxi11Win32.c
+#else
   asyn_SRCS += vxi11core_xdr.c
   asyn_SRCS += drvVxi11.c
-endif
+#endif
 asyn_SRCS += E5810Reboot.c
 asyn_SRCS += E2050Reboot.c
 asyn_SRCS += TDS3000Reboot.c
@@ -236,19 +236,23 @@ ifdef T_A
 
 vxi11core.h vxi11core_xdr.c vxi11intr.h vxi11intr_xdr.c : \
 % : ../vxi11/rpc/%
-	cp $< $@
-vxi11core_xdr.o: vxi11core.h
-vxi11intr_xrd.o: vxi11intr.h
+	$(CP) $< $@
+vxi11core_xdr$(OBJ): vxi11core.h
+vxi11intr_xrd$(OBJ): vxi11intr.h
 
   else
 
 .SECONDARY: vxi11core_xdr.c vxi11intr_xdr.c
 
+asyn_LIBS_WIN32 += oncrpc
+vxi11core_xdr_CPPFLAGS_WIN32 += -DWIN32
+vxi11intr_xdr_CPPFLAGS_WIN32 += -DWIN32
 RPCGEN_FLAGS_darwin = -C
 RPCGEN_FLAGS_solaris = -M
+RPCGEN_PATH_WIN32 = $(ONCRPC)/bin/$(EPICS_HOST_ARCH)/
 %.h %_xdr.c: ../vxi11/%.rpcl
-	cp $< .
-	rpcgen $(RPCGEN_FLAGS_$(OS_CLASS)) $*.rpcl
+	$(CP) $< .
+	$(RPCGEN_PATH_$(OS_CLASS))rpcgen $(RPCGEN_FLAGS_$(OS_CLASS)) $*.rpcl
 
   endif
 

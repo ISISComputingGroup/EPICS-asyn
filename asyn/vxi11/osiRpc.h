@@ -38,6 +38,11 @@
 #define rpcTaskInit() 0
 #endif
 
+#ifdef _WIN32
+#include <rpc/pmap_cln.h> /* from our oncrpc app */
+#define rpcTaskInit() 0
+#endif
+
 #ifdef SOLARIS
 #include <rpc/svc_soc.h>
 #include <rpc/clnt_soc.h>
