@@ -5,12 +5,14 @@ SUPPORT=/corvette/home/epics/devel
 
 #  IPAC is only necessary if support for Greensprings IP488 is required
 #  IPAC release V2-7 or later is required.
-IPAC=$(SUPPORT)/ipac-2-11
+IPAC=$(SUPPORT)/ipac/2-11
+
+#IP=$(SUPPORT)/IP/2-13
 
 ONCRPC=$(SUPPORT)/oncrpc/2
 
 # SEQ is required for testIPServer
-SNCSEQ=$(SUPPORT)/seq-2-1-11
+SNCSEQ=$(SUPPORT)/seq/2-1-11
 
 #  EPICS_BASE 3.14.6 or later is required
 EPICS_BASE=/corvette/usr/local/epics/base-3.14.12.4
