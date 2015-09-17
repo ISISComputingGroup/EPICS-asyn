@@ -245,8 +245,8 @@ vxi11intr_xrd$(OBJ): vxi11intr.h
 .SECONDARY: vxi11core_xdr.c vxi11intr_xdr.c
 
 asyn_LIBS_WIN32 += oncrpc
-vxi11core_xdr_CPPFLAGS_WIN32 += -DWIN32
-vxi11intr_xdr_CPPFLAGS_WIN32 += -DWIN32
+vxi11core_xdr_CPPFLAGS_WIN32 += -DWIN32 -I$(ONCRPC)/win32/include
+vxi11intr_xdr_CPPFLAGS_WIN32 += -DWIN32 -I$(ONCRPC)/win32/include
 RPCGEN_FLAGS_darwin = -C
 RPCGEN_FLAGS_solaris = -M
 RPCGEN_PATH_WIN32 = $(ONCRPC)/bin/$(EPICS_HOST_ARCH)/
