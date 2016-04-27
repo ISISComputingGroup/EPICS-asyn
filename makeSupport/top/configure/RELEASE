@@ -1,18 +1,10 @@
-## configure/RELEASE: Location of external products
+# top level master release and local private options 
+include $(TOP)/../../../configure/MASTER_RELEASE
+-include $(TOP)/../../../configure/MASTER_RELEASE.$(EPICS_HOST_ARCH)
+-include $(TOP)/../../../configure/MASTER_RELEASE.private
+-include $(TOP)/../../../configure/MASTER_RELEASE.private.$(EPICS_HOST_ARCH)
 
-# Run "gnumake clean uninstall install" in the application top
-# directory whenever this file is changed or any external module
-# pointed to by this RELEASE file is rebuilt.
+# optional extra local definitions here
+-include $(TOP)/configure/RELEASE.private
 
-# If you don't want to install files into $(TOP) then define
-# INSTALL_LOCATION_APP here:
-#INSTALL_LOCATION_APP=<fullpathname>
-
-# Define path to sequencer if needed
-#SNCSEQ=_SNCSEQ_
-
-# Asyn
-ASYN=$(SUPPORT)/asyn/4-26
-
-# EPICS_BASE usually appears last so other apps can preempt definitions
-EPICS_BASE=_EPICSBASE_
+include $(TOP)/../../../ISIS_CONFIG.$(EPICS_HOST_ARCH)
