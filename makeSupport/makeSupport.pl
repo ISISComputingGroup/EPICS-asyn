@@ -9,8 +9,11 @@
 #
 
 use strict;
+use lib ($ENV{'EPICS_BASE'}."/lib/perl");
+
 use Getopt::Std;
 use Cwd qw(cwd abs_path);
+use EPICS::Release;
 
 # Command line options processing
 our ($opt_A, $opt_B, $opt_d, $opt_h, $opt_l, $opt_t, $opt_T);
@@ -41,7 +44,7 @@ if ($opt_A) {
     $asyn = abs_path($opt_A);
 } else {
     # Work it out from this script's pathname
-    my @asyn = split /[\/]/, $0;
+    my @asyn = split /[\/\\]/, $0;
     warn "expected 'makeSupport.pl', got '$_'\n"
 	unless 'makeSupport.pl' eq ($_ = pop @asyn);
     warn "expected 'expected $arch', got '$_'\n"
@@ -95,8 +98,8 @@ if ($opt_B) {
 } else {
     my %release = (TOP => $top);
     my @apps = ('TOP');
-    readRelease("$asyn/configure/RELEASE", \%release, \@apps);
-    expandRelease(\%release);
+    &readReleaseFiles("$asyn/configure/RELEASE", \%release, \@apps);
+    &expandRelease(\%release);
     $base = abs_path($release{EPICS_BASE});
     $sncseq = abs_path($release{SNCSEQ}) if exists $release{SNCSEQ};
 }
@@ -187,55 +190,6 @@ sub listTemplates {
     }
 }
 
-
-# Parse a configure/RELEASE file.
-#
-# This code is from base/configure/tools/convertRelease.pl
-
-sub readRelease {
-    my ($file, $Rmacros, $Rapps) = @_;
-    # $Rmacros is a reference to a hash, $Rapps a ref to an array
-    
-    local *IN;
-    open(IN, $file) or die "Can't open $file: $!\n";
-    while (<IN>) {
-	chomp;
-	s/\r$//;		# Shouldn't need this, but sometimes...
-	s/\s*#.*$//;		# Remove trailing comments
-	next if m/^\s*$/;	# Skip blank lines
-	
-	# Expand all already-defined macros in the line:
-	while (my ($pre,$var,$post) = m/(.*)\$\((\w+)\)(.*)/) {
-	    last unless exists $Rmacros->{$var};
-	    $_ = $pre . $Rmacros->{$var} . $post;
-	}
-	
-	# Handle "<macro> = <path>"
-	my ($macro, $path) = m/^\s*(\w+)\s*=\s*(.*)/;
-	if ($macro ne "") {
-	    $Rmacros->{$macro} = $path;
-	    push @$Rapps, $macro;
-	    next;
-	}
-	# Handle "include <path>" syntax
-	($path) = m/^\s*include\s+(.*)/;
-	&readRelease($path, $Rmacros, $Rapps) if (-r $path);
-    }
-    close IN;
-}
-
-sub expandRelease {
-    my ($Rmacros) = @_;
-    # $Rmacros is a reference to a hash
-    
-    # Expand any (possibly nested) macros that were defined after use
-    while (my ($macro, $path) = each %$Rmacros) {
-	while (my ($pre,$var,$post) = $path =~ m/(.*)\$\((\w+?)\)(.*)/) {
-	    $path = $pre . $Rmacros->{$var} . $post;
-	    $Rmacros->{$macro} = $path;
-	}
-    }
-}
 
 
 # Copy directories and files from the template
