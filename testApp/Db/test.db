@@ -6,7 +6,6 @@ record(calc,"$(P)$(R)_P$(PORT)_A$(A)_calc") {
     field(FLNK,"$(P)$(R)_P$(PORT)_A$(A)_so")
     field(EGU, "count")
     field(HOPR, "10")
-    field(FLNK,"$(P)$(R)_P$(PORT)_A$(A)_so")
 }
 record(stringout,"$(P)$(R)_P$(PORT)_A$(A)_so") {
     field(DOL,"$(P)$(R)_P$(PORT)_A$(A)_calc NPP NMS")
