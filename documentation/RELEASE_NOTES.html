@@ -12,6 +12,302 @@
   <div style="text-align: center">
     <hr />
     <h2>
+      Release 4-30</h2>
+    <h2>
+      August 23, 2016</h2>
+  </div>
+  <h3>
+    asynDriver</h3>
+  <ul>
+    <li>Added new fields to the asynUser structure. These are <code>int alarmStatus</code>
+      and <code>int alarmSeverity</code>. They are intended to pass alarm information
+      back to device support, indepenent of the status return from the write() or read()
+      methods or the auxStatus field used for callbacks.</li>
+  </ul>
+  <h3>
+    devEpics</h3>
+  <ul>
+    <li>Previously when the status return or auxStatus were not asynSuccess then device
+      support did not update the value, and set the record STAT and SEVR based upon rules
+      in the generic device support. If the new alarmStatus and alarmSeverity fields are
+      0 (default) then the current behavior is retained. If these fields are non-zero,
+      then the record STAT and SEVR will be set to these values, independent of the status
+      return or the auxStatus values. This allows a driver to set the record value, while
+      still setting the STAT and SEVR to values other than NO_ALARM. The behavior of the
+      function asynStatusToEpicsAlarm() was changed, and this function is now always called
+      at the end of the process() function, even if the status or auxStatus is asynSuccess.</li>
+  </ul>
+  <h3>
+    asynPortDriver</h3>
+  <ul>
+    <li>Added new methods setParamAlarmStatus(), setParamAlarmSeverity, getParamAlarmStatus(),
+      getParamAlarmSeverity to write and read the new pasynUser->alarmStatus and pasynUser->alarmSeverity
+      fields.</li>
+    <li>Changed the constructor so that it sets the ASYN_MULTIDEVICE flag if maxAddr&gt;1
+      even if the caller neglected to set it.</li>
+    <li>Fixed destructor eliminate memory leaks. Thanks to Henrique Almeida.</li>
+  </ul>
+  <h3>
+    devAsynOctet</h3>
+  <ul>
+    <li>Added support for initial readback from driver for stringout and waveform output
+      records to support bumpless reboots. This support is only enabled if the info tag
+      asyn:INITIAL_READBACK is present for these records in the database. The testErrorsApp
+      application was updated to test this feature.</li>
+    <li>Check that FTVL is CHAR or UCHAR and return an error in init_record if it is not.</li>
+    <li>Changed the waveform record device support asynOctetWrite to only support string
+      output. The numchars argument in pasynOctet->write() is obtained by calling strnlen().
+      This makes it consistent with the behavior of the stringout record. </li>
+    <li>Added a new waveform record device support asynOctetWriteBinary. This passes numchars=NORD
+      and does not call strnlen(), so it should be used for binary data.</li>
+  </ul>
+  <h3>
+    drvAsynSerialPort</h3>
+  <ul>
+    <li>Added support for RS-485 on Linux. This is only supported on ports with hardware
+      RS-485 capability, and only on more recent Linux kernels. Thanks to Florian Feldbauer.
+      The following new options were added for the asynOption interface in this driver.
+      <ul>
+        <li>rs485_enable Y/N</li>
+        <li>rs485_rts_on_send Y/N</li>
+        <li>rs485_rts_after_send Y/N</li>
+        <li>rs485_delay_rts_before_send msec_delay</li>
+        <li>rs485_delay_rts_after_send msec_delay</li>
+      </ul>
+    </li>
+  </ul>
+  <h3>
+    testErrorsApp</h3>
+  <ul>
+    <li>Added new records AlarmStatus and AlarmSeverity that allow this driver to test
+      the new alarm handling behavior.</li>
+  </ul>
+  <div style="text-align: center">
+    <hr />
+    <h2>
+      Release 4-29</h2>
+    <h2>
+      February 17, 2016</h2>
+  </div>
+  <h3>
+    drvAsynIPPort</h3>
+  <ul>
+    <li>Revert the change made in R4-27 to drvAsynIPPortConfigure that changed the noProcessEos
+      flag to userFlags. The final argument to drvAsynIPPortConfigure is now noProcessEos
+      again.</li>
+    <li>Implemented the asynOption interface which allows configuring options using key/value
+      pairs. This interface is used in the drvAsynSerialPort driver for configuring baud
+      rate, stop bits, etc. It is also used on drvAsynIPPort for configuring these same
+      items if the port was configured with the COM qualifier, used for Ethernet/Serial
+      terminal servers that use the TELNET RFC 2217 protocol. For that drvAsynIPPort uses
+      the asynInterposeCOM to interpose the asynOctet and asynOption interfaces.</li>
+    <li>drvAsynIPPort now also directly supports the asynOption interface for 2 key/value
+      pairs.
+      <ul>
+        <li>key="disconnectOnReadTimeout", value="Y" or "N". This option replaces the USERFLAG_CLOSE_ON_READ_TIMEOUT
+          that was introduced in R4-27. The advantage of using the asynOption interface is
+          that this behavior can now be changed at run-time, rather than being set once when
+          the driver is created.</li>
+        <li>key="hostInfo", value="host:port[:localport] [protocol]", i.e. the Internet host
+          name, port number, optional local port number and optional protocol. This uses the
+          same syntax as the drvAsynIPPortConfigure command. This allows changing at run time
+          the Internet host and port to which this asyn port is connected. The only restriction
+          is that the setting of the COM (TELNET RFC 2217) protocol cannot be changed from
+          that specified with drvAsynIPPortConfigure. This is because if COM is specified
+          in the drvAsynIPPortConfigure command then asynOctet and asynOption interpose interfaces
+          are used, and asynManager does not support removing interpose interfaces.</li>
+      </ul>
+    </li>
+    <li>Improved debugging output with ASYN_TRACEIO_DRIVER. Previously there was no asynTrace
+      output if recv() or recvfrom() returned &le;0. It is often useful to know if these
+      functions returned 0, so the asynTrace output is now only suppressed if these functions
+      return &lt;0.<br />
+      There was previously no ASYN_TRACEIO_DRIVER output from the flushIt() function,
+      which repeatedly calls recv() until the return value is &le;0. ASYN_TRACEIO_DRIVER
+      will now print a message with the total number of bytes flushed in this function,
+      if the number is greater than 0.</li>
+  </ul>
+  <h3>
+    asynRecord</h3>
+  <ul>
+    <li>Added 2 new record fields to read and control the new drvAsynIPPort options:
+      <ul>
+        <li>DRTO (Disconnect on Read Timeout)</li>
+        <li>HOSTINFO (hostInfo string)</li>
+      </ul>
+    </li>
+    <li>Added new OPI screen (asynIPPortSetup.[adl,.opi,.edl,.ui]). This screen allows
+      display and control of the new DRTO and HOSTINFO fields. It also allows display
+      and control of the serial port parameters for drvAsynIPPorts created with the COM
+      (RFC 2217) protocol. There was previously no GUI to control these options for IP
+      ports. This screen is accessed via the More menu in asynRecord.adl.</li>
+  </ul>
+  <h3>
+    asynPortDriver</h3>
+  <ul>
+    <li>Add paramName to error messages for easier debugging.</li>
+    <li>Throw exception if NULL pointer is passed to setStringParam().</li>
+  </ul>
+  <h3>
+    asynDriver</h3>
+  <ul>
+    <li>asynTrace now does flush after each write on files, previously it only did this
+      on stdin and stderr. This prevents trace information in files being lost if the
+      application crashes.</li>
+    <li>Fixed syntax of call to cantProceed().</li>
+    <li>Added definition of ASYN_EXCEPTION_STRINGS which provides strings corresponding
+      to each asynException enum value.</li>
+  </ul>
+  <h3>
+    testBroadcastApp</h3>
+  <ul>
+    <li>Added new test application testBroadcastBurst. This application periodically sends
+      a burst of broadcast packets. The number of packets per burst and the interval between
+      bursts can be specified on the command line. It is useful for testing devices to
+      see how tolerant they are of broadcast bursts.</li>
+  </ul>
+  <h3>
+    testConnectApp</h3>
+  <ul>
+    <li>Added missing extern "C" required to build dynamically on Windows.</li>
+  </ul>
+  <h3>
+    Many source files</h3>
+  <ul>
+    <li>Replaced tab characters with spaces. Tabs in source files are bad practice.</li>
+  </ul>
+  <div style="text-align: center">
+    <hr />
+    <h2>
+      Release 4-28</h2>
+    <h2>
+      December 12, 2015</h2>
+  </div>
+  <h3>
+    drvAsynIPPort</h3>
+  <p>
+    Fixed problem with UDP broadcast sockets. Previously sending broadcast messages
+    worked correctly, but any responses from clients to those messages were rejected
+    by the IOC system. This is because connect() and send() were being called. This
+    is not correct, in this case connect() should not be called and sendto() should
+    be called rather than send(). Also changed the code to call recvfrom() rather than
+    recv()for UDP sockets. This returns the source address information, which is now
+    printed with the source message length and contents if ASYN_TRACEIO_DRIVER is set.</p>
+  <h3>
+    Test applications</h3>
+  <p>
+    New test application, testOutputReadbackApp. Tests that the initial values of output
+    records are set correctly.</p>
+  <p>
+    New test application directory, testBroadcastApp. It has 2 applications for sending
+    broadcasts and reading responses. One uses asyn, and the other native OS calls.
+    The native OS call version only builds on Linux. This is used for testing the UDP
+    broadcast problem fixed in this release.</p>
+  <div style="text-align: center">
+    <hr />
+    <h2>
+      Release 4-27</h2>
+    <h2>
+      October 7, 2015</h2>
+  </div>
+  <h3>
+    Repository location</h3>
+  <p>
+    The source code repository was moved from <a href="https://svn.aps.anl.gov/epics/asyn">
+      https://svn.aps.anl.gov/epics/asyn</a> to <a href="https://github.com/epics-modules/asyn">
+        https://github.com/epics-modules/asyn</a>. This will make it much easier for
+    others to collaborate in the development of asyn.</p>
+  <h3>
+    drvAsynSerialPort</h3>
+  <ul>
+    <li>Fix to save the previous values of the baud rate and termios structures before
+      attempting to change them. If the change fails then the previous values are restored.
+      Previously if a call to setOption() failed, then subsequent calls to getOption()
+      would return the value that failed. Now subsequent calls to getOption() will return
+      the previous valid option, which is presumably the one that the underlying OS driver
+      is still using. Thanks to Ron Sluiter for the initial fix to this problem.</li>
+  </ul>
+  <h3>
+    drvAsynSerialPortWin32</h3>
+  <ul>
+    <li>Fix to automatically prefix COM port names with "\\.\" unless the port name already
+      begins with "\\.\". This is valid syntax for all COM ports and is required for all
+      ports except COM1-COM9. Note that when passing the port string from the iocsh if
+      the port name is in quotes then backslash characters should not be escaped, e.g.
+      "\\.\COM10". If the port name is not in quotes then the backslash characters must
+      be escaped, e.g. \\\\.\\COM10. Thanks to Freddie Akeroyd for the initial version
+      of this fix.</li>
+  </ul>
+  <h3>
+    drvAsynIPPort</h3>
+  <ul>
+    <li>Added the option to automatically close the port when there is a read timeout.
+      This was done by changing the syntax of the drvAsynIPConfigure command from<br />
+      <code>drvAsynIPPortConfigure("portName","hostInfo",priority,noAutoConnect,noProcessEos)</code>
+      to
+      <br />
+      <code>drvAsynIPPortConfigure("portName","hostInfo",priority,noAutoConnect,userFlags)</code><br />
+      userFlags: bit-wise ORed:
+      <ul>
+        <li>Bit 0 is USERFLAG_NO_PROCESS_EOS. If 0 then asynInterposeEosConfig is called specifying
+          both processEosIn and processEosOut. </li>
+        <li>Bit 1 is USERFLAG_CLOSE_ON_READ_TIMEOUT. If 1 then the (TCP) socket will be closed
+          when read() returns a timeout. </li>
+        <li>Bit 2--31 are reserved, set to zero. </li>
+      </ul>
+      This change is backwards compatible since bit 0 is the same as the previous noProcessEos.
+      Thanks to Torsten Bogershausen for this change. </li>
+  </ul>
+  <h3>
+    devEpics</h3>
+  <ul>
+    <li>Changed error reporting if pasynManager->queueRequest returned an error. Previously
+      error messages were printed on every call, which would cause a large number of messages
+      if the port was disconnected and records were periodically processing. Now an error
+      message is only printed when the status return from pasynManager->queueRequest changes,
+      so there will be single message for each record when a port disconnects and a single
+      message when it reconnects.</li>
+    <li>Changed error handling when any of the following errors are encountered:
+      <ul>
+        <li>pasynManager->queueRequest returns an error</li>
+        <li>The I/O call to the driver (e.g. pasynInt32->read()) returns an error.</li>
+        <li>The interrupt callback function is passed an error code in pasynUser->auxStatus</li>
+      </ul>
+      Previously such errors did correctly set the record alarm status and severity. However,
+      they did not return an error code to the function that called the device support
+      write() or read() function. They also updated the record VAL or RVAL field when
+      there was an error, which they should not. Now these functions return an error code
+      and do not update VAL or RVAL when there is an error. </li>
+  </ul>
+  <h3>
+    asynPortDriver</h3>
+  <ul>
+    <li>Changed the status return from pasynManager->queueRequest from asynError to asynDisconnected
+      if a port with ASYN_CANBLOCK=0 is disconnected.</li>
+  </ul>
+  <h3>
+    asynShellCommands</h3>
+  <ul>
+    <li>Added new command asynSetMinTimerPeriod, and corresponding C function. This command
+      is currently only implemented on the WIN32 architectures, and simply prints an error
+      message on all other architectures. It allows reducing the minimum time for epicsThreadSleep()
+      from the default of 10 ms to the minimum supported Windows system value. On most
+      systems this is 1 ms. Note that epicsThreadSleepQuantum() does not seem to report
+      the correct value whether or not this function is called. On my system it always
+      reports 0.0156 seconds. Note also that this function really has nothing to do with
+      asyn, and the equivalent functionality should probably be moved into EPICS base
+      at some time.</li>
+  </ul>
+  <h3>
+    Deadlock issue</h3>
+  <ul>
+    <li>There is a potential deadlock issue when using input records with SCAN=I/O Intr.
+      This is discussed in the <a href="KnownProblems.html">KnownProblems document</a>.
+      Thanks to Ambroz Bizjak for finding this problem.</li>
+  </ul>
+  <div style="text-align: center">
+    <hr />
+    <h2>
       Release 4-26</h2>
     <h2>
       February 15, 2015</h2>

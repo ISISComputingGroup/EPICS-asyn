@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">asyn&#160;<span id="projectnumber">4-26</span></div>
+   <div id="projectname">asyn&#160;<span id="projectnumber">4-30</span></div>
   </td>
  </tr>
  </tbody>
@@ -91,6 +91,14 @@ Public Member Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the status for a parameter in the parameter library.  <a href="#a02e234bbf784bbed9890d9cd6fe47f29"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_list.html#acf1e2c66d3e4a130dc239ad9b10023de">getStatus</a> (int index, asynStatus *status)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the status for a parameter in the parameter library.  <a href="#acf1e2c66d3e4a130dc239ad9b10023de"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_list.html#afb09d88175474e5b4f667c82c376d06d">setAlarmStatus</a> (int index, int alarmStatus)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the alarmStatus for a parameter in the parameter library.  <a href="#afb09d88175474e5b4f667c82c376d06d"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_list.html#aeb6089271a84b3ccb57a7390b50fc351">getAlarmStatus</a> (int index, int *alarmStatus)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the alarmStatus for a parameter in the parameter library.  <a href="#aeb6089271a84b3ccb57a7390b50fc351"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_list.html#a81b1f2a95aadac7e1333069ac959ecd1">setAlarmSeverity</a> (int index, int alarmSeverity)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the alarmSeverity for a parameter in the parameter library.  <a href="#a81b1f2a95aadac7e1333069ac959ecd1"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_list.html#a9ddd6e12b7de94377c5dab1dd703dc0a">getAlarmSeverity</a> (int index, int *alarmSeverity)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the alarmSeverity for a parameter in the parameter library.  <a href="#a9ddd6e12b7de94377c5dab1dd703dc0a"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_list.html#a62ad62be3680dbaa1bd8cc423398662a">report</a> (FILE *fp, int details)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Reports on status of the <a class="el" href="classparam_list.html" title="Class to support parameter library (also called parameter list); set and get values indexed by parame...">paramList</a>.  <a href="#a62ad62be3680dbaa1bd8cc423398662a"></a><br/></td></tr>
 </table>
@@ -310,6 +318,80 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Returns asynParamNotFound if name is not found in the parameter list. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a9ddd6e12b7de94377c5dab1dd703dc0a"></a><!-- doxytag: member="paramList::getAlarmSeverity" ref="a9ddd6e12b7de94377c5dab1dd703dc0a" args="(int index, int *alarmSeverity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus paramList::getAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>alarmSeverity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Returns the alarmSeverity for a parameter in the parameter library. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">alarmSeverity</td><td>Address of status to get </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Returns asynParamBadIndex if the index is not valid </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aeb6089271a84b3ccb57a7390b50fc351"></a><!-- doxytag: member="paramList::getAlarmStatus" ref="aeb6089271a84b3ccb57a7390b50fc351" args="(int index, int *alarmStatus)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus paramList::getAlarmStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>alarmStatus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Returns the alarmStatus for a parameter in the parameter library. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">alarmStatus</td><td>Address of status to get </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Returns asynParamBadIndex if the index is not valid </dd></dl>
 
 </div>
 </div>
@@ -661,6 +743,80 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a81b1f2a95aadac7e1333069ac959ecd1"></a><!-- doxytag: member="paramList::setAlarmSeverity" ref="a81b1f2a95aadac7e1333069ac959ecd1" args="(int index, int alarmSeverity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus paramList::setAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>alarmSeverity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the alarmSeverity for a parameter in the parameter library. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">alarmSeverity</td><td>Severity to set </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Returns asynParamBadIndex if the index is not valid </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afb09d88175474e5b4f667c82c376d06d"></a><!-- doxytag: member="paramList::setAlarmStatus" ref="afb09d88175474e5b4f667c82c376d06d" args="(int index, int alarmStatus)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus paramList::setAlarmStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>alarmStatus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the alarmStatus for a parameter in the parameter library. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">alarmStatus</td><td>Status to set </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Returns asynParamBadIndex if the index is not valid </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="afefeefad32cbcb03592d3531be974d29"></a><!-- doxytag: member="paramList::setDouble" ref="afefeefad32cbcb03592d3531be974d29" args="(int index, double value)" -->
 <div class="memitem">
 <div class="memproto">
@@ -905,10 +1061,10 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/epics/devel/asynR4-26/asyn/asynPortDriver/<a class="el" href="asyn_port_driver_8cpp.html">asynPortDriver.cpp</a></li>
+<li>/home/epics/devel/asyn-R4-30/asyn/asynPortDriver/<a class="el" href="asyn_port_driver_8cpp.html">asynPortDriver.cpp</a></li>
 </ul>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Feb 15 2015 for asyn by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Tue Aug 23 2016 for asyn by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

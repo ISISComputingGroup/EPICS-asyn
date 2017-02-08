@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">asyn&#160;<span id="projectnumber">4-26</span></div>
+   <div id="projectname">asyn&#160;<span id="projectnumber">4-30</span></div>
   </td>
  </tr>
  </tbody>
@@ -185,6 +185,22 @@ Public Member Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the status for a parameter in the parameter library.  <a href="#ae64a5b3861a3cf1f455a07250d5c8dd3"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#a76ef09ac3eeec5438ab6a0dbc5eb0341">getParamStatus</a> (int list, int index, asynStatus *status)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the status for a parameter in the parameter library.  <a href="#a76ef09ac3eeec5438ab6a0dbc5eb0341"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#aca9b325012cf8467d9eee1ea7666a456">setParamAlarmStatus</a> (int index, int status)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the alarmStatus for a parameter in the parameter library.  <a href="#aca9b325012cf8467d9eee1ea7666a456"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#ac467fd428561fa7d55d1789cf077446c">setParamAlarmStatus</a> (int list, int index, int status)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the alarmStatus for a parameter in the parameter library.  <a href="#ac467fd428561fa7d55d1789cf077446c"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#af432d03e481fce0d7eda9df1ad9e734b">getParamAlarmStatus</a> (int index, int *status)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the alarmStatus for a parameter in the parameter library.  <a href="#af432d03e481fce0d7eda9df1ad9e734b"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#a6921d69fb22997f47aea12ee3d89094c">getParamAlarmStatus</a> (int list, int index, int *status)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the alarmStatus for a parameter in the parameter library.  <a href="#a6921d69fb22997f47aea12ee3d89094c"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#a4df637afe8856c1fac667d19ad066f07">setParamAlarmSeverity</a> (int index, int severity)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the alarmSeverity for a parameter in the parameter library.  <a href="#a4df637afe8856c1fac667d19ad066f07"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#a2de751f13ebe427652623d5ae23b71b4">setParamAlarmSeverity</a> (int list, int index, int severity)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the alarmSeverity for a parameter in the parameter library.  <a href="#a2de751f13ebe427652623d5ae23b71b4"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#aa78be11f407eab1769d883154846207d">getParamAlarmSeverity</a> (int index, int *severity)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the alarmSeverity for a parameter in the parameter library.  <a href="#aa78be11f407eab1769d883154846207d"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#a8036d72cee80492345b07352789c591d">getParamAlarmSeverity</a> (int list, int index, int *severity)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the alarmSeverity for a parameter in the parameter library.  <a href="#a8036d72cee80492345b07352789c591d"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#a7cbe73cb1d38341f78a487d3e2411565">reportSetParamErrors</a> (asynStatus status, int index, int list, const char *functionName)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Reports errors when setting parameters.  <a href="#a7cbe73cb1d38341f78a487d3e2411565"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classasyn_port_driver.html#a5403d81341bc5a391c0419593e041e4c">reportGetParamErrors</a> (asynStatus status, int index, int list, const char *functionName)</td></tr>
@@ -392,25 +408,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae78a19e5e691019ed119fea17cb8a021"></a><!-- doxytag: member="asynPortDriver::callParamCallbacks" ref="ae78a19e5e691019ed119fea17cb8a021" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::callParamCallbacks </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Calls callParamCallbacks(0, 0) i.e. </p>
-<p>with both list and asyn address. </p>
-
-</div>
-</div>
 <a class="anchor" id="aff391ed40b61aa993afcd52265440f76"></a><!-- doxytag: member="asynPortDriver::callParamCallbacks" ref="aff391ed40b61aa993afcd52265440f76" args="(int addr)" -->
 <div class="memitem">
 <div class="memproto">
@@ -428,6 +425,25 @@ Protected Attributes</h2></td></tr>
 
 <p>Calls callParamCallbacks(addr, addr) i.e. </p>
 <p>with list=addr, which is normal. </p>
+
+</div>
+</div>
+<a class="anchor" id="ae78a19e5e691019ed119fea17cb8a021"></a><!-- doxytag: member="asynPortDriver::callParamCallbacks" ref="ae78a19e5e691019ed119fea17cb8a021" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::callParamCallbacks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calls callParamCallbacks(0, 0) i.e. </p>
+<p>with both list and asyn address. </p>
 
 </div>
 </div>
@@ -609,50 +625,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a20e248e20dcecf64350ad34dda0482be"></a><!-- doxytag: member="asynPortDriver::createParam" ref="a20e248e20dcecf64350ad34dda0482be" args="(const char *name, asynParamType type, int *index)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::createParam </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="asyn_param_type_8h.html#aa744baae4016b0caa9910b448ccbc456">asynParamType</a>&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>index</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Creates a parameter in the parameter library. </p>
-<p>Calls <a class="el" href="classparam_list.html#af277a790297fadeb62ba5e972c9da95f" title="Adds a new parameter to the parameter library.">paramList::createParam</a> (list, name, index) for all parameters lists. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>Parameter name </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>Parameter type </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">index</td><td>Parameter number </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a class="anchor" id="a18575123378b3bc7f749535ccd7aa8d9"></a><!-- doxytag: member="asynPortDriver::createParam" ref="a18575123378b3bc7f749535ccd7aa8d9" args="(int list, const char *name, asynParamType type, int *index)" -->
 <div class="memitem">
 <div class="memproto">
@@ -695,6 +667,50 @@ Protected Attributes</h2></td></tr>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>Parameter name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>Parameter type </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">index</td><td>Parameter number </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a20e248e20dcecf64350ad34dda0482be"></a><!-- doxytag: member="asynPortDriver::createParam" ref="a20e248e20dcecf64350ad34dda0482be" args="(const char *name, asynParamType type, int *index)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::createParam </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="asyn_param_type_8h.html#aa744baae4016b0caa9910b448ccbc456">asynParamType</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Creates a parameter in the parameter library. </p>
+<p>Calls <a class="el" href="classparam_list.html#af277a790297fadeb62ba5e972c9da95f" title="Adds a new parameter to the parameter library.">paramList::createParam</a> (list, name, index) for all parameters lists. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>Parameter name </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>Parameter type </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">index</td><td>Parameter number </td></tr>
@@ -1409,43 +1425,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a6c4515dec6ebceab3796969ae9d3305d"></a><!-- doxytag: member="asynPortDriver::getDoubleParam" ref="a6c4515dec6ebceab3796969ae9d3305d" args="(int index, double *value)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::getDoubleParam </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Returns the value for a double from the parameter library. </p>
-<p>Calls getDoubleParam(0, index, value) i.e. for parameter list 0. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>Address of value to get. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a class="anchor" id="aea8116db0b8e71aa4a3dff619d9e4014"></a><!-- doxytag: member="asynPortDriver::getDoubleParam" ref="aea8116db0b8e71aa4a3dff619d9e4014" args="(int list, int index, double *value)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1482,6 +1461,43 @@ Protected Attributes</h2></td></tr>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>Address of value to get. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a6c4515dec6ebceab3796969ae9d3305d"></a><!-- doxytag: member="asynPortDriver::getDoubleParam" ref="a6c4515dec6ebceab3796969ae9d3305d" args="(int index, double *value)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::getDoubleParam </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Returns the value for a double from the parameter library. </p>
+<p>Calls getDoubleParam(0, index, value) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>Address of value to get. </td></tr>
   </table>
@@ -1711,6 +1727,168 @@ Protected Attributes</h2></td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">eos</td><td>The output eos </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">eosSize</td><td>The number of characters in the eos </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">eosLen</td><td>The returned eos length </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa78be11f407eab1769d883154846207d"></a><!-- doxytag: member="asynPortDriver::getParamAlarmSeverity" ref="aa78be11f407eab1769d883154846207d" args="(int index, int *severity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::getParamAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>alarmSeverity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Gets the alarmSeverity for a parameter in the parameter library. </p>
+<p>Calls getParamAlarmSeverity(0, index, status) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">alarmSeverity</td><td>Address of alarmSeverity to get. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a8036d72cee80492345b07352789c591d"></a><!-- doxytag: member="asynPortDriver::getParamAlarmSeverity" ref="a8036d72cee80492345b07352789c591d" args="(int list, int index, int *severity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::getParamAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>alarmSeverity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Gets the alarmSeverity for a parameter in the parameter library. </p>
+<p>Calls paramList::getAlarmSeverity(index, status) for the parameter list indexed by list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">alarmSeverity</td><td>Address of status to get. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="af432d03e481fce0d7eda9df1ad9e734b"></a><!-- doxytag: member="asynPortDriver::getParamAlarmStatus" ref="af432d03e481fce0d7eda9df1ad9e734b" args="(int index, int *status)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::getParamAlarmStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>alarmStatus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Gets the alarmStatus for a parameter in the parameter library. </p>
+<p>Calls getParamAlarmStatus(0, index, status) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">alarmStatus</td><td>Address of alarmStatus to get. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a6921d69fb22997f47aea12ee3d89094c"></a><!-- doxytag: member="asynPortDriver::getParamAlarmStatus" ref="a6921d69fb22997f47aea12ee3d89094c" args="(int list, int index, int *status)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::getParamAlarmStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>alarmStatus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Gets the alarmStatus for a parameter in the parameter library. </p>
+<p>Calls paramList::getAlarmStatus(index, status) for the parameter list indexed by list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">alarmStatus</td><td>Address of status to get. </td></tr>
   </table>
   </dd>
 </dl>
@@ -2093,50 +2271,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a67232d15dd10d3e0d33289cdd9a4124e"></a><!-- doxytag: member="asynPortDriver::getUIntDigitalParam" ref="a67232d15dd10d3e0d33289cdd9a4124e" args="(int index, epicsUInt32 *value, epicsUInt32 mask)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::getUIntDigitalParam </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32 *&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32&#160;</td>
-          <td class="paramname"><em>mask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Returns the value for an UInt32Digital parameter from the parameter library. </p>
-<p>Calls getUIntDigitalParam(0, index, value, mask) i.e. for parameter list 0. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>Address of value to get. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>The mask to apply when getting the value </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a class="anchor" id="adecd22e066b5f281c9201aabef4ba164"></a><!-- doxytag: member="asynPortDriver::getUIntDigitalParam" ref="adecd22e066b5f281c9201aabef4ba164" args="(int list, int index, epicsUInt32 *value, epicsUInt32 mask)" -->
 <div class="memitem">
 <div class="memproto">
@@ -2182,6 +2316,50 @@ Protected Attributes</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>Address of value to get. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>The mask to apply when getting the value. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a67232d15dd10d3e0d33289cdd9a4124e"></a><!-- doxytag: member="asynPortDriver::getUIntDigitalParam" ref="a67232d15dd10d3e0d33289cdd9a4124e" args="(int index, epicsUInt32 *value, epicsUInt32 mask)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::getUIntDigitalParam </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32 *&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32&#160;</td>
+          <td class="paramname"><em>mask</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Returns the value for an UInt32Digital parameter from the parameter library. </p>
+<p>Calls getUIntDigitalParam(0, index, value, mask) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>Address of value to get. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>The mask to apply when getting the value </td></tr>
   </table>
   </dd>
 </dl>
@@ -3093,6 +3271,43 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ae5373b45dd879ea203cf3ab03a7abdb4"></a><!-- doxytag: member="asynPortDriver::setIntegerParam" ref="ae5373b45dd879ea203cf3ab03a7abdb4" args="(int index, int value)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setIntegerParam </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the value for an integer in the parameter library. </p>
+<p>Calls setIntegerParam(0, index, value) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a61d3672e805e68abc4b8584c038e63d9"></a><!-- doxytag: member="asynPortDriver::setIntegerParam" ref="a61d3672e805e68abc4b8584c038e63d9" args="(int list, int index, int value)" -->
 <div class="memitem">
 <div class="memproto">
@@ -3129,43 +3344,6 @@ Protected Attributes</h2></td></tr>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to set. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="ae5373b45dd879ea203cf3ab03a7abdb4"></a><!-- doxytag: member="asynPortDriver::setIntegerParam" ref="ae5373b45dd879ea203cf3ab03a7abdb4" args="(int index, int value)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::setIntegerParam </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Sets the value for an integer in the parameter library. </p>
-<p>Calls setIntegerParam(0, index, value) i.e. for parameter list 0. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to set. </td></tr>
   </table>
@@ -3262,6 +3440,168 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a4df637afe8856c1fac667d19ad066f07"></a><!-- doxytag: member="asynPortDriver::setParamAlarmSeverity" ref="a4df637afe8856c1fac667d19ad066f07" args="(int index, int severity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setParamAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>alarmSeverity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the alarmSeverity for a parameter in the parameter library. </p>
+<p>Calls setParamAlarmSeverity(0, index, status) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">alarmSeverity</td><td>Severity to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a2de751f13ebe427652623d5ae23b71b4"></a><!-- doxytag: member="asynPortDriver::setParamAlarmSeverity" ref="a2de751f13ebe427652623d5ae23b71b4" args="(int list, int index, int severity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setParamAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>alarmSeverity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the alarmSeverity for a parameter in the parameter library. </p>
+<p>Calls paramList::setAlarmSeverity(index, status) for the parameter list indexed by list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">alarmSeverity</td><td>Severity to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ac467fd428561fa7d55d1789cf077446c"></a><!-- doxytag: member="asynPortDriver::setParamAlarmStatus" ref="ac467fd428561fa7d55d1789cf077446c" args="(int list, int index, int status)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setParamAlarmStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>alarmStatus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the alarmStatus for a parameter in the parameter library. </p>
+<p>Calls paramList::setAlarmStatus(index, status) for the parameter list indexed by list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">alarmStatus</td><td>Status to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aca9b325012cf8467d9eee1ea7666a456"></a><!-- doxytag: member="asynPortDriver::setParamAlarmStatus" ref="aca9b325012cf8467d9eee1ea7666a456" args="(int index, int status)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setParamAlarmStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>alarmStatus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the alarmStatus for a parameter in the parameter library. </p>
+<p>Calls setParamAlarmStatus(0, index, status) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">alarmStatus</td><td>Status to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a9003f04a8955fb42470b88f9f3ed4634"></a><!-- doxytag: member="asynPortDriver::setParamStatus" ref="a9003f04a8955fb42470b88f9f3ed4634" args="(int list, int index, asynStatus status)" -->
 <div class="memitem">
 <div class="memproto">
@@ -3343,6 +3683,43 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a9894fd10123fb620177df68e3c9ae29f"></a><!-- doxytag: member="asynPortDriver::setStringParam" ref="a9894fd10123fb620177df68e3c9ae29f" args="(int index, const char *value)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setStringParam </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the value for a string in the parameter library. </p>
+<p>Calls setStringParam(0, index, value) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Address of value to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="acc5f7ac39e11b4e45033d348aeb3f30b"></a><!-- doxytag: member="asynPortDriver::setStringParam" ref="acc5f7ac39e11b4e45033d348aeb3f30b" args="(int list, int index, const char *value)" -->
 <div class="memitem">
 <div class="memproto">
@@ -3379,43 +3756,6 @@ Protected Attributes</h2></td></tr>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Address of value to set. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a9894fd10123fb620177df68e3c9ae29f"></a><!-- doxytag: member="asynPortDriver::setStringParam" ref="a9894fd10123fb620177df68e3c9ae29f" args="(int index, const char *value)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::setStringParam </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Sets the value for a string in the parameter library. </p>
-<p>Calls setStringParam(0, index, value) i.e. for parameter list 0. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Address of value to set. </td></tr>
   </table>
@@ -3543,6 +3883,115 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a22ea69a88c5ea910da31c67db0aaca7a"></a><!-- doxytag: member="asynPortDriver::setUIntDigitalParam" ref="a22ea69a88c5ea910da31c67db0aaca7a" args="(int index, epicsUInt32 value, epicsUInt32 valueMask, epicsUInt32 interruptMask)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setUIntDigitalParam </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32&#160;</td>
+          <td class="paramname"><em>valueMask</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32&#160;</td>
+          <td class="paramname"><em>interruptMask</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the value for a UInt32Digital in the parameter library. </p>
+<p>Calls setUIntDigitalParam(0, index, value, valueMask, interruptMask) i.e. for parameter list 0. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to set. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">valueMask</td><td>The mask to use when setting the value. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">interruptMask</td><td>A mask that indicates which bits have changed even if the value is the same, so callbacks will be done </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a0e6e8fe3f13fb4226ab9be56af5c560e"></a><!-- doxytag: member="asynPortDriver::setUIntDigitalParam" ref="a0e6e8fe3f13fb4226ab9be56af5c560e" args="(int list, int index, epicsUInt32 value, epicsUInt32 valueMask, epicsUInt32 interruptMask)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::setUIntDigitalParam </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32&#160;</td>
+          <td class="paramname"><em>valueMask</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">epicsUInt32&#160;</td>
+          <td class="paramname"><em>interruptMask</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets the value for a UInt32Digital in the parameter library. </p>
+<p>Calls <a class="el" href="classparam_list.html#ac9b677e6f1c3f74e83fb76ffc70b3be3" title="Sets the value for an integer in the parameter library.">paramList::setInteger</a> (index, value) for the parameter list indexed by list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">valueMask</td><td>The mask to use when setting the value. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">interruptMask</td><td>A mask that indicates which bits have changed even if the value is the same, so callbacks will be done </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="aced2717de28d742684fcf97e13bfbf55"></a><!-- doxytag: member="asynPortDriver::setUIntDigitalParam" ref="aced2717de28d742684fcf97e13bfbf55" args="(int index, epicsUInt32 value, epicsUInt32 valueMask)" -->
 <div class="memitem">
 <div class="memproto">
@@ -3638,115 +4087,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a0e6e8fe3f13fb4226ab9be56af5c560e"></a><!-- doxytag: member="asynPortDriver::setUIntDigitalParam" ref="a0e6e8fe3f13fb4226ab9be56af5c560e" args="(int list, int index, epicsUInt32 value, epicsUInt32 valueMask, epicsUInt32 interruptMask)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::setUIntDigitalParam </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>list</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32&#160;</td>
-          <td class="paramname"><em>valueMask</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32&#160;</td>
-          <td class="paramname"><em>interruptMask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Sets the value for a UInt32Digital in the parameter library. </p>
-<p>Calls <a class="el" href="classparam_list.html#ac9b677e6f1c3f74e83fb76ffc70b3be3" title="Sets the value for an integer in the parameter library.">paramList::setInteger</a> (index, value) for the parameter list indexed by list. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">list</td><td>The parameter list number. Must be &lt; maxAddr passed to <a class="el" href="classasyn_port_driver.html#acf77e873fc4fdbd8d07154ef80dc38b8" title="Constructor for the asynPortDriver class.">asynPortDriver::asynPortDriver</a>. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to set </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">valueMask</td><td>The mask to use when setting the value. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">interruptMask</td><td>A mask that indicates which bits have changed even if the value is the same, so callbacks will be done </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a22ea69a88c5ea910da31c67db0aaca7a"></a><!-- doxytag: member="asynPortDriver::setUIntDigitalParam" ref="a22ea69a88c5ea910da31c67db0aaca7a" args="(int index, epicsUInt32 value, epicsUInt32 valueMask, epicsUInt32 interruptMask)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::setUIntDigitalParam </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32&#160;</td>
-          <td class="paramname"><em>valueMask</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">epicsUInt32&#160;</td>
-          <td class="paramname"><em>interruptMask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Sets the value for a UInt32Digital in the parameter library. </p>
-<p>Calls setUIntDigitalParam(0, index, value, valueMask, interruptMask) i.e. for parameter list 0. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>The parameter number </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to set. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">valueMask</td><td>The mask to use when setting the value. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">interruptMask</td><td>A mask that indicates which bits have changed even if the value is the same, so callbacks will be done </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a class="anchor" id="a1d1d4af019934b79b9fca0aa444d0036"></a><!-- doxytag: member="asynPortDriver::unlock" ref="a1d1d4af019934b79b9fca0aa444d0036" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -3762,6 +4102,25 @@ Protected Attributes</h2></td></tr>
 <div class="memdoc">
 
 <p>Unlocks the driver; called when an asyn client or driver is done accessing common memory. </p>
+
+</div>
+</div>
+<a class="anchor" id="a337e010292e030a4ba310201c8794e5f"></a><!-- doxytag: member="asynPortDriver::updateTimeStamp" ref="a337e010292e030a4ba310201c8794e5f" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asynStatus asynPortDriver::updateTimeStamp </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Updates the timestamp for this port in pasynManager. </p>
+<p>Drivers typically call this function when they receive new data and want records with TSE=-2 to use this time as their timestamp. </p>
 
 </div>
 </div>
@@ -3788,25 +4147,6 @@ Protected Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a class="anchor" id="a337e010292e030a4ba310201c8794e5f"></a><!-- doxytag: member="asynPortDriver::updateTimeStamp" ref="a337e010292e030a4ba310201c8794e5f" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">asynStatus asynPortDriver::updateTimeStamp </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td><code> [virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Updates the timestamp for this port in pasynManager. </p>
-<p>Drivers typically call this function when they receive new data and want records with TSE=-2 to use this time as their timestamp. </p>
 
 </div>
 </div>
@@ -4404,11 +4744,11 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>/home/epics/devel/asynR4-26/asyn/asynPortDriver/<a class="el" href="asyn_port_driver_8h_source.html">asynPortDriver.h</a></li>
-<li>/home/epics/devel/asynR4-26/asyn/asynPortDriver/<a class="el" href="asyn_port_driver_8cpp.html">asynPortDriver.cpp</a></li>
+<li>/home/epics/devel/asyn-R4-30/asyn/asynPortDriver/<a class="el" href="asyn_port_driver_8h_source.html">asynPortDriver.h</a></li>
+<li>/home/epics/devel/asyn-R4-30/asyn/asynPortDriver/<a class="el" href="asyn_port_driver_8cpp.html">asynPortDriver.cpp</a></li>
 </ul>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Feb 15 2015 for asyn by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Tue Aug 23 2016 for asyn by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

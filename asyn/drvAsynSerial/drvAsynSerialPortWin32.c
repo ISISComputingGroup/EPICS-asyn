@@ -675,7 +675,7 @@ drvAsynSerialPortConfigure(char *portName,
     ttyController_t *tty;
     asynStatus status;
     char winTtyName[MAX_PATH];
-    int i;
+
 
     /*
      * Check arguments
@@ -705,10 +705,9 @@ drvAsynSerialPortConfigure(char *portName,
         return -1;
     }
     tty->commHandle = INVALID_HANDLE_VALUE;
-    if ( (epicsStrnCaseCmp(ttyName, "COM", 3) == 0) && (strlen(ttyName) > 4) && (ttyName[3] >= '0') && (ttyName[3] <= '9') ) {
+    if ( (epicsStrnCaseCmp(ttyName, "\\\\.\\", 4) != 0)) {
         /* 
-         * we can open COM1 to COM9 directly as they are reserved names, but for higher ports like COM18 
-         * we need \\.\ prepended to access device rather than file namespace
+         * The user did not pass a Windows device name, so prepend \\.\
          */
         epicsSnprintf(winTtyName, sizeof(winTtyName), "\\\\.\\%s", ttyName);
     } 
@@ -717,11 +716,6 @@ drvAsynSerialPortConfigure(char *portName,
         /* 
          * avoid backslash quoting issues by allowing use of / in device paths at IOC command level
          */
-        for(i=0; i<strlen(winTtyName); ++i) {
-            if (winTtyName[i] == '/') {
-                winTtyName[i] = '\\';
-            }
-        }
     }   
     tty->serialDeviceName = epicsStrDup(winTtyName);
     tty->portName = epicsStrDup(portName);
