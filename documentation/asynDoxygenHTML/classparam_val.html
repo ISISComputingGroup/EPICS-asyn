@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">asyn&#160;<span id="projectnumber">4-26</span></div>
+   <div id="projectname">asyn&#160;<span id="projectnumber">4-30</span></div>
   </td>
  </tr>
  </tbody>
@@ -64,6 +64,10 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#adf8ca909c281d4efe0a427052269417f">resetValueChanged</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a02aa59206f4777960b48b3ead24bbd39">setStatus</a> (asynStatus status)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a3b7fab9e5076f71a6435dd12885e2fca">getStatus</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a8e8b07f582b1474e9fa61bb171b67df6">setAlarmStatus</a> (int status)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a32bd73f74939b008f6eeed59cb929015">getAlarmStatus</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a1395e4f0d290c1115e84ce7eadf93d3c">setAlarmSeverity</a> (int severity)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a54d2ec0274228dbe8ff16d89e2e9d42a">getAlarmSeverity</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a795c4e244aac26327070dd80b61058cc">getName</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#ac172eb86bd309250835c7a3898804441">nameEquals</a> (const char *<a class="el" href="classparam_val.html#afa7f0de7462e90fcc90af8f1bdcaed4f">name</a>)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a544ed8e86be09dd7bedc83cdfe2d2fc6">setInteger</a> (epicsInt32 value)</td></tr>
@@ -107,6 +111,8 @@ Static Public Attributes</h2></td></tr>
 <tr><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">asynStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#aed59a22d75089a5c70ce15fd066c42ed">status_</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a87b8db097a4cf55bc5f3aa20fe615714">alarmStatus_</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#ada5145039a1511eca82968f94f784073">alarmSeverity_</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a59bd3ff0c29b00bda99070c4bdc6ee4d">valueDefined</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#a0c54b495d379bb25b3d243ff880b4760">valueChanged</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparam_val.html#afa7f0de7462e90fcc90af8f1bdcaed4f">name</a></td></tr>
@@ -172,6 +178,38 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="a54d2ec0274228dbe8ff16d89e2e9d42a"></a><!-- doxytag: member="paramVal::getAlarmSeverity" ref="a54d2ec0274228dbe8ff16d89e2e9d42a" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int paramVal::getAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a32bd73f74939b008f6eeed59cb929015"></a><!-- doxytag: member="paramVal::getAlarmStatus" ref="a32bd73f74939b008f6eeed59cb929015" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int paramVal::getAlarmStatus </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a8d333398ee303326d7cd89f7a4088cc9"></a><!-- doxytag: member="paramVal::getDouble" ref="a8d333398ee303326d7cd89f7a4088cc9" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -419,6 +457,40 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a1395e4f0d290c1115e84ce7eadf93d3c"></a><!-- doxytag: member="paramVal::setAlarmSeverity" ref="a1395e4f0d290c1115e84ce7eadf93d3c" args="(int severity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void paramVal::setAlarmSeverity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>severity</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8e8b07f582b1474e9fa61bb171b67df6"></a><!-- doxytag: member="paramVal::setAlarmStatus" ref="a8e8b07f582b1474e9fa61bb171b67df6" args="(int status)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void paramVal::setAlarmStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>status</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a212d2c048074eb8cc2d2b1ff0626283f"></a><!-- doxytag: member="paramVal::setDefined" ref="a212d2c048074eb8cc2d2b1ff0626283f" args="(bool defined)" -->
 <div class="memitem">
 <div class="memproto">
@@ -597,6 +669,32 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/><h2>Member Data Documentation</h2>
+<a class="anchor" id="ada5145039a1511eca82968f94f784073"></a><!-- doxytag: member="paramVal::alarmSeverity_" ref="ada5145039a1511eca82968f94f784073" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classparam_val.html#ada5145039a1511eca82968f94f784073">paramVal::alarmSeverity_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a87b8db097a4cf55bc5f3aa20fe615714"></a><!-- doxytag: member="paramVal::alarmStatus_" ref="a87b8db097a4cf55bc5f3aa20fe615714" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classparam_val.html#a87b8db097a4cf55bc5f3aa20fe615714">paramVal::alarmStatus_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a474418ec70c87ec4a08fda20e2c5e402"></a><!-- doxytag: member="paramVal::data" ref="a474418ec70c87ec4a08fda20e2c5e402" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -875,11 +973,11 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>/home/epics/devel/asynR4-26/asyn/asynPortDriver/<a class="el" href="param_val_8h_source.html">paramVal.h</a></li>
-<li>/home/epics/devel/asynR4-26/asyn/asynPortDriver/<a class="el" href="param_val_8cpp.html">paramVal.cpp</a></li>
+<li>/home/epics/devel/asyn-R4-30/asyn/asynPortDriver/<a class="el" href="param_val_8h_source.html">paramVal.h</a></li>
+<li>/home/epics/devel/asyn-R4-30/asyn/asynPortDriver/<a class="el" href="param_val_8cpp.html">paramVal.cpp</a></li>
 </ul>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Feb 15 2015 for asyn by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Tue Aug 23 2016 for asyn by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

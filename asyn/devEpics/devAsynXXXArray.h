@@ -25,10 +25,12 @@
                                                                                                    \
                                                                                                    \
 typedef struct ringBufferElement {                                                                 \
-    EPICS_TYPE      *pValue;                                                                       \
-    size_t          len;                                                                           \
-    epicsTimeStamp  time;                                                                          \
-    asynStatus      status;                                                                        \
+    EPICS_TYPE          *pValue;                                                                   \
+    size_t              len;                                                                       \
+    epicsTimeStamp      time;                                                                      \
+    asynStatus          status;                                                                    \
+    epicsAlarmCondition alarmStatus;                                                               \
+    epicsAlarmSeverity  alarmSeverity;                                                             \
 } ringBufferElement;                                                                               \
                                                                                                    \
 typedef struct devAsynWfPvt{                                                                       \
@@ -42,8 +44,6 @@ typedef struct devAsynWfPvt{                                                    
     IOSCANPVT           ioScanPvt;                                                                 \
     asynStatus          status;                                                                    \
     int                 isOutput;                                                                  \
-    epicsAlarmCondition alarmStat;                                                                 \
-    epicsAlarmSeverity  alarmSevr;                                                                 \
     epicsMutexId        ringBufferLock;                                                            \
     ringBufferElement   *ringBuffer;                                                               \
     int                 ringHead;                                                                  \
@@ -52,11 +52,11 @@ typedef struct devAsynWfPvt{                                                    
     int                 ringBufferOverflows;                                                       \
     ringBufferElement   result;                                                                    \
     int                 gotValue; /* For interruptCallbackInput */                                 \
-    epicsUInt32         nord;                                                                      \
     INTERRUPT           interruptCallback;                                                         \
     char                *portName;                                                                 \
     char                *userParam;                                                                \
     int                 addr;                                                                      \
+    asynStatus          previousQueueRequestStatus;                                                \
 } devAsynWfPvt;                                                                                    \
                                                                                                    \
 static long getIoIntInfo(int cmd, dbCommon *pr, IOSCANPVT *iopvt);                                 \
@@ -265,6 +265,22 @@ static long getIoIntInfo(int cmd, dbCommon *pr, IOSCANPVT *iopvt)               
     return INIT_OK;                                                                                \
 }                                                                                                  \
                                                                                                    \
+static void reportQueueRequestStatus(devAsynWfPvt *pPvt, asynStatus status)                        \
+{                                                                                                  \
+    if (pPvt->previousQueueRequestStatus != status) {                                              \
+        pPvt->previousQueueRequestStatus = status;                                                 \
+        if (status == asynSuccess) {                                                               \
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,                                           \
+                "%s %s queueRequest status returned to normal\n",                                  \
+                pPvt->pr->name, driverName);                                                       \
+        } else {                                                                                   \
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,                                           \
+                "%s %s queueRequest %s\n",                                                         \
+                pPvt->pr->name, driverName, pPvt->pasynUser->errorMessage);                        \
+        }                                                                                          \
+    }                                                                                              \
+}                                                                                                  \
+                                                                                                   \
 static long initWfArrayOut(waveformRecord *pwf)                                                    \
 { return  initCommon((dbCommon *)pwf, (DBLINK *)&pwf->inp,                                         \
     callbackWfOut, interruptCallback, 1); }                                                        \
@@ -278,6 +294,7 @@ static long processCommon(dbCommon *pr)                                         
     devAsynWfPvt *pPvt = (devAsynWfPvt *)pr->dpvt;                                                 \
     waveformRecord *pwf = (waveformRecord *)pr;                                                    \
     int newInputData;                                                                              \
+    asynStatus status;                                                                             \
                                                                                                    \
     if (pPvt->ringSize == 0) {                                                                     \
         newInputData = pPvt->gotValue;                                                             \
@@ -286,19 +303,14 @@ static long processCommon(dbCommon *pr)                                         
     }                                                                                              \
     if (!newInputData && !pr->pact) {   /* This is an initial call from record */                  \
         if(pPvt->canBlock) pr->pact = 1;                                                           \
-        pPvt->status = pasynManager->queueRequest(pPvt->pasynUser, 0, 0);                          \
-        if((pPvt->status==asynSuccess) && pPvt->canBlock) return 0;                                \
+        status = pasynManager->queueRequest(pPvt->pasynUser, 0, 0);                                \
+        if((status==asynSuccess) && pPvt->canBlock) return 0;                                      \
         if(pPvt->canBlock) pr->pact = 0;                                                           \
-        if (pPvt->status != asynSuccess) {                                                         \
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,                                           \
-                "%s %s::processCommon, error queuing request %s\n",                                \
-                 pr->name, driverName, pPvt->pasynUser->errorMessage);                             \
-        }                                                                                          \
+        reportQueueRequestStatus(pPvt, status);                                                    \
     }                                                                                              \
     if (newInputData) {                                                                            \
         if (pPvt->ringSize == 0){                                                                  \
             /* Data has already been copied to the record in interruptCallback */                  \
-            pwf->nord = pPvt->nord;                                                                \
             pPvt->gotValue--;                                                                      \
             if (pPvt->gotValue) {                                                                  \
                 asynPrint(pPvt->pasynUser, ASYN_TRACE_WARNING,                                     \
@@ -313,48 +325,51 @@ static long processCommon(dbCommon *pr)                                         
             int i;                                                                                 \
             /* Need to copy the array with the lock because that is shared even though             \
                pPvt->result is a copy */                                                           \
-            epicsMutexLock(pPvt->ringBufferLock);                                                  \
-            for (i=0; i<(int)rp->len; i++) pData[i] = rp->pValue[i];                               \
-            epicsMutexUnlock(pPvt->ringBufferLock);                                                \
-            pwf->nord = rp->len;                                                                   \
+            if (rp->status == asynSuccess) {                                                       \
+                epicsMutexLock(pPvt->ringBufferLock);                                              \
+                for (i=0; i<(int)rp->len; i++) pData[i] = rp->pValue[i];                           \
+                epicsMutexUnlock(pPvt->ringBufferLock);                                            \
+                pwf->nord = rp->len;                                                               \
+                asynPrintIO(pPvt->pasynUser, ASYN_TRACEIO_DEVICE,                                  \
+                    (char *)pwf->bptr, pwf->nord*sizeof(EPICS_TYPE),                               \
+                    "%s %s::processCommon nord=%d, pwf->bptr data:",                               \
+                    pwf->name, driverName, pwf->nord);                                             \
+            }                                                                                      \
             pwf->time = rp->time;                                                                  \
-            pPvt->status = rp->status;                                                             \
-            asynPrintIO(pPvt->pasynUser, ASYN_TRACEIO_DEVICE,                                      \
-                (char *)pwf->bptr, pwf->nord*sizeof(EPICS_TYPE),                                   \
-                "%s %s::processCommon nord=%d, pwf->bptr data:",                                   \
-                pwf->name, driverName, pwf->nord);                                                 \
         }                                                                                          \
     }                                                                                              \
-    if (pPvt->status == asynSuccess) {                                                             \
+    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status,                                   \
+                                            READ_ALARM, &pPvt->result.alarmStatus,                 \
+                                            INVALID_ALARM, &pPvt->result.alarmSeverity);           \
+    recGblSetSevr(pr, pPvt->result.alarmStatus, pPvt->result.alarmSeverity);                       \
+    if (pPvt->result.status == asynSuccess) {                                                             \
         pwf->udf = 0;                                                                              \
+        return 0;                                                                                  \
     } else {                                                                                       \
-        pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->status, READ_ALARM, &pPvt->alarmStat,        \
-                                                INVALID_ALARM, &pPvt->alarmSevr);                  \
-        recGblSetSevr(pr, pPvt->alarmStat, pPvt->alarmSevr);                                       \
+        pPvt->result.status = asynSuccess;                                                                \
+        return -1;                                                                                 \
     }                                                                                              \
-    pPvt->status = asynSuccess;                                                                    \
-    return 0;                                                                                      \
 }                                                                                                  \
                                                                                                    \
 static void callbackWfOut(asynUser *pasynUser)                                                     \
 {                                                                                                  \
     devAsynWfPvt *pPvt = (devAsynWfPvt *)pasynUser->userPvt;                                       \
     waveformRecord *pwf = (waveformRecord *)pPvt->pr;                                              \
-    int status;                                                                                    \
                                                                                                    \
     asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,                                                      \
               "%s %s::callbackWfOut\n", pwf->name, driverName);                                    \
-    status = pPvt->pArray->write(pPvt->arrayPvt,                                                   \
-        pPvt->pasynUser, pwf->bptr, pwf->nord);                                                    \
-    if (status == asynSuccess) {                                                                   \
-        pwf->udf=0;                                                                                \
+    pPvt->result.status = pPvt->pArray->write(pPvt->arrayPvt, pPvt->pasynUser,                     \
+                                              pwf->bptr, pwf->nord);                               \
+    pPvt->result.time = pPvt->pasynUser->timestamp;                                                \
+    pPvt->result.alarmStatus = pPvt->pasynUser->alarmStatus;                                       \
+    pPvt->result.alarmSeverity = pPvt->pasynUser->alarmSeverity;                                   \
+    if (pPvt->result.status == asynSuccess) {                                                      \
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,                                                  \
+            "%s %s::callbackWfOut OK\n", pwf->name, driverName);                                   \
     } else {                                                                                       \
         asynPrint(pasynUser, ASYN_TRACE_ERROR,                                                     \
               "%s %s::callbackWfOut write error %s\n",                                             \
               pwf->name, driverName, pasynUser->errorMessage);                                     \
-        pasynEpicsUtils->asynStatusToEpicsAlarm(status, WRITE_ALARM, &pPvt->alarmStat,             \
-                                                INVALID_ALARM, &pPvt->alarmSevr);                  \
-        recGblSetSevr(pwf, pPvt->alarmStat, pPvt->alarmSevr);                                      \
     }                                                                                              \
     if(pwf->pact) callbackRequestProcessCallback(&pPvt->callback,pwf->prio,pwf);                   \
 }                                                                                                  \
@@ -363,24 +378,22 @@ static void callbackWfIn(asynUser *pasynUser)                                   
 {                                                                                                  \
     devAsynWfPvt *pPvt = (devAsynWfPvt *)pasynUser->userPvt;                                       \
     waveformRecord *pwf = (waveformRecord *)pPvt->pr;                                              \
-    int status;                                                                                    \
     size_t nread;                                                                                  \
                                                                                                    \
-    status = pPvt->pArray->read(pPvt->arrayPvt,                                                    \
-        pPvt->pasynUser, pwf->bptr, pwf->nelm, &nread);                                            \
+    pPvt->result.status = pPvt->pArray->read(pPvt->arrayPvt, pPvt->pasynUser, pwf->bptr,           \
+                                             pwf->nelm, &nread);                                   \
     asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,                                                      \
               "%s %s::callbackWfIn\n", pwf->name, driverName);                                     \
-    pwf->time = pasynUser->timestamp;                                                              \
-    if (status == asynSuccess) {                                                                   \
+    pPvt->result.time = pPvt->pasynUser->timestamp;                                                \
+    pPvt->result.alarmStatus = pPvt->pasynUser->alarmStatus;                                       \
+    pPvt->result.alarmSeverity = pPvt->pasynUser->alarmSeverity;                                   \
+    if (pPvt->result.status == asynSuccess) {                                                                   \
         pwf->udf=0;                                                                                \
         pwf->nord = (epicsUInt32)nread;                                                            \
     } else {                                                                                       \
         asynPrint(pasynUser, ASYN_TRACE_ERROR,                                                     \
               "%s %s::callbackWfIn read error %s\n",                                               \
               pwf->name, driverName, pasynUser->errorMessage);                                     \
-        pasynEpicsUtils->asynStatusToEpicsAlarm(status, READ_ALARM, &pPvt->alarmStat,              \
-                                                INVALID_ALARM, &pPvt->alarmSevr);                  \
-        recGblSetSevr(pwf, pPvt->alarmStat, pPvt->alarmSevr);                                      \
     }                                                                                              \
     if(pwf->pact) callbackRequestProcessCallback(&pPvt->callback,pwf->prio,pwf);                   \
 }                                                                                                  \
@@ -420,11 +433,15 @@ static void interruptCallback(void *drvPvt, asynUser *pasynUser,                
         /* Not using a ring buffer */                                                              \
         dbScanLock((dbCommon *)pwf);                                                               \
         if (len > pwf->nelm) len = pwf->nelm;                                                      \
-        for (i=0; i<(int)len; i++) pData[i] = value[i];                                            \
+        if (pasynUser->auxStatus == asynSuccess) {                                                 \
+            for (i=0; i<(int)len; i++) pData[i] = value[i];                                        \
+            pwf->nord = (epicsUInt32)len;                                                          \
+        }                                                                                          \
         pwf->time = pasynUser->timestamp;                                                          \
+        pPvt->result.status = pasynUser->auxStatus;                                                \
+        pPvt->result.alarmStatus = pasynUser->alarmStatus;                                         \
+        pPvt->result.alarmSeverity = pasynUser->alarmSeverity;                                     \
         pPvt->gotValue++;                                                                          \
-        pPvt->nord = (epicsUInt32)len;                                                             \
-        if (pPvt->status == asynSuccess) pPvt->status = pasynUser->auxStatus;                      \
         dbScanUnlock((dbCommon *)pwf);                                                             \
         if (pPvt->isOutput)                                                                        \
             scanOnce((dbCommon *)pwf);                                                             \
@@ -446,6 +463,8 @@ static void interruptCallback(void *drvPvt, asynUser *pasynUser,                
         for (i=0; i<(int)len; i++) rp->pValue[i] = value[i];                                       \
         rp->time = pasynUser->timestamp;                                                           \
         rp->status = pasynUser->auxStatus;                                                         \
+        rp->alarmStatus = pasynUser->alarmStatus;                                                  \
+        rp->alarmSeverity = pasynUser->alarmSeverity;                                              \
         pPvt->ringHead = (pPvt->ringHead==pPvt->ringSize-1) ? 0 : pPvt->ringHead+1;                \
         if (pPvt->ringHead == pPvt->ringTail) {                                                    \
             /* There was no room in the ring buffer.  In the past we just threw away               \

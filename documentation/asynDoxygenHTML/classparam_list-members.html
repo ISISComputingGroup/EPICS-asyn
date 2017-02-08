@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">asyn&#160;<span id="projectnumber">4-26</span></div>
+   <div id="projectname">asyn&#160;<span id="projectnumber">4-30</span></div>
   </td>
  </tr>
  </tbody>
@@ -46,6 +46,8 @@ This is the complete list of members for <a class="el" href="classparam_list.htm
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a9cb7ad5429ddbd7ff63cf1e99d72ad03">clearUInt32Interrupt</a>(int index, epicsUInt32 mask)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#af277a790297fadeb62ba5e972c9da95f">createParam</a>(const char *name, asynParamType type, int *index)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a50e1f02b63daeb7a934b717f83db0fc0">findParam</a>(const char *name, int *index)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classparam_list.html#a9ddd6e12b7de94377c5dab1dd703dc0a">getAlarmSeverity</a>(int index, int *alarmSeverity)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classparam_list.html#aeb6089271a84b3ccb57a7390b50fc351">getAlarmStatus</a>(int index, int *alarmStatus)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a4851347f00ef1ed6a0e1fc7e8ab2dd63">getDouble</a>(int index, double *value)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a46156258d7eb8324fb58254fe9ce4b58">getInteger</a>(int index, int *value)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a06c00189483c97d46e2319a661c439c7">getName</a>(int index, const char **name)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
@@ -56,6 +58,8 @@ This is the complete list of members for <a class="el" href="classparam_list.htm
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a2b40b46c0399af6c7bba3a545b5c3452">getUInt32Interrupt</a>(int index, epicsUInt32 *mask, interruptReason reason)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#ac44f1c6be90647934d99c2ae1413bcd6">paramList</a>(int nVals, class asynPortDriver *pPort)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a62ad62be3680dbaa1bd8cc423398662a">report</a>(FILE *fp, int details)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classparam_list.html#a81b1f2a95aadac7e1333069ac959ecd1">setAlarmSeverity</a>(int index, int alarmSeverity)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classparam_list.html#afb09d88175474e5b4f667c82c376d06d">setAlarmStatus</a>(int index, int alarmStatus)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#afefeefad32cbcb03592d3531be974d29">setDouble</a>(int index, double value)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#ac9b677e6f1c3f74e83fb76ffc70b3be3">setInteger</a>(int index, int value)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a02e234bbf784bbed9890d9cd6fe47f29">setStatus</a>(int index, asynStatus status)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
@@ -64,7 +68,7 @@ This is the complete list of members for <a class="el" href="classparam_list.htm
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a30ca684031570cacd8a5ff1f118524f9">setUInt32Interrupt</a>(int index, epicsUInt32 mask, interruptReason reason)</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classparam_list.html#a43ec329eabb09ea72ba67951f228f151">~paramList</a>()</td><td><a class="el" href="classparam_list.html">paramList</a></td><td></td></tr>
 </table></div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Feb 15 2015 for asyn by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Tue Aug 23 2016 for asyn by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

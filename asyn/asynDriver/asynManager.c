@@ -1153,11 +1153,15 @@ static asynUser *duplicateAsynUser(asynUser *pasynUser,
 
     pnew->pport = pold->pport;
     pnew->pdevice = pold->pdevice;
-    pnew->user.userPvt = pold->user.userPvt;
-    pnew->user.userData = pold->user.userData;
-    pnew->user.drvUser = pold->user.drvUser;
-    pnew->user.reason = pold->user.reason;
-    pnew->user.timeout = pold->user.timeout;
+    pnew->user.timeout       = pold->user.timeout;
+    pnew->user.userPvt       = pold->user.userPvt;
+    pnew->user.userData      = pold->user.userData;
+    pnew->user.drvUser       = pold->user.drvUser;
+    pnew->user.reason        = pold->user.reason;
+    pnew->user.timestamp     = pold->user.timestamp;
+    pnew->user.auxStatus     = pold->user.auxStatus;
+    pnew->user.alarmStatus   = pold->user.alarmStatus;
+    pnew->user.alarmSeverity = pold->user.alarmSeverity;
     return &pnew->user;
 }
 
@@ -1475,7 +1479,7 @@ static asynStatus queueRequest(asynUser *pasynUser,
                 epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                     "port %s or device %d not connected",pport->portName,addr);
                 epicsMutexUnlock(pport->asynManagerLock);
-                return asynError;
+                return asynDisconnected;
             }
         }
         epicsMutexUnlock(pport->asynManagerLock);
@@ -2800,7 +2804,7 @@ static int traceVprintSource(asynUser *pasynUser,int reason, const char *file, i
     } else {
         nout += errlogVprintf(pformat,pvar);
     }
-    if(fp==stdout || fp==stderr) fflush(fp);
+    fflush(fp);
     epicsMutexUnlock(pasynBase->lockTrace);
     return nout;
 }
@@ -2904,7 +2908,7 @@ static int traceVprintIOSource(asynUser *pasynUser,int reason,
             nout += errlogPrintf("\n");
         }
     }
-    if(fp==stdout || fp==stderr) fflush(fp);
+    fflush(fp);
     epicsMutexUnlock(pasynBase->lockTrace);
     return nout;
 }

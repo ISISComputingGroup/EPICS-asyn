@@ -30,13 +30,16 @@ const char* paramVal::typeNames[] = {
 
 
 paramVal::paramVal(const char *name):
-    type(asynParamNotDefined), status_(asynSuccess), valueDefined(false), valueChanged(false){
+    type(asynParamNotDefined), status_(asynSuccess), alarmStatus_(0), alarmSeverity_(0),
+    valueDefined(false), valueChanged(false)
+{
     this->name = epicsStrDup(name);
     this->data.sval = 0;
 }
 
 paramVal::paramVal(const char *name, asynParamType type):
-    type(type), status_(asynSuccess), valueDefined(false), valueChanged(false){
+    type(type), status_(asynSuccess), alarmStatus_(0), alarmSeverity_(0),
+    valueDefined(false), valueChanged(false){
     this->name = epicsStrDup(name);
     this->data.sval = 0;
 }
@@ -71,6 +74,32 @@ void paramVal::setStatus(asynStatus status){
 
 asynStatus paramVal::getStatus(){
     return status_;
+}
+
+void paramVal::setAlarmStatus(int alarmStatus){
+    if (alarmStatus_ != alarmStatus) {
+        setValueChanged();
+        alarmStatus_ = alarmStatus;
+        // We need to do callbacks on all bits if the status has changed
+        if (type == asynParamUInt32Digital) uInt32CallbackMask = 0xFFFFFFFF;
+    }
+}
+
+int paramVal::getAlarmStatus(){
+    return alarmStatus_;
+}
+
+void paramVal::setAlarmSeverity(int alarmSeverity){
+    if (alarmSeverity_ != alarmSeverity) {
+        setValueChanged();
+        alarmSeverity_ = alarmSeverity;
+        // We need to do callbacks on all bits if the status has changed
+        if (type == asynParamUInt32Digital) uInt32CallbackMask = 0xFFFFFFFF;
+    }
+}
+
+int paramVal::getAlarmSeverity(){
+    return alarmSeverity_;
 }
 
 /*
@@ -195,6 +224,8 @@ void paramVal::setString(const char *value)
 {
     if (type != asynParamOctet)
         throw ParamValWrongType("paramVal::setString can only handle asynParamOctet");
+    if (value == NULL)
+        throw ParamValWrongType("paramVal::setString can only handle non-NULL values");
     if (!isDefined() || (strcmp(data.sval, value)))
     {
         setDefined(true);
