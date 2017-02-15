@@ -526,6 +526,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     int timerStarted = 0;
     BOOL ret;
     DWORD error;
+    COMMTIMEOUTS ctimeout;
     asynStatus status = asynSuccess;
 
     assert(tty);
@@ -543,7 +544,36 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         return asynSuccess;
     }
     if (tty->writeTimeout != pasynUser->timeout) {
-        tty->writeTimeout = pasynUser->timeout;
+        if (pasynUser->timeout >= 0) {
+            ret = GetCommTimeouts(tty->commHandle, &ctimeout);
+            if (ret == 0) {
+                error = GetLastError();
+                epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                              "Can't get \"%s\" timeout: %f, error=%d",
+                              tty->serialDeviceName, pasynUser->timeout, error);
+                return asynError;
+            }
+            if (pasynUser->timeout == 0) {
+                ctimeout.WriteTotalTimeoutMultiplier  = 0;
+                ctimeout.WriteTotalTimeoutConstant    = 0;
+            }
+            else {
+                ctimeout.WriteTotalTimeoutMultiplier  = 0; 
+                // set comm write timeout to be slightly longer than asyn timeout, this is so that if
+                // we do wait for this time, we are sure we will also have triggered the epicsTimer 
+                // and not end up waiting again 
+                ctimeout.WriteTotalTimeoutConstant    = (int)(pasynUser->timeout*1000.) + 50; 
+            } 
+            ret = SetCommTimeouts(tty->commHandle, &ctimeout);
+            if (ret == 0) {
+                error = GetLastError();
+                epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                              "Can't set \"%s\" timeout: %f, error=%d",
+                              tty->serialDeviceName, pasynUser->timeout, error);
+                return asynError;
+            }
+            tty->writeTimeout = pasynUser->timeout;
+        }
     }
     tty->timeoutFlag = 0;
     nleft = (int)numchars;
@@ -627,7 +657,6 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     ttyController_t *tty = (ttyController_t *)drvPvt;
     int thisRead;
     int nRead = 0;
-    int timerStarted = 0;
     COMMTIMEOUTS ctimeout;
     BOOL ret;
     DWORD error;
@@ -648,21 +677,24 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     }
     if (tty->readTimeout != pasynUser->timeout) {
         if (pasynUser->timeout >= 0) {
-            if (pasynUser->timeout == 0) {
+            ret = GetCommTimeouts(tty->commHandle, &ctimeout);
+            if (ret == 0) {
+                error = GetLastError();
+                epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                              "Can't get \"%s\" timeout: %f, error=%d",
+                              tty->serialDeviceName, pasynUser->timeout, error);
+                return asynError;
+            }
+            if (pasynUser->timeout == 0) {  // this is non-blocking mode, return immediately with bytes available (with zero available allowed)
                 ctimeout.ReadIntervalTimeout          = MAXDWORD; 
                 ctimeout.ReadTotalTimeoutMultiplier   = 0; 
                 ctimeout.ReadTotalTimeoutConstant     = 0; 
-                ctimeout.WriteTotalTimeoutMultiplier  = 0; 
-                ctimeout.WriteTotalTimeoutConstant    = 0;
             }
             else {
-                ctimeout.ReadIntervalTimeout          = (int)(pasynUser->timeout*1000.); 
-                ctimeout.ReadTotalTimeoutMultiplier   = 1; 
-                ctimeout.ReadTotalTimeoutConstant     = (int)(pasynUser->timeout*1000.); 
-                ctimeout.WriteTotalTimeoutMultiplier  = 1; 
-                ctimeout.WriteTotalTimeoutConstant    = (int)(pasynUser->timeout*1000.);
+                ctimeout.ReadIntervalTimeout          = 50; // (in ms) return with data so far if no new data after this time once data starts being received 
+                ctimeout.ReadTotalTimeoutMultiplier   = 0; 
+                ctimeout.ReadTotalTimeoutConstant     = (int)(pasynUser->timeout*1000.);
             } 
-
             ret = SetCommTimeouts(tty->commHandle, &ctimeout);
             if (ret == 0) {
                 error = GetLastError();
@@ -677,14 +709,10 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     tty->timeoutFlag = 0;
     if (gotEom) *gotEom = 0;
     for (;;) {
-        if (!timerStarted && (tty->readTimeout > 0)) {
-            epicsTimerStartDelay(tty->timer, tty->readTimeout);
-            timerStarted = 1;
-        }
         ret = ReadFile(
                         tty->commHandle,  // handle of file to read
                         data,             // pointer to buffer that receives data
-                        1,                // number of bytes to read
+                        (DWORD)maxchars,                // number of bytes to read
                         &thisRead,        // pointer to number of bytes read
                         NULL              // pointer to structure for data
                         );
@@ -704,15 +732,11 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
             break;
         }
         else {
-            if (tty->readTimeout == 0)
-                tty->timeoutFlag = 1;
+            tty->timeoutFlag = 1;
         }
         if (tty->timeoutFlag)
             break;
-        if (tty->readTimeout == 0) /* Timeout of 0 means return immediately */
-            break;
     }
-    if (timerStarted) epicsTimerCancel(tty->timer);
     if (tty->timeoutFlag && (status == asynSuccess))
         status = asynTimeout;
     *nbytesTransfered = nRead;
