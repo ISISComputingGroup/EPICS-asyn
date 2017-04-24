@@ -407,6 +407,29 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "            commHandle: %p\n",  tty->commHandle);
         fprintf(fp, "    Characters written: %lu\n", tty->nWritten);
         fprintf(fp, "       Characters read: %lu\n", tty->nRead);
+        /* done all structure members except BaudRate */
+        fprintf(fp, "Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
+        fprintf(fp, "Output CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
+        fprintf(fp, "Output DSR flow control: %c\n", tty->commConfig.dcb.fOutxDsrFlow == TRUE ? 'Y' : 'N');
+        fprintf(fp, "DTR flow control: %s\n", dtr_flow[tty->commConfig.dcb.fDtrControl]);
+        fprintf(fp, "DSR sensitive: %c\n", tty->commConfig.dcb.fDsrSensitivity == TRUE ? 'Y' : 'N');
+        fprintf(fp, "fTXContinueOnXoff: %c\n", tty->commConfig.dcb.fTXContinueOnXoff == TRUE ? 'Y' : 'N');
+        fprintf(fp, "XON/XOFF transmission: %c\n", tty->commConfig.dcb.fOutX == TRUE ? 'Y' : 'N');
+        fprintf(fp, "XON/XOFF reception: %c\n", tty->commConfig.dcb.fInX == TRUE ? 'Y' : 'N');
+        fprintf(fp, "Replace parity error bytes with error char: %c\n", tty->commConfig.dcb.fErrorChar == TRUE ? 'Y' : 'N');
+        fprintf(fp, "discard NULL bytes: %c\n", tty->commConfig.dcb.fNull == TRUE ? 'Y' : 'N');
+        fprintf(fp, "RTS flow control: %s\n", rts_flow[tty->commConfig.dcb.fRtsControl]);
+        fprintf(fp, "abort read/write on error: %c\n", tty->commConfig.dcb.fAbortOnError == TRUE ? 'Y' : 'N');
+        fprintf(fp, "xon character limit: %d\n", (int)tty->commConfig.dcb.XonLim);
+        fprintf(fp, "xoff character limit: %d\n", (int)tty->commConfig.dcb.XoffLim);
+        fprintf(fp, "data bits: %d\n", (int)tty->commConfig.dcb.ByteSize);
+        fprintf(fp, "Parity: %s\n", parity_options[tty->commConfig.dcb.Parity]);
+        fprintf(fp, "stop bits: %f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
+        fprintf(fp, "xon char code: 0x%x\n", (int)tty->commConfig.dcb.XonChar);
+        fprintf(fp, "xoff char code: 0x%x\n", (int)tty->commConfig.dcb.XoffChar);
+        fprintf(fp, "error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
+        fprintf(fp, "eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
+        fprintf(fp, "event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);  
     }
     if (tty->commHandle != INVALID_HANDLE_VALUE && details >= 2) {
         ret = GetCommConfig(tty->commHandle, &tty->commConfig, &commConfigSize);
