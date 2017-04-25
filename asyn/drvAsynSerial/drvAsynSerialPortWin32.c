@@ -241,6 +241,11 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             tty->commConfig.dcb.fDsrSensitivity = TRUE;
             tty->commConfig.dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
         }
+        else if (epicsStrCaseCmp(val, "D") == 0) {
+            tty->commConfig.dcb.fOutxDsrFlow = FALSE;
+            tty->commConfig.dcb.fDsrSensitivity = FALSE;
+            tty->commConfig.dcb.fDtrControl = DTR_CONTROL_DISABLE;
+        }
         else {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                     "Invalid clocal value.");
