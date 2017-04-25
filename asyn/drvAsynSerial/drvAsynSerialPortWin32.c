@@ -256,6 +256,10 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             tty->commConfig.dcb.fOutxCtsFlow = FALSE;
             tty->commConfig.dcb.fRtsControl = RTS_CONTROL_ENABLE;
         }
+        else if (epicsStrCaseCmp(val, "D") == 0) {
+            tty->commConfig.dcb.fOutxCtsFlow = FALSE;
+            tty->commConfig.dcb.fRtsControl = RTS_CONTROL_DISABLE;
+        }
         else {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                       "Invalid crtscts value.");
@@ -385,7 +389,7 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "xoff character limit: %d\n", (int)tty->commConfig.dcb.XoffLim);
         fprintf(fp, "data bits: %d\n", (int)tty->commConfig.dcb.ByteSize);
         fprintf(fp, "Parity: %s\n", parity_options[tty->commConfig.dcb.Parity]);
-        fprintf(fp, "stop bits: %f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
+        fprintf(fp, "stop bits: %.1f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
         fprintf(fp, "xon char code: 0x%x\n", (int)tty->commConfig.dcb.XonChar);
         fprintf(fp, "xoff char code: 0x%x\n", (int)tty->commConfig.dcb.XoffChar);
         fprintf(fp, "error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
