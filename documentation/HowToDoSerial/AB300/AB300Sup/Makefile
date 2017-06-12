@@ -12,7 +12,7 @@ devAB300_LIBS += asyn
 devAB300_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 DBD += devAB300.dbd
-DB_INSTALLS += devAB300.db
+DB  += devAB300.db
 
 include $(TOP)/configure/RULES
 #----------------------------------------
