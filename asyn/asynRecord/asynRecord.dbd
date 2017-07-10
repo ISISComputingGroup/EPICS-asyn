@@ -66,6 +66,8 @@ menu(serialPRTY) {
     choice(serialPRTY_None,"None")
     choice(serialPRTY_Even,"Even")
     choice(serialPRTY_Odd,"Odd")
+    choice(serialPRTY_Mark,"Mark")
+    choice(serialPRTY_Space,"Space")
 }
 menu(serialDBIT) {
     choice(serialDBIT_unknown,"Unknown")
