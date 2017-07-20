@@ -226,7 +226,7 @@ ifeq ($(DRV_VISA),YES)
     visa32_DIR = $(NIVISADIR)/Lib
   endif
   asyn_LIBS_Linux += visa
-  visa_DIR = $(NIVISADIR)/lib
+  visa_DIR = $(NIVISADIR)/lib64
 endif
 
 SRC_DIRS += $(ASYN)/devGpib
