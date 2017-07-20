@@ -212,6 +212,23 @@ ifeq ($(LINUX_GPIB),YES)
   asyn_SYS_LIBS += gpib
 endif
 
+ifeq ($(DRV_VISA),YES)
+  SRC_DIRS += $(ASYN)/drvVISA
+  asyn_SRCS += drvAsynVISAPort.cpp
+  DBD += drvAsynVISAPort.dbd
+  USR_INCLUDES += -I$(NIVISADIR)/include
+  ifneq ($(findstring windows,$(EPICS_HOST_ARCH)),)
+    asyn_LIBS += visa64
+    visa64_DIR = $(NIVISADIR)/Lib_x64
+  endif
+  ifneq ($(findstring win32,$(EPICS_HOST_ARCH)),)
+    asyn_LIBS += visa32
+    visa32_DIR = $(NIVISADIR)/Lib
+  endif
+  asyn_LIBS_Linux += visa
+  visa_DIR = $(NIVISADIR)/lib
+endif
+
 SRC_DIRS += $(ASYN)/devGpib
 INC += devGpib.h
 INC += devSupportGpib.h
