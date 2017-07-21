@@ -122,6 +122,12 @@ getOption(void *drvPvt, asynUser *pasynUser,
             case 2:
                 l = epicsSnprintf(val, valSize, "even");
                 break;
+			case 3:
+				l = epicsSnprintf(val, valSize, "mark");
+				break;
+			case 4:
+				l = epicsSnprintf(val, valSize, "space");
+				break;
         }
     }
     else if (epicsStrCaseCmp(key, "stop") == 0) {
@@ -211,6 +217,12 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
         else if (epicsStrCaseCmp(val, "even") == 0) {
             tty->commConfig.dcb.Parity = 2;
         }
+		else if (epicsStrCaseCmp(val, "mark") == 0) {
+			tty->commConfig.dcb.Parity = 3;
+		}
+		else if (epicsStrCaseCmp(val, "space") == 0) {
+			tty->commConfig.dcb.Parity = 4;
+		}
         else {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                             "Invalid parity.");

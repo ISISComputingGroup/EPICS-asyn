@@ -153,10 +153,21 @@ getOption(void *drvPvt, asynUser *pasynUser,
     }
     else if (epicsStrCaseCmp(key, "parity") == 0) {
         if (tty->termios.c_cflag & PARENB) {
-            if (tty->termios.c_cflag & PARODD)
-                l = epicsSnprintf(val, valSize, "odd");
-            else
-                l = epicsSnprintf(val, valSize, "even");
+#ifdef CMSPAR
+            if (tty->termios.c_cflag & CMSPAR) {
+#else
+            if (0) {
+#endif /* CMSPAR */
+				if (tty->termios.c_cflag & PARODD)
+					l = epicsSnprintf(val, valSize, "mark");
+				else
+					l = epicsSnprintf(val, valSize, "space");
+			} else {
+				if (tty->termios.c_cflag & PARODD)
+					l = epicsSnprintf(val, valSize, "odd");
+				else
+					l = epicsSnprintf(val, valSize, "even");
+			}
         }
         else {
             l = epicsSnprintf(val, valSize, "none");
@@ -370,6 +381,9 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
         }
     }
     else if (epicsStrCaseCmp(key, "parity") == 0) {
+#ifdef CMSPAR
+        tty->termios.c_cflag &= ~CMSPAR;
+#endif /* CMSPAR */
         if (epicsStrCaseCmp(val, "none") == 0) {
             tty->termios.c_cflag &= ~PARENB;
         }
@@ -381,6 +395,18 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             tty->termios.c_cflag |= PARENB;
             tty->termios.c_cflag |= PARODD;
         }
+#ifdef CMSPAR
+        else if (epicsStrCaseCmp(val, "space") == 0) {
+            tty->termios.c_cflag |= PARENB;
+            tty->termios.c_cflag |= CMSPAR;
+            tty->termios.c_cflag &= ~PARODD;
+        }
+        else if (epicsStrCaseCmp(val, "mark") == 0) {
+            tty->termios.c_cflag |= PARENB;
+            tty->termios.c_cflag |= CMSPAR;
+            tty->termios.c_cflag |= PARODD;
+        }
+#endif /* CMSPAR */
         else {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                             "Invalid parity.");
