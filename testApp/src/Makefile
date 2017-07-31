@@ -11,8 +11,9 @@ ASYN_BIN = $(TOP)/bin/$(T_A)
 
 DBD += devTestBlock.dbd
 DBD += test.dbd
+DBD += drvAsynEcho.dbd
 
-LIBRARY_IOC += testSupport
+LIBRARY_IOC += testSupport asynEcho
 testSupport_SRCS += echoDriver.c
 testSupport_SRCS += addrChangeDriver.c
 testSupport_SRCS += devTestBlock.c
@@ -20,6 +21,10 @@ testSupport_SRCS += interposeInterface.c
 testSupport_SRCS += asynExample.c
 testSupport_LIBS += asyn
 testSupport_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+asynEcho_SRCS += echoDriver.c
+asynEcho_LIBS += asyn
+asynEcho_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 PROD_IOC += test
 
