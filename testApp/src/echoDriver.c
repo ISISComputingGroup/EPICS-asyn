@@ -347,8 +347,11 @@ static asynStatus echoRead(void *drvPvt,asynUser *pasynUser,
     }
     if(pechoPvt->delay>pasynUser->timeout) {
         if(pasynUser->timeout>0.0) epicsThreadSleep(pasynUser->timeout);
-        asynPrint(pasynUser, ASYN_TRACE_ERROR,
-            "%s echoDriver read timeout\n",pechoPvt->portName);
+/*
+ * steam device does a zero timeout flush read, so we would get lots of these messages...
+         asynPrint(pasynUser, ASYN_TRACE_ERROR,
+            "%s echoDriver read timeout\n",pechoPvt->portName); 
+*/
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
             "%s echoDriver read timeout",pechoPvt->portName);
         return asynTimeout;
@@ -385,7 +388,7 @@ static asynStatus echoRead(void *drvPvt,asynUser *pasynUser,
     if(nbytesTransfered) *nbytesTransfered = nout;
     if(eomReason) {
         if(*nbytesTransfered>=maxchars) *eomReason |= ASYN_EOM_CNT;
-        if(nremaining==0) *eomReason |= ASYN_EOM_END;
+/*        if(nremaining==0) *eomReason |= ASYN_EOM_END; /* causes issues with stream device */
     }
     pasynOctetBase->callInterruptUsers(pasynUser,pechoPvt->pasynPvt,
         data,nbytesTransfered,eomReason);
