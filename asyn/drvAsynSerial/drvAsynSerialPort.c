@@ -850,7 +850,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     if (timerStarted) epicsTimerCancel(tty->timer);
 #ifndef vxWorks
     if (tty->break_len > 0) {
-        tcdrain(tty->fd, TCOFLUSH); /* ensure all data transmitted prior to break */
+        tcdrain(tty->fd); /* ensure all data transmitted prior to break */
         if (tcsendbreak(tty->fd, tty->break_len) < 0) {
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                                    "%s tcsendbreak failed: %s",
