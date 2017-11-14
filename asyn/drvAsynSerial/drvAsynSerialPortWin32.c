@@ -61,6 +61,7 @@ typedef struct {
     double             writeTimeout;
     epicsTimerId       timer;
     volatile int       timeoutFlag;
+    unsigned           break_len;     /* length of serial break to send after a write (ms) */
     asynInterface      common;
     asynInterface      option;
     asynInterface      octet;
@@ -147,6 +148,9 @@ getOption(void *drvPvt, asynUser *pasynUser,
     }
     else if (epicsStrCaseCmp(key, "ixoff") == 0) {
         l = epicsSnprintf(val, valSize, "%c",  (tty->commConfig.dcb.fInX == TRUE) ? 'Y' : 'N');
+    }
+    else if (epicsStrCaseCmp(key, "break") == 0) {
+        l = epicsSnprintf(val, valSize, "%u",  tty->break_len);
     }
     else {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
@@ -314,6 +318,15 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             return asynError;
         }
     }
+    else if (epicsStrCaseCmp(key, "break") == 0) {
+        unsigned break_len;
+        if(sscanf(val, "%u", &break_len) != 1) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                                                                "Bad number");
+            return asynError;
+        }
+        tty->break_len = break_len;
+    }
     else if (epicsStrCaseCmp(key, "") != 0) {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                 "Unsupported key \"%s\"", key);
@@ -411,7 +424,8 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "xoff char code: 0x%x\n", (int)tty->commConfig.dcb.XoffChar);
         fprintf(fp, "error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
         fprintf(fp, "eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
-        fprintf(fp, "event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);  
+        fprintf(fp, "event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);
+        fprintf(fp, "break length (ms): %u\n", tty->break_len);
     }
 }
 
@@ -457,6 +471,7 @@ connectIt(void *drvPvt, asynUser *pasynUser)
 
     /* setOption(tty, tty->pasynUser, "baud", "9600"); */
    
+    ClearCommBreak(tty->commHandle);
     /*
      * Turn off non-blocking mode
      */
@@ -550,9 +565,32 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         }
     }
     if (timerStarted) epicsTimerCancel(tty->timer);
+    /* raise a serial break if requested */
+    if (tty->break_len > 0) {
+        FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to break */
+        if ( (ret = SetCommBreak(tty->commHandle)) == 0 ) {
+            error = GetLastError();
+            epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                                "%s SetCommBreak error: %d",
+                                        tty->serialDeviceName, error);
+            closeConnection(pasynUser,tty);
+            status = asynError;
+        } else {
+            Sleep(tty->break_len); /* wait while break is being asserted */
+            if ( (ret = ClearCommBreak(tty->commHandle)) == 0 ) {
+                error = GetLastError();
+                epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                                "%s ClearCommBreak error: %d",
+                                        tty->serialDeviceName, error);
+                closeConnection(pasynUser,tty);
+                status = asynError;
+            }
+        }
+    }
     *nbytesTransfered = numchars - nleft;
-    asynPrint(pasynUser, ASYN_TRACE_FLOW, "wrote %lu to %s, return %s\n",
+    asynPrint(pasynUser, ASYN_TRACE_FLOW, "wrote %lu %sto %s, return %s\n",
                                             (unsigned long)*nbytesTransfered,
+                                            (tty->break_len > 0 ? "(with BREAK) " : ""),
                                             tty->serialDeviceName,
                                             pasynManager->strStatus(status));
     return status;
