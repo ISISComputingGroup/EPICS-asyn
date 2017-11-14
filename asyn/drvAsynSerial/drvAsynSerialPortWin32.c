@@ -471,7 +471,7 @@ connectIt(void *drvPvt, asynUser *pasynUser)
 
     /* setOption(tty, tty->pasynUser, "baud", "9600"); */
    
-    ClearCommBreak(tty->commHandle);
+    ClearCommBreak(tty->commHandle); /* in case there is one leftover from an ioc termination */
     /*
      * Turn off non-blocking mode
      */
