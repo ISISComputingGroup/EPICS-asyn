@@ -81,6 +81,7 @@ typedef struct {
     double             writeTimeout;
     epicsTimerId       timer;
     volatile int       timeoutFlag;
+    unsigned           break_len;     /* length of serial break to send after a write (ms) */
     asynInterface      common;
     asynInterface      option;
     asynInterface      octet;
@@ -209,6 +210,9 @@ getOption(void *drvPvt, asynUser *pasynUser,
 #else
         l = epicsSnprintf(val, valSize, "%c",  (tty->termios.c_iflag & IXOFF) ? 'Y' : 'N');
 #endif
+    }
+    else if (epicsStrCaseCmp(key, "break") == 0) {
+        l = epicsSnprintf(val, valSize, "%u",  tty->break_len);
     }
 #ifdef ASYN_RS485_SUPPORTED
     else if (epicsStrCaseCmp(key, "rs485_enable") == 0) {
@@ -521,6 +525,15 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             return asynError;
         }
 #endif
+    }
+    else if (epicsStrCaseCmp(key, "break") == 0) {
+        unsigned break_len;
+        if(sscanf(val, "%u", &break_len) != 1) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                                                                "Bad number");
+            return asynError;
+        }
+        tty->break_len = break_len;
     }
 #ifdef ASYN_RS485_SUPPORTED
     else if (epicsStrCaseCmp(key, "rs485_enable") == 0) {
@@ -835,9 +848,22 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         }
     }
     if (timerStarted) epicsTimerCancel(tty->timer);
+#ifndef vxWorks
+    if (tty->break_len > 0) {
+        tcdrain(tty->fd, TCOFLUSH); /* ensure all data transmitted prior to break */
+        if (tcsendbreak(tty->fd, tty->break_len) < 0) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                                   "%s tcsendbreak failed: %s",
+                                   tty->serialDeviceName, strerror(errno));
+            closeConnection(pasynUser,tty);
+            status = asynError;
+        }
+    }
+#endif
     *nbytesTransfered = numchars - nleft;
-    asynPrint(pasynUser, ASYN_TRACE_FLOW, "wrote %lu to %s, return %s\n",
+    asynPrint(pasynUser, ASYN_TRACE_FLOW, "wrote %lu %sto %s, return %s\n",
                                             (unsigned long)*nbytesTransfered,
+                                            (tty->break_len > 0 ? "(with BREAK) " : ""),
                                             tty->serialDeviceName,
                                             pasynManager->strStatus(status));
     return status;
