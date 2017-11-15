@@ -61,6 +61,7 @@ typedef struct {
     double             writeTimeout;
     epicsTimerId       timer;
     volatile int       timeoutFlag;
+    unsigned           sleep_len;     /* length of sleep after sending bytes (ms). If both are defined sleep happens before break. */
     unsigned           break_len;     /* length of serial break to send after a write (ms) */
     asynInterface      common;
     asynInterface      option;
@@ -151,6 +152,9 @@ getOption(void *drvPvt, asynUser *pasynUser,
     }
     else if (epicsStrCaseCmp(key, "break") == 0) {
         l = epicsSnprintf(val, valSize, "%u",  tty->break_len);
+	}
+	else if (epicsStrCaseCmp(key, "sleep") == 0) {
+		l = epicsSnprintf(val, valSize, "%u",  tty->sleep_len);
     }
     else {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
@@ -565,10 +569,16 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         }
     }
     if (timerStarted) epicsTimerCancel(tty->timer);
+	
+	/* Sleep after sending bytes if requested */
+	if (tty->sleep_len > 0) {
+		FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to sleep */
+		Sleep(tty->break_len);
+	}
+	
     /* raise a serial break if requested */
     if (tty->break_len > 0) {
         FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to break */
-		Sleep(tty->break_len);
         if ( (ret = SetCommBreak(tty->commHandle)) == 0 ) {
             error = GetLastError();
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
