@@ -568,6 +568,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     /* raise a serial break if requested */
     if (tty->break_len > 0) {
         FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to break */
+		Sleep(tty->break_len);
         if ( (ret = SetCommBreak(tty->commHandle)) == 0 ) {
             error = GetLastError();
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
