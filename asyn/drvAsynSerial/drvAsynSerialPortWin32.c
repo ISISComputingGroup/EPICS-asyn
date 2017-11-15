@@ -150,10 +150,10 @@ getOption(void *drvPvt, asynUser *pasynUser,
     else if (epicsStrCaseCmp(key, "ixoff") == 0) {
         l = epicsSnprintf(val, valSize, "%c",  (tty->commConfig.dcb.fInX == TRUE) ? 'Y' : 'N');
     }
-    else if (epicsStrCaseCmp(key, "break") == 0) {
+    else if (epicsStrCaseCmp(key, "break_duration") == 0) {
         l = epicsSnprintf(val, valSize, "%u",  tty->break_len);
 	}
-	else if (epicsStrCaseCmp(key, "sleep") == 0) {
+	else if (epicsStrCaseCmp(key, "break_delay") == 0) {
 		l = epicsSnprintf(val, valSize, "%u",  tty->sleep_len);
     }
     else {
@@ -322,7 +322,7 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             return asynError;
         }
     }
-    else if (epicsStrCaseCmp(key, "break") == 0) {
+    else if (epicsStrCaseCmp(key, "break_duration") == 0) {
         unsigned break_len;
         if(sscanf(val, "%u", &break_len) != 1) {
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
@@ -330,6 +330,15 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             return asynError;
         }
         tty->break_len = break_len;
+    }
+    else if (epicsStrCaseCmp(key, "break_delay") == 0) {
+        unsigned sleep_len;
+        if(sscanf(val, "%u", &sleep_len) != 1) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                                                                "Bad number");
+            return asynError;
+        }
+        tty->sleep_len = sleep_len;
     }
     else if (epicsStrCaseCmp(key, "") != 0) {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
@@ -573,7 +582,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
 	/* Sleep after sending bytes if requested */
 	if (tty->sleep_len > 0) {
 		FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to sleep */
-		Sleep(tty->break_len);
+		Sleep(tty->sleep_len);
 	}
 	
     /* raise a serial break if requested */
