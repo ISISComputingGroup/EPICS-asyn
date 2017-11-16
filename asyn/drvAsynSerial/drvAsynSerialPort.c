@@ -32,6 +32,7 @@
 #include <epicsTime.h>
 #include <epicsTimer.h>
 #include <osiUnistd.h>
+#include <unistd.h>
 
 #include <epicsExport.h>
 #include "asynDriver.h"
@@ -81,7 +82,8 @@ typedef struct {
     double             writeTimeout;
     epicsTimerId       timer;
     volatile int       timeoutFlag;
-    unsigned           break_len;     /* length of serial break to send after a write (ms) */
+    unsigned           break_delay;     /* length of sleep after sending bytes (ms). If both are defined sleep happens before break. */
+    unsigned           break_duration;     /* length of serial break to send after a write (ms) */
     asynInterface      common;
     asynInterface      option;
     asynInterface      octet;
@@ -211,8 +213,11 @@ getOption(void *drvPvt, asynUser *pasynUser,
         l = epicsSnprintf(val, valSize, "%c",  (tty->termios.c_iflag & IXOFF) ? 'Y' : 'N');
 #endif
     }
-    else if (epicsStrCaseCmp(key, "break") == 0) {
-        l = epicsSnprintf(val, valSize, "%u",  tty->break_len);
+    else if (epicsStrCaseCmp(key, "break_duration") == 0) {
+        l = epicsSnprintf(val, valSize, "%u",  tty->break_duration);
+    }
+    else if (epicsStrCaseCmp(key, "break_delay") == 0) {
+        l = epicsSnprintf(val, valSize, "%u",  tty->break_delay);
     }
 #ifdef ASYN_RS485_SUPPORTED
     else if (epicsStrCaseCmp(key, "rs485_enable") == 0) {
@@ -526,14 +531,23 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
         }
 #endif
     }
-    else if (epicsStrCaseCmp(key, "break") == 0) {
-        unsigned break_len;
-        if(sscanf(val, "%u", &break_len) != 1) {
+    else if (epicsStrCaseCmp(key, "break_duration") == 0) {
+        unsigned break_duration;
+        if(sscanf(val, "%u", &break_duration) != 1) {
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                                                                 "Bad number");
             return asynError;
         }
-        tty->break_len = break_len;
+        tty->break_duration = break_duration;
+    }
+    else if (epicsStrCaseCmp(key, "break_delay") == 0) {
+        unsigned break_delay;
+        if(sscanf(val, "%u", &break_delay) != 1) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                                                                "Bad number");
+            return asynError;
+        }
+        tty->break_delay = break_delay;
     }
 #ifdef ASYN_RS485_SUPPORTED
     else if (epicsStrCaseCmp(key, "rs485_enable") == 0) {
@@ -849,9 +863,14 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     }
     if (timerStarted) epicsTimerCancel(tty->timer);
 #ifndef vxWorks
-    if (tty->break_len > 0) {
+    if (tty->break_duration > 0) {
         tcdrain(tty->fd, TCOFLUSH); /* ensure all data transmitted prior to break */
-        if (tcsendbreak(tty->fd, tty->break_len) < 0) {
+		
+		if (tty->break_delay > 0) {
+			usleep(tty->break_delay * 1000);
+		}
+		
+        if (tcsendbreak(tty->fd, tty->break_duration) < 0) {
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                                    "%s tcsendbreak failed: %s",
                                    tty->serialDeviceName, strerror(errno));
