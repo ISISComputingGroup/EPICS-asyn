@@ -32,7 +32,6 @@
 #include <epicsTime.h>
 #include <epicsTimer.h>
 #include <osiUnistd.h>
-#include <unistd.h>
 
 #include <epicsExport.h>
 #include "asynDriver.h"
@@ -867,7 +866,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         tcdrain(tty->fd); /* ensure all data transmitted prior to break */
 		
 		if (tty->break_delay > 0) {
-			usleep(tty->break_delay * 1000);
+			epicsThreadSleep(tty->break_delay / 1000.0);
 		}
 		
         if (tcsendbreak(tty->fd, tty->break_duration) < 0) {
