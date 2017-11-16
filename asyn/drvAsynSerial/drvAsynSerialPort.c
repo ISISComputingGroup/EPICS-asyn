@@ -864,7 +864,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     if (timerStarted) epicsTimerCancel(tty->timer);
 #ifndef vxWorks
     if (tty->break_duration > 0) {
-        tcdrain(tty->fd, TCOFLUSH); /* ensure all data transmitted prior to break */
+        tcdrain(tty->fd); /* ensure all data transmitted prior to break */
 		
 		if (tty->break_delay > 0) {
 			usleep(tty->break_delay * 1000);
