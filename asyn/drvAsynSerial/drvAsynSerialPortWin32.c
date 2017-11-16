@@ -62,7 +62,7 @@ typedef struct {
     epicsTimerId       timer;
     volatile int       timeoutFlag;
     unsigned           break_delay;     /* length of sleep after sending bytes (ms). If both are defined sleep happens before break. */
-    unsigned           break_duration;     /* length of serial break to send after a write (ms) */
+    unsigned           break_duration;  /* length of serial break to send after a write (ms) */
     asynInterface      common;
     asynInterface      option;
     asynInterface      octet;
@@ -438,7 +438,7 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
         fprintf(fp, "eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
         fprintf(fp, "event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);
-        fprintf(fp, "break length (ms): %u\n", tty->break_duration);
+        fprintf(fp, "break duration (ms): %u\n", tty->break_duration);
         fprintf(fp, "break delay (ms): %u\n", tty->break_delay);
     }
 }
@@ -563,7 +563,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
             error = GetLastError();
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                 "%s write error: %d",
-                                        tty->serialDeviceName, error);\
+                                        tty->serialDeviceName, error);
             closeConnection(pasynUser,tty);
             status = asynError;
             break;
@@ -579,12 +579,6 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         }
     }
     if (timerStarted) epicsTimerCancel(tty->timer);
-	
-	/* Sleep after sending bytes if requested */
-	if (tty->break_delay > 0) {
-		FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to sleep */
-		Sleep(tty->break_delay);
-	}
 	
     /* raise a serial break if requested */
     if (tty->break_duration > 0) {

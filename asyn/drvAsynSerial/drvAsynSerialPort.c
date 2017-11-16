@@ -82,7 +82,7 @@ typedef struct {
     epicsTimerId       timer;
     volatile int       timeoutFlag;
     unsigned           break_delay;     /* length of sleep after sending bytes (ms). If both are defined sleep happens before break. */
-    unsigned           break_duration;     /* length of serial break to send after a write (ms) */
+    unsigned           break_duration;  /* length of serial break to send after a write (ms) */
     asynInterface      common;
     asynInterface      option;
     asynInterface      octet;
