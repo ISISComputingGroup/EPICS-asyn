@@ -881,7 +881,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     *nbytesTransfered = numchars - nleft;
     asynPrint(pasynUser, ASYN_TRACE_FLOW, "wrote %lu %sto %s, return %s\n",
                                             (unsigned long)*nbytesTransfered,
-                                            (tty->break_len > 0 ? "(with BREAK) " : ""),
+                                            (tty->break_duration > 0 ? "(with BREAK) " : ""),
                                             tty->serialDeviceName,
                                             pasynManager->strStatus(status));
     return status;
