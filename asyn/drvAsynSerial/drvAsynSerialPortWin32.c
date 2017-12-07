@@ -124,12 +124,12 @@ getOption(void *drvPvt, asynUser *pasynUser,
             case 2:
                 l = epicsSnprintf(val, valSize, "even");
                 break;
-			case 3:
-				l = epicsSnprintf(val, valSize, "mark");
-				break;
-			case 4:
-				l = epicsSnprintf(val, valSize, "space");
-				break;
+            case 3:
+                l = epicsSnprintf(val, valSize, "mark");
+                break;
+            case 4:
+                l = epicsSnprintf(val, valSize, "space");
+                break;
         }
     }
     else if (epicsStrCaseCmp(key, "stop") == 0) {
@@ -152,9 +152,9 @@ getOption(void *drvPvt, asynUser *pasynUser,
     }
     else if (epicsStrCaseCmp(key, "break_duration") == 0) {
         l = epicsSnprintf(val, valSize, "%u",  tty->break_duration);
-	}
-	else if (epicsStrCaseCmp(key, "break_delay") == 0) {
-		l = epicsSnprintf(val, valSize, "%u",  tty->break_delay);
+    }
+    else if (epicsStrCaseCmp(key, "break_delay") == 0) {
+        l = epicsSnprintf(val, valSize, "%u",  tty->break_delay);
     }
     else {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
@@ -225,12 +225,12 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
         else if (epicsStrCaseCmp(val, "even") == 0) {
             tty->commConfig.dcb.Parity = 2;
         }
-		else if (epicsStrCaseCmp(val, "mark") == 0) {
-			tty->commConfig.dcb.Parity = 3;
-		}
-		else if (epicsStrCaseCmp(val, "space") == 0) {
-			tty->commConfig.dcb.Parity = 4;
-		}
+        else if (epicsStrCaseCmp(val, "mark") == 0) {
+            tty->commConfig.dcb.Parity = 3;
+        }
+        else if (epicsStrCaseCmp(val, "space") == 0) {
+            tty->commConfig.dcb.Parity = 4;
+        }
         else {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                             "Invalid parity.");
@@ -609,17 +609,17 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         }
     }
     if (timerStarted) epicsTimerCancel(tty->timer);
-	
+    
     /* raise a serial break if requested */
     if (tty->break_duration > 0) {
-		
-		FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to break */
-	
+        
+        FlushFileBuffers(tty->commHandle); /* ensure all data transmitted prior to break */
+    
         /* Sleep after sending bytes if requested */
-	    if (tty->break_delay > 0) {
-		    Sleep(tty->break_delay);
-	    }
-		
+        if (tty->break_delay > 0) {
+            Sleep(tty->break_delay);
+        }
+        
         if ( (ret = SetCommBreak(tty->commHandle)) == 0 ) {
             error = GetLastError();
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
