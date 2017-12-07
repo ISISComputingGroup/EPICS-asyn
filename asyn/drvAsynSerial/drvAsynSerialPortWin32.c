@@ -407,29 +407,8 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "            commHandle: %p\n",  tty->commHandle);
         fprintf(fp, "    Characters written: %lu\n", tty->nWritten);
         fprintf(fp, "       Characters read: %lu\n", tty->nRead);
-        /* done all structure members except BaudRate */
-        fprintf(fp, "Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
-        fprintf(fp, "Output CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
-        fprintf(fp, "Output DSR flow control: %c\n", tty->commConfig.dcb.fOutxDsrFlow == TRUE ? 'Y' : 'N');
-        fprintf(fp, "DTR flow control: %s\n", dtr_flow[tty->commConfig.dcb.fDtrControl]);
-        fprintf(fp, "DSR sensitive: %c\n", tty->commConfig.dcb.fDsrSensitivity == TRUE ? 'Y' : 'N');
-        fprintf(fp, "fTXContinueOnXoff: %c\n", tty->commConfig.dcb.fTXContinueOnXoff == TRUE ? 'Y' : 'N');
-        fprintf(fp, "XON/XOFF transmission: %c\n", tty->commConfig.dcb.fOutX == TRUE ? 'Y' : 'N');
-        fprintf(fp, "XON/XOFF reception: %c\n", tty->commConfig.dcb.fInX == TRUE ? 'Y' : 'N');
-        fprintf(fp, "Replace parity error bytes with error char: %c\n", tty->commConfig.dcb.fErrorChar == TRUE ? 'Y' : 'N');
-        fprintf(fp, "discard NULL bytes: %c\n", tty->commConfig.dcb.fNull == TRUE ? 'Y' : 'N');
-        fprintf(fp, "RTS flow control: %s\n", rts_flow[tty->commConfig.dcb.fRtsControl]);
-        fprintf(fp, "abort read/write on error: %c\n", tty->commConfig.dcb.fAbortOnError == TRUE ? 'Y' : 'N');
-        fprintf(fp, "xon character limit: %d\n", (int)tty->commConfig.dcb.XonLim);
-        fprintf(fp, "xoff character limit: %d\n", (int)tty->commConfig.dcb.XoffLim);
-        fprintf(fp, "data bits: %d\n", (int)tty->commConfig.dcb.ByteSize);
-        fprintf(fp, "Parity: %s\n", parity_options[tty->commConfig.dcb.Parity]);
-        fprintf(fp, "stop bits: %f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
-        fprintf(fp, "xon char code: 0x%x\n", (int)tty->commConfig.dcb.XonChar);
-        fprintf(fp, "xoff char code: 0x%x\n", (int)tty->commConfig.dcb.XoffChar);
-        fprintf(fp, "error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
-        fprintf(fp, "eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
-        fprintf(fp, "event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);  
+        fprintf(fp, "   break duration (ms): %u\n", tty->break_duration);
+        fprintf(fp, "      break delay (ms): %u\n", tty->break_delay);
     }
     if (tty->commHandle != INVALID_HANDLE_VALUE && details >= 2) {
         ret = GetCommConfig(tty->commHandle, &tty->commConfig, &commConfigSize);
@@ -461,8 +440,6 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
         fprintf(fp, "eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
         fprintf(fp, "event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);
-        fprintf(fp, "break duration (ms): %u\n", tty->break_duration);
-        fprintf(fp, "break delay (ms): %u\n", tty->break_delay);
     }
 }
 
@@ -584,7 +561,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
                 ctimeout.WriteTotalTimeoutMultiplier  = 0; 
                 // set comm write timeout to be slightly longer than asyn timeout, this is so that if
                 // we do wait for this time, we are sure we will also have triggered the epicsTimer 
-                // and not end up waiting again 
+                // by the time we exit and so not end up waiting again 
                 ctimeout.WriteTotalTimeoutConstant    = (int)(pasynUser->timeout*1000.) + 50; 
             } 
             ret = SetCommTimeouts(tty->commHandle, &ctimeout);
@@ -681,8 +658,9 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     int thisRead;
     int nRead = 0;
     COMMTIMEOUTS ctimeout;
+    COMSTAT cstat;
     BOOL ret;
-    DWORD error;
+    DWORD error, nToRead;
     asynStatus status = asynSuccess;
 
     assert(tty);
@@ -714,7 +692,7 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
                 ctimeout.ReadTotalTimeoutConstant     = 0; 
             }
             else {
-                ctimeout.ReadIntervalTimeout          = 50; // (in ms) return with data so far if no new data after this time once data starts being received 
+                ctimeout.ReadIntervalTimeout          = 0; // (in ms) return with data so far if no new data after this time once data starts being received 
                 ctimeout.ReadTotalTimeoutMultiplier   = 0; 
                 ctimeout.ReadTotalTimeoutConstant     = (int)(pasynUser->timeout*1000.);
             } 
@@ -731,37 +709,63 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     }
     tty->timeoutFlag = 0;
     if (gotEom) *gotEom = 0;
-    for (;;) {
-        ret = ReadFile(
+    nRead = 0;
+    // we try and read one character with above timeout, and then read anything else that is present
+    ret = ReadFile(
                         tty->commHandle,  // handle of file to read
                         data,             // pointer to buffer that receives data
-                        (DWORD)maxchars,                // number of bytes to read
+                        (DWORD)1,                // number of bytes to read
                         &thisRead,        // pointer to number of bytes read
                         NULL              // pointer to structure for data
                         );
+    if (ret == 0) {
+        error = GetLastError();
+        epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                      "%s read error: %d",
+                      tty->serialDeviceName, error);
+        status = asynError;
+    } else {
+        nRead = thisRead;
+        ret = ClearCommError(tty->commHandle, &error, &cstat);
         if (ret == 0) {
-            error = GetLastError();
-            epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                error = GetLastError();
+                epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                              "Can't clear \"%s\" error=%d",
+                              tty->serialDeviceName, error);
+                status = asynError;
+        } else {
+            if (error != 0) {
+                printf("Com error present %d\n", error);
+            }
+            if (cstat.cbInQue > 0) {
+                nToRead = (cstat.cbInQue < maxchars - nRead ? cstat.cbInQue : maxchars - nRead);
+                // we haven't reset timeout, but as we know how many bytes we should return immediately
+                ret = ReadFile(
+                        tty->commHandle,  // handle of file to read
+                        data + nRead,             // pointer to buffer that receives data
+                        (DWORD)nToRead,                // number of bytes to read
+                        &thisRead,        // pointer to number of bytes read
+                        NULL              // pointer to structure for data
+                        );
+                if (ret == 0) {
+                    error = GetLastError();
+                    epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                           "%s read error: %d",
                           tty->serialDeviceName, error);
-            status = asynError;
-            break;
+                    status = asynError;
+                } else {
+                    nRead += thisRead;
+                }
+            }
         }
-        if (thisRead > 0) {
-            asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, data, thisRead,
-                       "%s read %d\n", tty->serialDeviceName, thisRead);
-            nRead = thisRead;
-            tty->nRead += thisRead;
-            break;
-        }
-        else {
-            tty->timeoutFlag = 1;
-        }
-        if (tty->timeoutFlag)
-            break;
     }
-    if (tty->timeoutFlag && (status == asynSuccess))
+    if (nRead > 0) {
+            asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, data, nRead,
+                       "%s read %d\n", tty->serialDeviceName, nRead);
+            tty->nRead += nRead;
+    } else if ((tty->readTimeout > 0) && (status == asynSuccess)) {
         status = asynTimeout;
+    }
     *nbytesTransfered = nRead;
     /* If there is room add a null byte */
     if (nRead < (int)maxchars)
