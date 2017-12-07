@@ -391,7 +391,7 @@ timeoutHandler(void *p)
 static void
 report(void *drvPvt, FILE *fp, int details)
 {
-    static const char* dtr_flow[] = { "disable", "emnable", "handshake" };
+    static const char* dtr_flow[] = { "disable", "enable", "handshake" };
     static const char* rts_flow[] = { "disable", "enable", "handshake", "toggle" };
     static const char* parity_options[] = { "no", "odd", "even", "mark", "space" };
     ttyController_t *tty = (ttyController_t *)drvPvt;
@@ -418,28 +418,28 @@ report(void *drvPvt, FILE *fp, int details)
             return;
         }
         /* done all structure members except BaudRate */
-        fprintf(fp, "Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
-        fprintf(fp, "Output CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
-        fprintf(fp, "Output DSR flow control: %c\n", tty->commConfig.dcb.fOutxDsrFlow == TRUE ? 'Y' : 'N');
-        fprintf(fp, "DTR flow control: %s\n", dtr_flow[tty->commConfig.dcb.fDtrControl]);
-        fprintf(fp, "DSR sensitive: %c\n", tty->commConfig.dcb.fDsrSensitivity == TRUE ? 'Y' : 'N');
-        fprintf(fp, "fTXContinueOnXoff: %c\n", tty->commConfig.dcb.fTXContinueOnXoff == TRUE ? 'Y' : 'N');
-        fprintf(fp, "XON/XOFF transmission: %c\n", tty->commConfig.dcb.fOutX == TRUE ? 'Y' : 'N');
-        fprintf(fp, "XON/XOFF reception: %c\n", tty->commConfig.dcb.fInX == TRUE ? 'Y' : 'N');
-        fprintf(fp, "Replace parity error bytes with error char: %c\n", tty->commConfig.dcb.fErrorChar == TRUE ? 'Y' : 'N');
-        fprintf(fp, "discard NULL bytes: %c\n", tty->commConfig.dcb.fNull == TRUE ? 'Y' : 'N');
-        fprintf(fp, "RTS flow control: %s\n", rts_flow[tty->commConfig.dcb.fRtsControl]);
-        fprintf(fp, "abort read/write on error: %c\n", tty->commConfig.dcb.fAbortOnError == TRUE ? 'Y' : 'N');
-        fprintf(fp, "xon character limit: %d\n", (int)tty->commConfig.dcb.XonLim);
-        fprintf(fp, "xoff character limit: %d\n", (int)tty->commConfig.dcb.XoffLim);
-        fprintf(fp, "data bits: %d\n", (int)tty->commConfig.dcb.ByteSize);
-        fprintf(fp, "Parity: %s\n", parity_options[tty->commConfig.dcb.Parity]);
-        fprintf(fp, "stop bits: %.1f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
-        fprintf(fp, "xon char code: 0x%x\n", (int)tty->commConfig.dcb.XonChar);
-        fprintf(fp, "xoff char code: 0x%x\n", (int)tty->commConfig.dcb.XoffChar);
-        fprintf(fp, "error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
-        fprintf(fp, "eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
-        fprintf(fp, "event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);
+        fprintf(fp, "       Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
+        fprintf(fp, "  Out CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
+        fprintf(fp, "  Out DSR flow control: %c\n", tty->commConfig.dcb.fOutxDsrFlow == TRUE ? 'Y' : 'N');
+        fprintf(fp, "      DTR flow control: %s\n", dtr_flow[tty->commConfig.dcb.fDtrControl]);
+        fprintf(fp, "         DSR sensitive: %c\n", tty->commConfig.dcb.fDsrSensitivity == TRUE ? 'Y' : 'N');
+        fprintf(fp, "     fTXContinueOnXoff: %c\n", tty->commConfig.dcb.fTXContinueOnXoff == TRUE ? 'Y' : 'N');
+        fprintf(fp, " XON/XOFF transmission: %c\n", tty->commConfig.dcb.fOutX == TRUE ? 'Y' : 'N');
+        fprintf(fp, "    XON/XOFF reception: %c\n", tty->commConfig.dcb.fInX == TRUE ? 'Y' : 'N');
+        fprintf(fp, "  parity -> error char: %c\n", tty->commConfig.dcb.fErrorChar == TRUE ? 'Y' : 'N');
+        fprintf(fp, "    discard NULL bytes: %c\n", tty->commConfig.dcb.fNull == TRUE ? 'Y' : 'N');
+        fprintf(fp, "      RTS flow control: %s\n", rts_flow[tty->commConfig.dcb.fRtsControl]);
+        fprintf(fp, "    abort R/W on error: %c\n", tty->commConfig.dcb.fAbortOnError == TRUE ? 'Y' : 'N');
+        fprintf(fp, "   xon character limit: %d\n", (int)tty->commConfig.dcb.XonLim);
+        fprintf(fp, "  xoff character limit: %d\n", (int)tty->commConfig.dcb.XoffLim);
+        fprintf(fp, "             data bits: %d\n", (int)tty->commConfig.dcb.ByteSize);
+        fprintf(fp, "                Parity: %s\n", parity_options[tty->commConfig.dcb.Parity]);
+        fprintf(fp, "             stop bits: %.1f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
+        fprintf(fp, "         xon char code: 0x%x\n", (int)tty->commConfig.dcb.XonChar);
+        fprintf(fp, "        xoff char code: 0x%x\n", (int)tty->commConfig.dcb.XoffChar);
+        fprintf(fp, "       error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
+        fprintf(fp, "         eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
+        fprintf(fp, "       event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);
     }
 }
 
@@ -726,7 +726,7 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
         status = asynError;
     } else {
         nRead = thisRead;
-        ret = ClearCommError(tty->commHandle, &error, &cstat);
+        ret = ClearCommError(tty->commHandle, &error, &cstat); // to get bytes available
         if (ret == 0) {
                 error = GetLastError();
                 epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
@@ -734,12 +734,9 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
                               tty->serialDeviceName, error);
                 status = asynError;
         } else {
-            if (error != 0) {
-                printf("Com error present %d\n", error);
-            }
             if (cstat.cbInQue > 0) {
                 nToRead = (cstat.cbInQue < maxchars - nRead ? cstat.cbInQue : maxchars - nRead);
-                // we haven't reset timeout, but as we know how many bytes we should return immediately
+                // we haven't reset CommTimeout, but as we know how many bytes are there we should return immediately
                 ret = ReadFile(
                         tty->commHandle,  // handle of file to read
                         data + nRead,             // pointer to buffer that receives data
