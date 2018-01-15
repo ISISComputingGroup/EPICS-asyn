@@ -5,6 +5,9 @@ IPAC=$(SUPPORT)/ipac/master
 # SEQ is required for testIPServer
 SNCSEQ=$(SUPPORT)/seq/master
 
+# for vxi11 on WIN32
+ONCRPC=$(SUPPORT)/oncrpc/master
+
 # optional extra local definitions here
 -include $(TOP)/configure/RELEASE.private
 
