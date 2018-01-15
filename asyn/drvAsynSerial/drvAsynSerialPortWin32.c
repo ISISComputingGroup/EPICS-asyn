@@ -879,9 +879,6 @@ drvAsynSerialPortConfigure(char *portName,
     } 
     else {
         strncpy(winTtyName, ttyName, sizeof(winTtyName));
-        /* 
-         * avoid backslash quoting issues by allowing use of / in device paths at IOC command level
-         */
     }   
     tty->serialDeviceName = epicsStrDup(winTtyName);
     tty->portName = epicsStrDup(portName);
