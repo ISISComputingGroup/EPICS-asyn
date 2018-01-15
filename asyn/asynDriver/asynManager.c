@@ -46,6 +46,7 @@
 #define DEFAULT_TRACE_BUFFER_SIZE 80
 #define DEFAULT_SECONDS_BETWEEN_PORT_CONNECT 20
 #define DEFAULT_AUTOCONNECT_TIMEOUT 0.5
+#define DEFAULT_QUEUE_LOCK_PORT_TIMEOUT 2.0
 
 /* This is taken from dbDefs.h, which we don't want to include */
 /* Subtract member byte offset, returning pointer to parent object */
@@ -210,13 +211,13 @@ struct port {
     asynInterface *pcommonInterface;
     epicsTimerId  connectTimer;
     epicsThreadPrivateId queueLockPortId;
+    double        queueLockPortTimeout;
     /* The following are for timestamp support */
     epicsTimeStamp timeStamp;
     timeStampCallback timeStampSource;
-    void           *timeStampPvt;
-
+    void          *timeStampPvt;
     double        secondsBetweenPortConnect;
-};
+ };
 
 typedef struct queueLockPortPvt {
     epicsEventId  queueLockPortEvent;
@@ -285,6 +286,7 @@ static asynStatus lockPort(asynUser *pasynUser);
 static asynStatus unlockPort(asynUser *pasynUser);
 static asynStatus queueLockPort(asynUser *pasynUser);
 static asynStatus queueUnlockPort(asynUser *pasynUser);
+static asynStatus setQueueLockPortTimeout(asynUser *pasynUser, double timeout);
 static asynStatus canBlock(asynUser *pasynUser,int *yesNo);
 static asynStatus getAddr(asynUser *pasynUser,int *addr);
 static asynStatus getPortName(asynUser *pasynUser,const char **pportName);
@@ -345,6 +347,7 @@ static asynManager manager = {
     unlockPort,
     queueLockPort,
     queueUnlockPort,
+    setQueueLockPortTimeout,
     canBlock,
     getAddr,
     getPortName,
@@ -925,6 +928,27 @@ static void queueLockPortCallback(asynUser *pasynUser)
     epicsEventSignal(plockPortPvt->queueLockPortEvent);
 }
 
+static void queueLockPortTimeoutCallback(asynUser *pasynUser)
+{
+    userPvt  *puserPvt = asynUserToUserPvt(pasynUser);
+    port     *pport = puserPvt->pport;
+    queueLockPortPvt *plockPortPvt = pasynUser->userPvt;
+
+    asynPrint(pasynUser, ASYN_TRACE_WARNING, 
+        "%s asynManager::queueLockPortTimeoutCallback WARNING: queueLockPort timeout\n", 
+        pport->portName);
+
+    /* Set the pasynUser->auxStatus to asynTimeout to signal error to caller */
+    pasynUser->auxStatus = asynTimeout;
+
+    /* Signal the epicsEvent to let the waiting thread we have been called */
+    asynPrint(pasynUser, ASYN_TRACE_FLOW, 
+        "%s asynManager::queueLockPortTimeoutCallback signaling begin event\n", 
+        pport->portName);
+    epicsEventSignal(plockPortPvt->queueLockPortEvent);
+    
+    /* queueUnlockPort is not going to be called because queueLockPort will have returned an error */
+};
 
 /* asynManager methods */
 static void reportPrintInterfaceList(FILE *fp,ELLLIST *plist,const char *title)
@@ -1730,6 +1754,7 @@ static asynStatus queueLockPort(asynUser *pasynUser)
     queueLockPortPvt *plockPortPvt;
     asynUser *pasynUserCopy;
     asynStatus status = asynSuccess;
+    double timeout;
 
     asynPrint(pasynUser,ASYN_TRACE_FLOW, "%s asynManager::queueLockPort locking port\n", pport->portName);
     if(!pport) {
@@ -1757,20 +1782,24 @@ static asynStatus queueLockPort(asynUser *pasynUser)
             plockPortPvt->queueLockPortCount++;
             return status;
         }
-        pasynUserCopy = pasynManager->duplicateAsynUser(pasynUser, queueLockPortCallback, 0);
+        pasynUserCopy = pasynManager->duplicateAsynUser(pasynUser, queueLockPortCallback, queueLockPortTimeoutCallback);
         if (!pasynUserCopy){
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                     "asynManager::queueLockPort duplicateAsynUser failed");
             return asynError;
         }
         pasynUserCopy->userPvt = plockPortPvt;
+        /* Set the auxStatus field to asynSuccess.  If it is not asynSuccess later we know queueRequest timed out */
+        pasynUserCopy->auxStatus = asynSuccess;
         /* Take the mutex which will block the callback port thread */
         /* Wait until the queued request executes the callback */
         asynPrint(pasynUser,ASYN_TRACE_FLOW, "%s asynManager::queueLockPort taking mutex %p\n", 
             pport->portName, plockPortPvt->queueLockPortMutex);
         epicsMutexMustLock(plockPortPvt->queueLockPortMutex);
         asynPrint(pasynUser,ASYN_TRACE_FLOW, "%s asynManager::queueLockPort queueing request\n", pport->portName);
-        status = pasynManager->queueRequest(pasynUserCopy, asynQueuePriorityLow, 0.0);
+        timeout = pport->queueLockPortTimeout;
+        if (pasynUserCopy->timeout > timeout) timeout = pasynUserCopy->timeout;
+        status = pasynManager->queueRequest(pasynUserCopy, asynQueuePriorityLow, timeout);
         if (status) {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                 "asynManager::queueLockPort queueRequest failed: %s", 
@@ -1782,6 +1811,14 @@ static asynStatus queueLockPort(asynUser *pasynUser)
         /* Wait for event from the port thread in the queueLockPortCallback function */
         asynPrint(pasynUser,ASYN_TRACE_FLOW, "%s asynManager::queueLockPort waiting for event\n", pport->portName);
         epicsEventMustWait(plockPortPvt->queueLockPortEvent);
+        /* Check the auxStatus value */
+        if (pasynUserCopy->auxStatus != asynSuccess) {
+            epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                "asynManager::queueLockPort queueRequest timed out");
+            epicsMutexUnlock(plockPortPvt->queueLockPortMutex);
+            pasynManager->freeAsynUser(pasynUserCopy);
+            return asynError;
+        }
         pasynManager->freeAsynUser(pasynUserCopy);
         asynPrint(pasynUser,ASYN_TRACE_FLOW, "%s asynManager::queueLockPort got event from callback\n", pport->portName);
         /* Remember that the port is locked by this thread. */
@@ -1917,6 +1954,7 @@ static asynStatus registerPort(const char *portName,
     pport->timeStampSource = defaultTimeStampSource;
     dpCommonInit(pport,0,autoConnect);
     pport->pasynUser = createAsynUser(0,0);
+    pport->queueLockPortTimeout = DEFAULT_QUEUE_LOCK_PORT_TIMEOUT;
     ellInit(&pport->deviceList);
     ellInit(&pport->interfaceList);
     if((attributes&ASYN_CANBLOCK)) {
@@ -2146,6 +2184,22 @@ static asynStatus setAutoConnectTimeout(double timeout)
     epicsMutexMustLock(pasynBase->lock);
     pasynBase->autoConnectTimeout = timeout;
     epicsMutexUnlock(pasynBase->lock);
+    return asynSuccess;
+}
+
+static asynStatus setQueueLockPortTimeout(asynUser *pasynUser, double timeout)
+{
+    userPvt    *puserPvt = asynUserToUserPvt(pasynUser);
+    port *pport = puserPvt->pport;
+
+    if(!pport) {
+        epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+            "asynManager:setQueueLockPortTimeout not connected to device");
+        return asynError;
+    }
+    epicsMutexMustLock(pport->asynManagerLock);
+    pport->queueLockPortTimeout = timeout;
+    epicsMutexUnlock(pport->asynManagerLock);
     return asynSuccess;
 }
 
@@ -2902,6 +2956,14 @@ static int traceVprintIOSource(asynUser *pasynUser,int reason,
                 nout += errlogPrintf("%2.2x ",(unsigned char)buffer[i]);
             }
         }
+        if(fp) {
+            nout += fprintf(fp,"\n");
+        } else {
+            nout += errlogPrintf("\n");
+        }
+    }
+    /* If the traceIOMask is 0 or traceTruncateSize <=0 we need to output a newline */
+    if((traceIOMask == 0) || (traceTruncateSize <=0)) {
         if(fp) {
             nout += fprintf(fp,"\n");
         } else {

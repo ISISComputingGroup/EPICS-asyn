@@ -28,7 +28,7 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
 else
   asyn_LIBS += $(EPICS_BASE_IOC_LIBS)
 endif
-asyn_SYS_LIBS_WIN32 = ws2_32 Winmm
+asyn_SYS_LIBS_WIN32 = ws2_32 winmm
 asyn_SYS_LIBS_cygwin32 = $(CYGWIN_RPC_LIB)
 
 SRC_DIRS += $(ASYN)/asynDriver
@@ -119,7 +119,7 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
    USR_CFLAGS   += -DEPICS_LIBCOM_ONLY
 endif
 INC += asynParamType.h
-INC += paramVal.h
+INC += paramErrors.h
 INC += asynPortDriver.h
 asyn_SRCS += paramVal.cpp
 asyn_SRCS += asynPortDriver.cpp
