@@ -398,6 +398,7 @@ report(void *drvPvt, FILE *fp, int details)
     DWORD commConfigSize = sizeof(tty->commConfig);
     BOOL ret;
     DWORD error;
+    COMSTAT cstat;
 
     assert(tty);
     fprintf(fp, "Serial line %s: %sonnected\n",
@@ -414,10 +415,11 @@ report(void *drvPvt, FILE *fp, int details)
         ret = GetCommConfig(tty->commHandle, &tty->commConfig, &commConfigSize);
         if (ret == 0) {
             error = GetLastError();
-            fprintf(fp, "%s error calling GetCommConfig %d", tty->serialDeviceName, error);
+            fprintf(fp, "%s error calling GetCommConfig() %d", tty->serialDeviceName, error);
             return;
         }
         /* done all structure members except BaudRate */
+        fprintf(fp, "*** Port Configuration (DCB from GetCommConfig()) ***\n");
         fprintf(fp, "       Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
         fprintf(fp, "  Out CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
         fprintf(fp, "  Out DSR flow control: %c\n", tty->commConfig.dcb.fOutxDsrFlow == TRUE ? 'Y' : 'N');
@@ -440,6 +442,25 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "       error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
         fprintf(fp, "         eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
         fprintf(fp, "       event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);
+        ret = ClearCommError(tty->commHandle, &error, &cstat);
+        if (ret == 0) {
+            error = GetLastError();
+            fprintf(fp, "%s error calling ClearCommError() %d", tty->serialDeviceName, error);
+            return;
+        }
+        fprintf(fp, "*** Port Status (COMSTAT from ClearCommError()) ***\n");
+        if (error != 0) {
+            fprintf(fp, "COM error code present: %d\n", error);
+        }
+        fprintf(fp, "       waiting for CTS: %c\n", cstat.fCtsHold == TRUE ? 'Y' : 'N');
+        fprintf(fp, "       waiting for DSR: %c\n", cstat.fDsrHold == TRUE ? 'Y' : 'N');
+        fprintf(fp, "   waiting for CD/RLSD: %c\n", cstat.fRlsdHold == TRUE ? 'Y' : 'N');
+        fprintf(fp, "  waiting as seen Xoff: %c\n", cstat.fXoffHold == TRUE ? 'Y' : 'N');
+        fprintf(fp, "  waiting as sent Xoff: %c\n", cstat.fXoffSent == TRUE ? 'Y' : 'N');
+        fprintf(fp, "          EOF received: %c\n", cstat.fEof == TRUE ? 'Y' : 'N');
+        fprintf(fp, "                 fTxim: %c\n", cstat.fTxim == TRUE ? 'Y' : 'N');
+        fprintf(fp, " nbytes in input queue: %d\n", cstat.cbInQue);
+        fprintf(fp, "nbytes in output queue: %d\n", cstat.cbOutQue);
     }
 }
 
