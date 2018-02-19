@@ -44,6 +44,31 @@
 #include "asynInterposeEos.h"
 #include "drvAsynSerialPort.h"
 
+/* 
+ * convert windows error code from GetLastError() to malloced string 
+ */
+static char* getLastErrorMessage(DWORD error)
+{
+    char* mess;
+    LPVOID lpMsgBuf = NULL;
+    if (FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        error,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &lpMsgBuf,
+        0, NULL ) == 0)
+    {
+        return strdup("<unknown>");
+    }            
+    mess = strdup(lpMsgBuf);
+    LocalFree(lpMsgBuf);
+    return mess;
+}
+
+        
 /*
  * This structure holds the hardware-specific information for a single
  * asyn link.  There is one for each serial line.
@@ -470,6 +495,7 @@ report(void *drvPvt, FILE *fp, int details)
 static asynStatus
 connectIt(void *drvPvt, asynUser *pasynUser)
 {
+    char* err_mess;
     ttyController_t *tty = (ttyController_t *)drvPvt;
 
     /*
@@ -498,9 +524,11 @@ connectIt(void *drvPvt, asynUser *pasynUser)
                                  0                              // handle to file with attributes to copy
                                   );
     if (tty->commHandle == INVALID_HANDLE_VALUE) {
+        err_mess = getLastErrorMessage(GetLastError());
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                             "%s Can't open  %s",
-                                    tty->serialDeviceName, strerror(errno));
+                                    tty->serialDeviceName, err_mess);
+        free(err_mess);
         return asynError;
     }
 
