@@ -355,6 +355,7 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             return asynError;
         }
         tty->break_duration = break_duration;
+        return asynSuccess;
     }
     else if (epicsStrCaseCmp(key, "break_delay") == 0) {
         unsigned break_delay;
@@ -364,6 +365,7 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             return asynError;
         }
         tty->break_delay = break_delay;
+        return asynSuccess;
     }
     else if (epicsStrCaseCmp(key, "") != 0) {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
@@ -418,12 +420,14 @@ report(void *drvPvt, FILE *fp, int details)
 {
     static const char* dtr_flow[] = { "disable", "enable", "handshake" };
     static const char* rts_flow[] = { "disable", "enable", "handshake", "toggle" };
-    static const char* parity_options[] = { "no", "odd", "even", "mark", "space" };
+    static const char* parity_options[] = { "none", "odd", "even", "mark", "space" };
     ttyController_t *tty = (ttyController_t *)drvPvt;
     DWORD commConfigSize = sizeof(tty->commConfig);
+    DWORD modem_stat, comm_mask, error;
     BOOL ret;
-    DWORD error;
     COMSTAT cstat;
+    COMMPROP commprop;
+    DCB dcb;
 
     assert(tty);
     fprintf(fp, "Serial line %s: %sonnected\n",
@@ -440,37 +444,63 @@ report(void *drvPvt, FILE *fp, int details)
         ret = GetCommConfig(tty->commHandle, &tty->commConfig, &commConfigSize);
         if (ret == 0) {
             error = GetLastError();
-            fprintf(fp, "%s error calling GetCommConfig() %d", tty->serialDeviceName, error);
+            fprintf(fp, "%s error calling GetCommConfig() %d\n", tty->serialDeviceName, error);
             return;
         }
-        /* done all structure members except BaudRate */
         fprintf(fp, "*** Port Configuration (DCB from GetCommConfig()) ***\n");
-        fprintf(fp, "       Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
-        fprintf(fp, "  Out CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
-        fprintf(fp, "  Out DSR flow control: %c\n", tty->commConfig.dcb.fOutxDsrFlow == TRUE ? 'Y' : 'N');
-        fprintf(fp, "      DTR flow control: %s\n", dtr_flow[tty->commConfig.dcb.fDtrControl]);
-        fprintf(fp, "         DSR sensitive: %c\n", tty->commConfig.dcb.fDsrSensitivity == TRUE ? 'Y' : 'N');
-        fprintf(fp, "     fTXContinueOnXoff: %c\n", tty->commConfig.dcb.fTXContinueOnXoff == TRUE ? 'Y' : 'N');
-        fprintf(fp, " XON/XOFF transmission: %c\n", tty->commConfig.dcb.fOutX == TRUE ? 'Y' : 'N');
-        fprintf(fp, "    XON/XOFF reception: %c\n", tty->commConfig.dcb.fInX == TRUE ? 'Y' : 'N');
-        fprintf(fp, "  parity -> error char: %c\n", tty->commConfig.dcb.fErrorChar == TRUE ? 'Y' : 'N');
-        fprintf(fp, "    discard NULL bytes: %c\n", tty->commConfig.dcb.fNull == TRUE ? 'Y' : 'N');
-        fprintf(fp, "      RTS flow control: %s\n", rts_flow[tty->commConfig.dcb.fRtsControl]);
-        fprintf(fp, "    abort R/W on error: %c\n", tty->commConfig.dcb.fAbortOnError == TRUE ? 'Y' : 'N');
-        fprintf(fp, "   xon character limit: %d\n", (int)tty->commConfig.dcb.XonLim);
-        fprintf(fp, "  xoff character limit: %d\n", (int)tty->commConfig.dcb.XoffLim);
+        fprintf(fp, "             Baud rate: %d\n", tty->commConfig.dcb.BaudRate);
         fprintf(fp, "             data bits: %d\n", (int)tty->commConfig.dcb.ByteSize);
         fprintf(fp, "                Parity: %s\n", parity_options[tty->commConfig.dcb.Parity]);
         fprintf(fp, "             stop bits: %.1f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
+        fprintf(fp, "       Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
+        fprintf(fp, "               * Hardware flow control *\n");
+        fprintf(fp, "  Out CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
+        fprintf(fp, "      RTS flow control: %s\n", rts_flow[tty->commConfig.dcb.fRtsControl]);
+        fprintf(fp, "  Out DSR flow control: %c\n", tty->commConfig.dcb.fOutxDsrFlow == TRUE ? 'Y' : 'N');
+        fprintf(fp, "      DTR flow control: %s\n", dtr_flow[tty->commConfig.dcb.fDtrControl]);
+        fprintf(fp, "         DSR sensitive: %c\n", tty->commConfig.dcb.fDsrSensitivity == TRUE ? 'Y' : 'N');
+        fprintf(fp, "              * Software flow control *\n");
+        fprintf(fp, " XON/XOFF transmission: %c\n", tty->commConfig.dcb.fOutX == TRUE ? 'Y' : 'N');
+        fprintf(fp, "    XON/XOFF reception: %c\n", tty->commConfig.dcb.fInX == TRUE ? 'Y' : 'N');
         fprintf(fp, "         xon char code: 0x%x\n", (int)tty->commConfig.dcb.XonChar);
         fprintf(fp, "        xoff char code: 0x%x\n", (int)tty->commConfig.dcb.XoffChar);
+        fprintf(fp, "   xon character limit: %d\n", (int)tty->commConfig.dcb.XonLim);
+        fprintf(fp, "  xoff character limit: %d\n", (int)tty->commConfig.dcb.XoffLim);
+        fprintf(fp, "     fTXContinueOnXoff: %c\n", tty->commConfig.dcb.fTXContinueOnXoff == TRUE ? 'Y' : 'N');
+        fprintf(fp, "                 * Other Settings *\n");
+        fprintf(fp, "  parity -> error char: %c\n", tty->commConfig.dcb.fErrorChar == TRUE ? 'Y' : 'N');
+        fprintf(fp, "    discard NULL bytes: %c\n", tty->commConfig.dcb.fNull == TRUE ? 'Y' : 'N');
+        fprintf(fp, "    abort R/W on error: %c\n", tty->commConfig.dcb.fAbortOnError == TRUE ? 'Y' : 'N');
         fprintf(fp, "       error char code: 0x%x\n", (int)tty->commConfig.dcb.ErrorChar);
         fprintf(fp, "         eof char code: 0x%x\n", (int)tty->commConfig.dcb.EofChar);
         fprintf(fp, "       event char code: 0x%x\n", (int)tty->commConfig.dcb.EvtChar);
+        fprintf(fp, "*** Port Properties (COMMPROP from GetCommProperties()) ***\n");
+        ret = GetCommProperties(tty->commHandle, &commprop);
+        if (ret == 0) {
+            error = GetLastError();
+            fprintf(fp, "%s error calling GetCommProperties() %d\n", tty->serialDeviceName, error);
+            return;
+        }
+        fprintf(fp, " Max input buffer size: %d\n", (int)commprop.dwMaxRxQueue);
+        fprintf(fp, "     input buffer size: %d\n", (int)commprop.dwCurrentRxQueue);
+        fprintf(fp, "Max output buffer size: %d\n", (int)commprop.dwMaxTxQueue);
+        fprintf(fp, "    output buffer size: %d\n", (int)commprop.dwCurrentTxQueue);
+        memset(&dcb, 0, sizeof(DCB));
+        dcb.DCBlength = sizeof(DCB);
+        ret = GetCommState(tty->commHandle, &dcb);
+        if (ret == 0) {
+            error = GetLastError();
+            fprintf(fp, "%s error calling GetCommState() %d\n", tty->serialDeviceName, error);
+            return;
+        }
+        if (memcmp(&dcb, &(tty->commConfig.dcb), sizeof(DCB)) != 0)
+        {
+            fprintf(fp, "*** WARNING: GetCommState() and GetCommConfig() disagree on DCB contents\n");
+        }
         ret = ClearCommError(tty->commHandle, &error, &cstat);
         if (ret == 0) {
             error = GetLastError();
-            fprintf(fp, "%s error calling ClearCommError() %d", tty->serialDeviceName, error);
+            fprintf(fp, "%s error calling ClearCommError() %d\n", tty->serialDeviceName, error);
             return;
         }
         fprintf(fp, "*** Port Status (COMSTAT from ClearCommError()) ***\n");
@@ -486,6 +516,25 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "                 fTxim: %c\n", cstat.fTxim == TRUE ? 'Y' : 'N');
         fprintf(fp, " nbytes in input queue: %d\n", cstat.cbInQue);
         fprintf(fp, "nbytes in output queue: %d\n", cstat.cbOutQue);
+        ret = GetCommModemStatus(tty->commHandle, &modem_stat);
+        if (ret == 0) {
+            error = GetLastError();
+            fprintf(fp, "%s error calling GetCommModemStatus() %d\n", tty->serialDeviceName, error);
+            return;
+        }
+        fprintf(fp, "*** Modem control line Status (from GetCommModemStatus()) ***\n");
+        fprintf(fp, "CTS: %s\n", (modem_stat & MS_CTS_ON) ? "ON" : "OFF");
+        fprintf(fp, "DSR: %s\n", (modem_stat & MS_DSR_ON) ? "ON" : "OFF");
+        fprintf(fp, "RI: %s\n", (modem_stat & MS_RING_ON) ? "ON" : "OFF");
+        fprintf(fp, "RLSD: %s\n", (modem_stat & MS_RLSD_ON) ? "ON" : "OFF");
+        ret = GetCommMask(tty->commHandle, &comm_mask);
+        if (ret == 0) {
+            error = GetLastError();
+            fprintf(fp, "%s error calling GetCommMask() %d\n", tty->serialDeviceName, error);
+            return;
+        }
+        fprintf(fp, "*** Current Comm Mask (from GetCommMask()) = 0x%x\n", comm_mask);
+        fprintf(fp, "\n");
     }
 }
 
