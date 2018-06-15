@@ -39,8 +39,8 @@ TEMPLATES += softioc/iocBoot/Makefile
 TEMPLATES += softioc.pl
 
 TEMPLATES += streamSCPI/_NAME_Sup/Makefile
-TEMPLATES += streamSCPI/_NAME_Sup/dev_NAME_.proto
-TEMPLATES += streamSCPI/_NAME_Sup/dev_NAME_.db
+TEMPLATES += streamSCPI/_NAME_Sup/_NAME_.proto
+TEMPLATES += streamSCPI/_NAME_Sup/_NAME_.db
 TEMPLATES += streamSCPI/documentation/dev_NAME_.html
 
 SCRIPTS_HOST += makeSupport.pl
