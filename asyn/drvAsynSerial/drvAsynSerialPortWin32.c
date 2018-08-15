@@ -167,7 +167,7 @@ getOption(void *drvPvt, asynUser *pasynUser,
         }
     }
     else if (epicsStrCaseCmp(key, "stop") == 0) {
-        l = epicsSnprintf(val, valSize, "%d",  (tty->commConfig.dcb.StopBits == 2) ? 2 : 1);
+        l = epicsSnprintf(val, valSize, "%.3g", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
     }
     else if (epicsStrCaseCmp(key, "clocal") == 0) {
         l = epicsSnprintf(val, valSize, "%c",  (tty->commConfig.dcb.fOutxDsrFlow == TRUE) ? 'N' : 'Y');
@@ -287,6 +287,9 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
     else if (epicsStrCaseCmp(key, "stop") == 0) {
         if (epicsStrCaseCmp(val, "1") == 0) {
             tty->commConfig.dcb.StopBits = ONESTOPBIT;
+        }
+        else if (epicsStrCaseCmp(val, "1.5") == 0) {
+            tty->commConfig.dcb.StopBits = ONE5STOPBITS;
         }
         else if (epicsStrCaseCmp(val, "2") == 0) {
             tty->commConfig.dcb.StopBits = TWOSTOPBITS;
@@ -516,7 +519,7 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "             Baud rate: %d\n", tty->commConfig.dcb.BaudRate);
         fprintf(fp, "             data bits: %d\n", (int)tty->commConfig.dcb.ByteSize);
         fprintf(fp, "                Parity: %s\n", parity_options[tty->commConfig.dcb.Parity]);
-        fprintf(fp, "             stop bits: %.1f\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
+        fprintf(fp, "             stop bits: %.3g\n", 1.0 + tty->commConfig.dcb.StopBits / 2.0);
         fprintf(fp, "       Parity checking: %c\n", tty->commConfig.dcb.fParity == TRUE ? 'Y' : 'N');
         fprintf(fp, "               * Hardware flow control *\n");
         fprintf(fp, "  Out CTS flow control: %c\n", tty->commConfig.dcb.fOutxCtsFlow == TRUE ? 'Y' : 'N');
