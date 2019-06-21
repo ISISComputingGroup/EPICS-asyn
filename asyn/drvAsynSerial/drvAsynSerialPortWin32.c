@@ -83,6 +83,7 @@ typedef struct {
     HANDLE             commHandle;
 	HANDLE			   commEventHandle;
 	HANDLE			   commEventMaskHandle;
+	DWORD              commEventMask;
 	OVERLAPPED         commOverlapped;
 	OVERLAPPED         commEventOverlapped;
     COMMCONFIG         commConfig;
@@ -118,7 +119,7 @@ static void monitorComEvents(void* arg)
 	{
 		if (GetCommMask(tty->commHandle, &evtMask) == 0 || evtMask == 0)
 		{
-			break;
+			break; /* nothing to monitor, also used when we close connection */
 		}
 	    memset(&tty->commEventOverlapped, 0, sizeof(OVERLAPPED));
 	    tty->commEventOverlapped.hEvent = tty->commEventMaskHandle;
@@ -134,13 +135,43 @@ static void monitorComEvents(void* arg)
 				break;
 			}
 		}
-		if (evtMask == 0) /* only zero if comm mask changes which we only do on exit */
+		if (evtMask & EV_ERR)
 		{
-			break;
+			printf("%s COM event: line status error: frame, overrun or parity error\n", tty->serialDeviceName);
 		}
-		printf("COM event: %d\n", evtMask);
+		if (evtMask & EV_CTS)
+		{
+			printf("%s COM event: CTS state change\n", tty->serialDeviceName);
+		}
+		if (evtMask & EV_DSR)
+		{
+			printf("%s COM event: DSR state change\n", tty->serialDeviceName);
+		}
+		if (evtMask & EV_BREAK)
+		{
+			printf("%s COM event: break detected\n", tty->serialDeviceName);
+		}
+		if (evtMask & EV_RLSD)
+		{
+			printf("%s COM event: RLSD (receive line signal detect) state change\n", tty->serialDeviceName);
+		}
+		if (evtMask & EV_RING)
+		{
+			printf("%s COM event: ring indicator detected\n", tty->serialDeviceName);
+		}
+		if (evtMask & EV_RXCHAR)
+		{
+			printf("%s COM event: character received and placed in input buffer\n", tty->serialDeviceName);
+		}
+		if (evtMask & EV_RXFLAG)
+		{
+			printf("%s COM event: event character received\n", tty->serialDeviceName);
+		}
+		if (evtMask & EV_TXEMPTY)
+		{
+			printf("%s COM event: last character sent from output buffer\n", tty->serialDeviceName);
+		}
 	}
-	printf("monitorComEvents exiting\n");
 }
 
 /*
@@ -472,6 +503,22 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
             return asynError;
         }
     }
+	else if (epicsStrCaseCmp(key, "eventmask") == 0) {
+		int mask;
+		if (sscanf(val, "%d", &mask) != 1) {
+			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+				"Bad number");
+			return asynError;
+		}
+		if (SetCommMask(tty->commHandle, mask) == 0)
+		{
+			error = GetLastError();
+			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+				"%s error calling SetCommMask %d", tty->serialDeviceName, error);
+			return asynError;
+		}
+		tty->commEventMask = mask;
+	}
     else if (epicsStrCaseCmp(key, "") != 0) {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                 "Unsupported key \"%s\"", key);
@@ -701,8 +748,11 @@ connectIt(void *drvPvt, asynUser *pasynUser)
     if (!FlushFileBuffers(tty->commHandle))
         return asynError;
 
-	SetCommMask(tty->commHandle, EV_CTS | EV_DSR | EV_ERR | EV_RING | EV_BREAK | EV_RLSD | EV_RXCHAR | EV_TXEMPTY); 
-	
+	if (SetCommMask(tty->commHandle, tty->commEventMask) == 0)
+	{
+		printf("cannot set comm event mask to %d\n", tty->commEventMask);
+	}
+
 	epicsThreadCreate("monitorComEvents",
                           epicsThreadPriorityMedium,
                           epicsThreadGetStackSize(epicsThreadStackMedium),
@@ -1187,7 +1237,7 @@ drvAsynSerialPortConfigure(char *portName,
 
 	tty->commEventHandle = CreateEvent(NULL, TRUE, FALSE, NULL);
 	tty->commEventMaskHandle = CreateEvent(NULL, TRUE, FALSE, NULL);
-
+	tty->commEventMask = EV_ERR;
 
     /*
      *  Link with higher level routines
