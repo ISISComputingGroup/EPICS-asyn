@@ -81,6 +81,10 @@ typedef struct {
     unsigned long      nWritten;
     int                baud;
     HANDLE             commHandle;
+	HANDLE			   commEventHandle;
+	HANDLE			   commEventMaskHandle;
+	OVERLAPPED         commOverlapped;
+	OVERLAPPED         commEventOverlapped;
     COMMCONFIG         commConfig;
     double             readTimeout;
     double             writeTimeout;
@@ -104,6 +108,39 @@ static void serialBaseInit(void)
     pserialBase = callocMustSucceed(1,sizeof(serialBase),"serialBaseInit");
     pserialBase->timerQueue = epicsTimerQueueAllocate(
         1,epicsThreadPriorityScanLow);
+}
+
+static void monitorComEvents(void* arg)
+{
+    ttyController_t *tty = (ttyController_t *)arg;
+	DWORD evtMask, error, readTotal;
+	while(1)
+	{
+		if (GetCommMask(tty->commHandle, &evtMask) == 0 || evtMask == 0)
+		{
+			break;
+		}
+	    memset(&tty->commEventOverlapped, 0, sizeof(OVERLAPPED));
+	    tty->commEventOverlapped.hEvent = tty->commEventMaskHandle;
+	    if (WaitCommEvent(tty->commHandle, &evtMask, &tty->commEventOverlapped) == 0)
+		{
+			error = GetLastError();
+			if (error != ERROR_IO_PENDING)
+			{
+				break;
+			}
+			if (GetOverlappedResult(tty->commHandle, &tty->commEventOverlapped, &readTotal, TRUE) == 0)
+			{
+				break;
+			}
+		}
+		if (evtMask == 0) /* only zero if comm mask changes which we only do on exit */
+		{
+			break;
+		}
+		printf("COM event: %d\n", evtMask);
+	}
+	printf("monitorComEvents exiting\n");
 }
 
 /*
@@ -460,6 +497,8 @@ closeConnection(asynUser *pasynUser,ttyController_t *tty)
     if (tty->commHandle != INVALID_HANDLE_VALUE) {
         asynPrint(pasynUser, ASYN_TRACE_FLOW,
                            "Close %s connection.\n", tty->serialDeviceName);
+		SetCommMask(tty->commHandle, 0x0); /* to exit monitorComEvents thread */
+		epicsThreadSleep(0.1); /* wait for monitorComEvents to exit */
         CloseHandle(tty->commHandle);
         tty->commHandle = INVALID_HANDLE_VALUE;
         pasynManager->exceptionDisconnect(pasynUser);
@@ -574,6 +613,10 @@ report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "*** Port Status (COMSTAT from ClearCommError()) ***\n");
         if (error != 0) {
             fprintf(fp, "COM error code present: %d\n", error);
+            fprintf(fp, "  The hardware detected a break condition: %c\n", error & CE_BREAK ? 'Y' : 'N');
+            fprintf(fp, "  A character-buffer overrun has occurred: %c\n", error & CE_OVERRUN ? 'Y' : 'N');
+            fprintf(fp, "  An input buffer overflow has occurred: %c\n", error & CE_RXOVER ? 'Y' : 'N');
+            fprintf(fp, "  The hardware detected a parity error: %c\n", error & CE_RXPARITY ? 'Y' : 'N');
         }
         fprintf(fp, "       waiting for CTS: %c\n", cstat.fCtsHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "       waiting for DSR: %c\n", cstat.fDsrHold == TRUE ? 'Y' : 'N');
@@ -637,7 +680,7 @@ connectIt(void *drvPvt, asynUser *pasynUser)
                                  0,                             // share mode
                                  0,                             // pointer to security attributes
                                  OPEN_EXISTING,                 // how to create
-                                 0,                             // not overlapped I/O
+                                 FILE_FLAG_OVERLAPPED,                             // overlapped I/O
                                  0                              // handle to file with attributes to copy
                                   );
     if (tty->commHandle == INVALID_HANDLE_VALUE) {
@@ -651,11 +694,20 @@ connectIt(void *drvPvt, asynUser *pasynUser)
     /* setOption(tty, tty->pasynUser, "baud", "9600"); */
    
     ClearCommBreak(tty->commHandle); /* in case there is one leftover from an ioc termination */
+	
     /*
      * Turn off non-blocking mode
      */
     if (!FlushFileBuffers(tty->commHandle))
         return asynError;
+
+	SetCommMask(tty->commHandle, EV_CTS | EV_DSR | EV_ERR | EV_RING | EV_BREAK | EV_RLSD | EV_RXCHAR | EV_TXEMPTY); 
+	
+	epicsThreadCreate("monitorComEvents",
+                          epicsThreadPriorityMedium,
+                          epicsThreadGetStackSize(epicsThreadStackMedium),
+                          (EPICSTHREADFUNC)monitorComEvents, tty);
+
     tty->readTimeout = -1e-99;
     tty->writeTimeout = -1e-99;
 
@@ -748,20 +800,54 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         timerStarted = 1;
         }
     for (;;) {
+		memset(&tty->commOverlapped, 0, sizeof(OVERLAPPED));
+		tty->commOverlapped.hEvent = tty->commEventHandle;
+		thisWrite = 0;
         ret = WriteFile(tty->commHandle,     // handle to file to write to
                         data,     // pointer to data to write to file
                         nleft,     // number of bytes to write
                         &thisWrite, // pointer to number of bytes written
-                        NULL     // pointer to structure for overlapped I/O
+                        &tty->commOverlapped     // pointer to structure for overlapped I/O
                         );
         if (ret == 0) {
             error = GetLastError();
-            epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+			if (error != ERROR_IO_PENDING)
+			{
+                epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                 "%s write error: %d",
                                         tty->serialDeviceName, error);
-            closeConnection(pasynUser,tty);
-            status = asynError;
-            break;
+                closeConnection(pasynUser,tty);
+                status = asynError;
+                break;
+			}
+			// set timeout to longer than comms timeout, if WaitForSingleObject then times out then somewhthing is really wrong with write 
+			DWORD dwRes = WaitForSingleObject(tty->commOverlapped.hEvent, (tty->writeTimeout == 0 ? INFINITE : ctimeout.WriteTotalTimeoutConstant + 1000));
+			if (dwRes == WAIT_OBJECT_0)
+			{
+                    if (!GetOverlappedResult(tty->commHandle, &tty->commOverlapped, &thisWrite, FALSE))
+					{
+						epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                                "%s write error: %d",
+                                        tty->serialDeviceName, error);
+						closeConnection(pasynUser,tty);
+						status = asynError;
+						break;
+					}
+					else if (nleft != thisWrite)
+					{
+				        tty->timeoutFlag = 1;
+					}
+			}
+			else
+			{
+//				CancelIo(tty->commHandle);
+				epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                                "%s write error: %d",
+                                        tty->serialDeviceName, error);
+				closeConnection(pasynUser,tty);
+				status = asynError;
+				break;
+			}
         }
         if (tty->flush_on_write != 0)
         {
@@ -816,6 +902,62 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
                                             tty->serialDeviceName,
                                             pasynManager->strStatus(status));
     return status;
+}
+
+static asynStatus ReadFileOverlapped(ttyController_t *tty, asynUser *pasynUser, void* data, DWORD nBytes, DWORD* nRead)
+{
+	asynStatus status = asynSuccess;
+	int ret;
+	DWORD error;
+	memset(&tty->commOverlapped, 0, sizeof(OVERLAPPED));
+	tty->commOverlapped.hEvent = tty->commEventHandle;
+    ret = ReadFile(
+                        tty->commHandle,  // handle of file to read
+                        data,             // pointer to buffer that receives data
+                        nBytes,                // number of bytes to read
+                        nRead,        // pointer to number of bytes read
+                        &tty->commOverlapped              // pointer to structure for overlapped
+                        );
+    if (ret == 0) {
+        error = GetLastError();
+		if (error != ERROR_IO_PENDING)
+		{
+            epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                      "%s read error: %d",
+                      tty->serialDeviceName, error);
+            status = asynError;
+		}
+		else
+		{
+			/* set timeout to longer than comms timeout, if WaitForSingleObject then times out then somewhthing is really wrong with write */
+			DWORD dwRes = WaitForSingleObject(tty->commOverlapped.hEvent, (int)(tty->readTimeout * 1000.) + 1000);
+			if (dwRes == WAIT_OBJECT_0)
+			{
+                    if (!GetOverlappedResult(tty->commHandle, &tty->commOverlapped, nRead, FALSE))
+					{
+						epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                                "%s read error: %d",
+                                        tty->serialDeviceName, error);
+						closeConnection(pasynUser,tty);
+						status = asynError;
+					}
+					else if (*nRead != nBytes)
+					{
+						status = asynTimeout;
+					}
+			}
+			else
+			{
+//				CancelIo(tty->commHandle);
+				epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                                "%s read error: WaitForSingleObject %d",
+                                        tty->serialDeviceName, dwRes);
+				closeConnection(pasynUser,tty);
+				status = asynError;
+			}
+        }
+	}
+	return status;
 }
 
 /*
@@ -881,20 +1023,8 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     if (gotEom) *gotEom = 0;
     nRead = 0;
     // we try and read one character with above timeout, and then read anything else that is present
-    ret = ReadFile(
-                        tty->commHandle,  // handle of file to read
-                        data,             // pointer to buffer that receives data
-                        (DWORD)1,                // number of bytes to read
-                        &thisRead,        // pointer to number of bytes read
-                        NULL              // pointer to structure for data
-                        );
-    if (ret == 0) {
-        error = GetLastError();
-        epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
-                      "%s read error: %d",
-                      tty->serialDeviceName, error);
-        status = asynError;
-    } else {
+	status = ReadFileOverlapped(tty, pasynUser, data, (DWORD)1, &thisRead);
+	if (status != asynError) {
         nRead = thisRead;
         ret = ClearCommError(tty->commHandle, &error, &cstat); // to get bytes available
         if (ret == 0) {
@@ -904,22 +1034,19 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
                               tty->serialDeviceName, error);
                 status = asynError;
         } else {
+			if (error != 0)
+			{
+				printf("ClearCommError: error was present and cleared: %d\n", error);
+			}
             if (cstat.cbInQue > 0) {
                 nToRead = (cstat.cbInQue < maxchars - nRead ? cstat.cbInQue : (DWORD)maxchars - nRead);
                 // we haven't reset CommTimeout, but as we know how many bytes are there we should return immediately
-                ret = ReadFile(
-                        tty->commHandle,  // handle of file to read
-                        data + nRead,             // pointer to buffer that receives data
-                        (DWORD)nToRead,                // number of bytes to read
-                        &thisRead,        // pointer to number of bytes read
-                        NULL              // pointer to structure for data
-                        );
-                if (ret == 0) {
+				status = ReadFileOverlapped(tty, pasynUser, data + nRead, (DWORD)nToRead, &thisRead);
+                if (status == asynError) {
                     error = GetLastError();
                     epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                           "%s read error: %d",
                           tty->serialDeviceName, error);
-                    status = asynError;
                 } else if (thisRead != nToRead) {
 //                    printf("%s only read %d of %d available bytes\n",
 //                          tty->serialDeviceName, thisRead, nToRead); // for debugging
@@ -1057,6 +1184,10 @@ drvAsynSerialPortConfigure(char *portName,
     tty->serialDeviceName = epicsStrDup(winTtyName);
     tty->portName = epicsStrDup(portName);
     tty->flush_on_write = 0;
+
+	tty->commEventHandle = CreateEvent(NULL, TRUE, FALSE, NULL);
+	tty->commEventMaskHandle = CreateEvent(NULL, TRUE, FALSE, NULL);
+
 
     /*
      *  Link with higher level routines
