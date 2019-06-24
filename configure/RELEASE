@@ -8,6 +8,8 @@ SNCSEQ=$(SUPPORT)/seq/master
 # for vxi11 on WIN32
 ONCRPC=$(SUPPORT)/oncrpc/master
 
+CLI11=$(EPICS_KIT_ROOT)/libraries/master/CLI11
+
 # optional extra local definitions here
 -include $(TOP)/configure/RELEASE.private
 

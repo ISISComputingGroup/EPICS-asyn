@@ -23,8 +23,8 @@ extern "C" {
 #define ASYN_ERROR_PARITY  0x0001
 #define ASYN_ERROR_FRAMING 0x0002
 
-epicsShareFunc int drvAsynSerialPortConfigure(char *portName,
-                                              char *ttyName,
+epicsShareFunc int drvAsynSerialPortConfigure(const char *portName,
+                                              const char *ttyName,
                                               unsigned int priority,
                                               int noAutoConnect,
                                               int noProcessEos);

@@ -5,7 +5,20 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 PROD_HOST += testAsynIPPortClient
-PROD_SRCS += testAsynIPPortClient.cpp
+
+# only build on Linux or recent Windows VisualStudio
+ifneq ($(VisualStudioVersion),)
+PROD_HOST += testSerialPort
+endif
+ifneq ($(OS_CLASS),WIN32)
+PROD_HOST += testSerialPort
+endif
+
+testAsynIPPortClient_SRCS += testAsynIPPortClient.cpp
+
+testSerialPort_SRCS += testSerialPort.cpp
+
+testSerialPort_CXXFLAGS += -I$(CLI11)
 
 PROD_LIBS += asyn
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
