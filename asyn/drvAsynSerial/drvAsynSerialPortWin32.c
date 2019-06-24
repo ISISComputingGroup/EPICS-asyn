@@ -68,7 +68,26 @@ static char* getLastErrorMessage(DWORD error)
     return mess;
 }
 
-        
+static void printCOMError(const char* serialDeviceName, DWORD error, FILE* fp)
+{
+	fprintf(fp, "%s COM error code %d was present\n", serialDeviceName, error);
+	if (error & CE_BREAK) {
+		fprintf(fp, "    The hardware detected a break condition\n");
+	}
+	if (error & CE_FRAME) {
+		fprintf(fp, "    The hardware detected a framing error\n");
+	}
+	if (error & CE_OVERRUN) {
+		fprintf(fp, "    A character-buffer overrun has occurred\n");
+	}
+	if (error & CE_RXOVER) {
+		fprintf(fp, "    An input buffer overflow has occurred\n");
+	}
+	if (error & CE_RXPARITY) {
+		fprintf(fp, "    The hardware detected a parity error\n");
+	}
+}
+
 /*
  * This structure holds the hardware-specific information for a single
  * asyn link.  There is one for each serial line.
@@ -116,6 +135,8 @@ static void monitorComEvents(void* arg)
 {
     ttyController_t *tty = (ttyController_t *)arg;
 	DWORD evtMask, error, readTotal;
+	asynPrint(tty->pasynUser, ASYN_TRACE_FLOW,
+		"%s started monitorComEvents thread.\n", tty->serialDeviceName);
 	while(1)
 	{
 		if (GetCommMask(tty->commHandle, &evtMask) == 0 || evtMask == 0)
@@ -173,6 +194,8 @@ static void monitorComEvents(void* arg)
 			printf("%s COM event: last character sent from output buffer\n", tty->serialDeviceName);
 		}
 	}
+	asynPrint(tty->pasynUser, ASYN_TRACE_FLOW,
+		"%s terminated monitorComEvents thread.\n", tty->serialDeviceName);
 }
 
 /*
@@ -663,11 +686,7 @@ report(void *drvPvt, FILE *fp, int details)
         }
         fprintf(fp, "*** Port Status (COMSTAT from ClearCommError()) ***\n");
         if (error != 0) {
-            fprintf(fp, "COM error code %d present and cleared\n", error);
-            fprintf(fp, "    The hardware detected a break condition: %c\n", error & CE_BREAK ? 'Y' : 'N');
-            fprintf(fp, "    A character-buffer overrun has occurred: %c\n", error & CE_OVERRUN ? 'Y' : 'N');
-            fprintf(fp, "      An input buffer overflow has occurred: %c\n", error & CE_RXOVER ? 'Y' : 'N');
-            fprintf(fp, "       The hardware detected a parity error: %c\n", error & CE_RXPARITY ? 'Y' : 'N');
+			printCOMError(tty->serialDeviceName, error, fp);
         }
         fprintf(fp, "       waiting for CTS: %c\n", cstat.fCtsHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "       waiting for DSR: %c\n", cstat.fDsrHold == TRUE ? 'Y' : 'N');
@@ -731,7 +750,7 @@ connectIt(void *drvPvt, asynUser *pasynUser)
                                  0,                             // share mode
                                  0,                             // pointer to security attributes
                                  OPEN_EXISTING,                 // how to create
-                                 FILE_FLAG_OVERLAPPED,                             // overlapped I/O
+                                 FILE_FLAG_OVERLAPPED,          // overlapped I/O
                                  0                              // handle to file with attributes to copy
                                   );
     if (tty->commHandle == INVALID_HANDLE_VALUE) {
@@ -1091,7 +1110,7 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
         } else {
 			if (error != 0)
 			{
-				printf("%s ClearCommError: error %d was present and cleared\n", tty->serialDeviceName, error);
+				printCOMError(tty->serialDeviceName, error, stdout);
 			}
             if (cstat.cbInQue > 0) {
                 nToRead = (cstat.cbInQue < maxchars - nRead ? cstat.cbInQue : (DWORD)maxchars - nRead);
@@ -1164,8 +1183,10 @@ static void
 ttyCleanup(ttyController_t *tty)
 {
     if (tty) {
-        if (tty->commHandle != INVALID_HANDLE_VALUE)
-            CloseHandle(tty->commHandle);
+		if (tty->commHandle != INVALID_HANDLE_VALUE)
+		{
+			CloseHandle(tty->commHandle);
+		}
 		CloseHandle(tty->commEventHandle);
 		CloseHandle(tty->commEventMaskHandle);
 		free(tty->portName);
