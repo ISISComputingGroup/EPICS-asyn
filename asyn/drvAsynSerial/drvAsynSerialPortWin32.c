@@ -796,7 +796,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     int nleft = (int)numchars;
     int timerStarted = 0;
     BOOL ret;
-    DWORD error;
+    DWORD error, dwRes;
     COMMTIMEOUTS ctimeout;
     asynStatus status = asynSuccess;
 
@@ -875,7 +875,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
                 break;
 			}
 			// set timeout to longer than comms timeout, if WaitForSingleObject then times out then something is really wrong with write 
-			DWORD dwRes = WaitForSingleObject(tty->commOverlapped.hEvent, (tty->writeTimeout == 0 ? INFINITE : ctimeout.WriteTotalTimeoutConstant + 1000));
+			dwRes = WaitForSingleObject(tty->commOverlapped.hEvent, (tty->writeTimeout == 0 ? INFINITE : ctimeout.WriteTotalTimeoutConstant + 1000));
 			if (dwRes == WAIT_OBJECT_0)
 			{
                     if (!GetOverlappedResult(tty->commHandle, &tty->commOverlapped, &thisWrite, FALSE))
