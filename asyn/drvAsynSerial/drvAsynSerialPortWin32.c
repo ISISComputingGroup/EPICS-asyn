@@ -156,10 +156,11 @@ static int bytesAtPort(ttyController_t *tty, asynUser* pasynUser)
 // number of bytes or -1 on error
 static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeout, int nbytes)
 {
+	int n;
 	DWORD dwRes, error;
 	epicsTimeStamp ts, ts_start;
 	epicsTimeGetCurrent(&ts_start);
-	int n = bytesAtPort(tty, pasynUser);
+	n = bytesAtPort(tty, pasynUser);
 	while(n != -1 && n < nbytes && timeout > 0.0)
 	{
 		dwRes = WaitForSingleObject(tty->bytesAvailableEvent, (int)(timeout * 1000.0));
