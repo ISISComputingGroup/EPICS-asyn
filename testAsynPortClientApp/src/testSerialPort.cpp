@@ -19,6 +19,8 @@
 static CLI::Validator CheckYesNo = CLI::IsMember({"Y", "N"}, CLI::ignore_case);
 static CLI::Validator CheckNumber = CLI::Number;
 static CLI::Validator CheckParity = CLI::IsMember({"odd", "even", "none", "mark", "space"});
+static CLI::Validator CheckPurge = CLI::IsMember({"rxclear", "txclear", "rxabort", "txabort"});
+static CLI::Validator CheckEscape = CLI::IsMember({"clrbreak", "clrdtr", "clrrts", "setbreak", "setdtr", "setrts", "setxoff", "setxon"});
 
 static void addOption(CLI::App& app, std::map<std::string, std::string>& optMap, const std::string& opt, const std::string& desc, CLI::Validator validator)
 {
@@ -57,6 +59,8 @@ int main(int argc, char *argv[])
   addOption(app, optMap, "break_delay", "Serial Break delay", CheckNumber);
   addOption(app, optMap, "eventmask", "Serial Event Mask (hex) - see SetCommMask(), 0x1FF enables all", CheckNumber);
   addOption(app, optMap, "flush", "Flush after write", CheckYesNo);
+  addOption(app, optMap, "purge", "purge buffer (PurgeComm)", CheckPurge);
+  addOption(app, optMap, "escape", "Change line status (EscapeCommFunction)", CheckEscape);
   
   CLI11_PARSE(app, argc, argv);
 

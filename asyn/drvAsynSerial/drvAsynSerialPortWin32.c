@@ -88,6 +88,7 @@ static void printCOMError(const char* serialDeviceName, DWORD error, FILE* fp)
 	}
 }
 
+
 /*
  * This structure holds the hardware-specific information for a single
  * asyn link.  There is one for each serial line.
@@ -106,6 +107,8 @@ typedef struct {
 	OVERLAPPED         commOverlapped;      /* for ReadFile and WriteFile */
 	OVERLAPPED         commEventOverlapped; /* for WaitCommEvent */
     COMMCONFIG         commConfig;
+	HANDLE             bytesAvailableEvent;
+	int                printCharEvent;
     double             readTimeout;
     double             writeTimeout;
     epicsTimerId       timer;
@@ -128,6 +131,60 @@ static void serialBaseInit(void)
     pserialBase = callocMustSucceed(1,sizeof(serialBase),"serialBaseInit");
     pserialBase->timerQueue = epicsTimerQueueAllocate(
         1,epicsThreadPriorityScanLow);
+}
+
+// number of bytes or -1 on error
+static int bytesAtPort(ttyController_t *tty, asynUser* pasynUser)
+{
+	DWORD error;
+	BOOL ret;
+	COMSTAT cstat;
+	ret = ClearCommError(tty->commHandle, &error, &cstat);
+	if (ret == 0) {
+		error = GetLastError();
+		epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+			"Can't clear \"%s\" error=%d", tty->serialDeviceName, error);
+		return -1;
+	}
+	if (error != 0)
+	{
+		printCOMError(tty->serialDeviceName, error, stdout);
+	}
+	return cstat.cbInQue;
+}
+
+// number of bytes or -1 on error
+static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeout, int nbytes)
+{
+	DWORD dwRes, error;
+	epicsTimeStamp ts, ts_start;
+	epicsTimeGetCurrent(&ts_start);
+	int n = bytesAtPort(tty, pasynUser);
+	while(n != -1 && n < nbytes && timeout > 0.0)
+	{
+		dwRes = WaitForSingleObject(tty->bytesAvailableEvent, (int)(timeout * 1000.0));
+		error = GetLastError(); /* read now as may need later and bytesAtPort() could change this */
+		n = bytesAtPort(tty, pasynUser);
+		if (dwRes == WAIT_TIMEOUT || n < 0)
+		{
+		    printf("timeout %d\n", n);
+		    return n;
+		}
+		else if (dwRes == WAIT_OBJECT_0)
+		{
+			epicsTimeGetCurrent(&ts);
+			timeout -= epicsTimeDiffInSeconds(&ts, &ts_start);
+		}
+		else
+		{
+			/* error code read earlier */
+			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+				"WaitForSingleObject error=%d", error);
+			return -1;
+		}
+		printf("loop %d\n", n);
+	}
+	return n;
 }
 
 /* monitor and print requested comm events */
@@ -183,7 +240,11 @@ static void monitorComEvents(void* arg)
 		}
 		if (evtMask & EV_RXCHAR)
 		{
-			printf("%s COM event: character received and placed in input buffer\n", tty->serialDeviceName);
+			SetEvent(tty->bytesAvailableEvent);
+			if (tty->printCharEvent != 0)
+			{
+			    printf("%s COM event: character received and placed in input buffer\n", tty->serialDeviceName);
+			}
 		}
 		if (evtMask & EV_RXFLAG)
 		{
@@ -289,7 +350,7 @@ getOption(void *drvPvt, asynUser *pasynUser,
         l = epicsSnprintf(val, valSize, "%d",  commprop.dwCurrentTxQueue);
     }
 	else if (epicsStrCaseCmp(key, "eventmask") == 0) {
-		l = epicsSnprintf(val, valSize, "0x%X", tty->commEventMask);
+		l = epicsSnprintf(val, valSize, "0x%X", (tty->printCharEvent ? tty->commEventMask : (tty->commEventMask & ~EV_RXCHAR)));
 	}
 	else {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
@@ -537,6 +598,15 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
 				"Bad number");
 			return asynError;
 		}
+		if (mask & EV_RXCHAR)
+		{
+			tty->printCharEvent = 1;
+		}
+		else
+		{
+			tty->printCharEvent = 0;
+			mask |= EV_RXCHAR; /* we always need to enable RXCHAR for internal use */
+		}
 		if (SetCommMask(tty->commHandle, mask) == 0)
 		{
 			error = GetLastError();
@@ -546,7 +616,61 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
 		}
 		tty->commEventMask = mask;
 	}
-    else if (epicsStrCaseCmp(key, "") != 0) {
+	else if (epicsStrCaseCmp(key, "purge") == 0) {
+	    DWORD func = 0;
+		if (epicsStrCaseCmp(val, "rxabort") == 0) {
+			func = PURGE_RXABORT;
+		} else if (epicsStrCaseCmp(val, "txabort") == 0) {
+			func = PURGE_TXABORT;
+		} else if (epicsStrCaseCmp(val, "rxclear") == 0) {
+			func = PURGE_RXCLEAR;
+		} else if (epicsStrCaseCmp(val, "txclear") == 0) {
+			func = PURGE_TXCLEAR;
+		} else {
+			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+				"Invalid purge value.");
+			return asynError;
+		}
+		if (PurgeComm(tty->commHandle, func) == 0)
+		{
+			error = GetLastError();
+			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+				"%s error calling PurgeComm %d", tty->serialDeviceName, error);
+			return asynError;
+		}
+	}
+	else if (epicsStrCaseCmp(key, "escape") == 0) {
+	    DWORD func = 0;
+		if (epicsStrCaseCmp(val, "clrbreak") == 0) {
+			func = CLRBREAK;
+		} else if (epicsStrCaseCmp(val, "clrdtr") == 0) {
+			func = CLRDTR;
+		} else if (epicsStrCaseCmp(val, "clrrts") == 0) {
+			func = CLRRTS;
+		} else if (epicsStrCaseCmp(val, "setbreak") == 0) {
+			func = SETBREAK;
+		} else if (epicsStrCaseCmp(val, "setdtr") == 0) {
+			func = SETDTR;
+		} else if (epicsStrCaseCmp(val, "setrts") == 0) {
+			func = SETRTS;
+		} else if (epicsStrCaseCmp(val, "setxoff") == 0) {
+			func = SETXOFF;
+		} else if (epicsStrCaseCmp(val, "setxon") == 0) {
+			func = SETXON;
+		} else {
+			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+				"Invalid escape value.");
+			return asynError;
+		}
+		if (EscapeCommFunction(tty->commHandle, func) == 0)
+		{
+			error = GetLastError();
+			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+				"%s error calling EscapeComm %d", tty->serialDeviceName, error);
+			return asynError;
+		}
+	}
+	else if (epicsStrCaseCmp(key, "") != 0) {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                 "Unsupported key \"%s\"", key);
         return asynError;
@@ -1041,7 +1165,7 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     char *data, size_t maxchars,size_t *nbytesTransfered,int *gotEom)
 {
     ttyController_t *tty = (ttyController_t *)drvPvt;
-    int thisRead;
+    int thisRead, navail;
     int nRead = 0;
     COMMTIMEOUTS ctimeout;
     COMSTAT cstat;
@@ -1095,9 +1219,26 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     }
     tty->timeoutFlag = 0;
     if (gotEom) *gotEom = 0;
-    nRead = 0;
+    nRead = thisRead = 0;
+	status = asynTimeout;
     // we try and read one character with above timeout, and then read anything else that is present
-	status = ReadFileOverlapped(tty, pasynUser, data, (DWORD)1, &thisRead);
+	if (getenv("WAITFORBYTES") != NULL)
+	{
+		navail = waitForBytes(tty, pasynUser, tty->readTimeout, 1);
+		if (navail < 0)
+		{
+			printf("waitForBytes error\n");
+			status = asynError;
+		}
+	}
+	else
+	{
+		navail = 1;
+	}
+	if (navail > 0)
+	{
+		status = ReadFileOverlapped(tty, pasynUser, data, (DWORD)1, &thisRead);
+	}
 	if (status != asynError) {
         nRead = thisRead;
         ret = ClearCommError(tty->commHandle, &error, &cstat); // to get bytes available
@@ -1189,6 +1330,7 @@ ttyCleanup(ttyController_t *tty)
 		}
 		CloseHandle(tty->commEventHandle);
 		CloseHandle(tty->commEventMaskHandle);
+		CloseHandle(tty->bytesAvailableEvent);
 		free(tty->portName);
         free(tty->serialDeviceName);
         free(tty);
@@ -1262,7 +1404,8 @@ drvAsynSerialPortConfigure(const char *portName,
 
 	tty->commEventHandle = CreateEvent(NULL, TRUE, FALSE, NULL);
 	tty->commEventMaskHandle = CreateEvent(NULL, TRUE, FALSE, NULL);
-	tty->commEventMask = EV_ERR;
+	tty->bytesAvailableEvent = CreateEvent(NULL, FALSE, FALSE, NULL); // auto reset event
+	tty->commEventMask = EV_ERR | EV_RXCHAR;
 
     /*
      *  Link with higher level routines
