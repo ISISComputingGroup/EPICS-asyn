@@ -167,7 +167,6 @@ static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeou
 		n = bytesAtPort(tty, pasynUser);
 		if (dwRes == WAIT_TIMEOUT || n < 0)
 		{
-		    printf("timeout %d\n", n);
 		    return n;
 		}
 		else if (dwRes == WAIT_OBJECT_0)
@@ -182,7 +181,6 @@ static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeou
 				"WaitForSingleObject error=%d", error);
 			return -1;
 		}
-		printf("loop %d\n", n);
 	}
 	return n;
 }
