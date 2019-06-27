@@ -231,7 +231,7 @@ static void monitorComEvents(void* arg)
 		}
 		if (evtMask & EV_RLSD)
 		{
-			printf("%s COM event: RLSD (receive line signal detect) state change\n", tty->serialDeviceName);
+			printf("%s COM event: DCD/RLSD state change\n", tty->serialDeviceName);
 		}
 		if (evtMask & EV_RING)
 		{
@@ -813,7 +813,7 @@ report(void *drvPvt, FILE *fp, int details)
         }
         fprintf(fp, "       waiting for CTS: %c\n", cstat.fCtsHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "       waiting for DSR: %c\n", cstat.fDsrHold == TRUE ? 'Y' : 'N');
-        fprintf(fp, "   waiting for CD/RLSD: %c\n", cstat.fRlsdHold == TRUE ? 'Y' : 'N');
+        fprintf(fp, "  waiting for DCD/RLSD: %c\n", cstat.fRlsdHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "  waiting as seen Xoff: %c\n", cstat.fXoffHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "  waiting as sent Xoff: %c\n", cstat.fXoffSent == TRUE ? 'Y' : 'N');
         fprintf(fp, "          EOF received: %c\n", cstat.fEof == TRUE ? 'Y' : 'N');
@@ -830,7 +830,7 @@ report(void *drvPvt, FILE *fp, int details)
 		fprintf(fp, "                   CTS: %s\n", (modem_stat & MS_CTS_ON) ? "ON" : "OFF");
         fprintf(fp, "                   DSR: %s\n", (modem_stat & MS_DSR_ON) ? "ON" : "OFF");
         fprintf(fp, "                    RI: %s\n", (modem_stat & MS_RING_ON) ? "ON" : "OFF");
-        fprintf(fp, "                  RLSD: %s\n", (modem_stat & MS_RLSD_ON) ? "ON" : "OFF");
+        fprintf(fp, "              DCD/RLSD: %s\n", (modem_stat & MS_RLSD_ON) ? "ON" : "OFF");
         ret = GetCommMask(tty->commHandle, &comm_mask);
         if (ret == 0) {
             error = GetLastError();
