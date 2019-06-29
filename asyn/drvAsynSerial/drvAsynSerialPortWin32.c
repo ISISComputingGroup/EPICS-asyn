@@ -68,9 +68,18 @@ static char* getLastErrorMessage(DWORD error)
     return mess;
 }
 
+static void getTimestamp(char* buffer, size_t nbuff)
+{
+	time_t now;
+	time(&now);
+	strftime(buffer, nbuff, "%Y-%m-%d %H:%M:%S", localtime(&now));
+}
+
 static void printCOMError(const char* serialDeviceName, DWORD error, FILE* fp)
 {
-	fprintf(fp, "%s COM error code %d was present\n", serialDeviceName, error);
+	char datetime[64];
+	getTimestamp(datetime, sizeof(datetime));
+	fprintf(fp, "%s: %s COM error code %d was present\n", datetime, serialDeviceName, error);
 	if (error & CE_BREAK) {
 		fprintf(fp, "    The hardware detected a break condition\n");
 	}
@@ -189,7 +198,8 @@ static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeou
 /* monitor and print requested comm events */
 static void monitorComEvents(void* arg)
 {
-    ttyController_t *tty = (ttyController_t *)arg;
+	char datetime[64];
+	ttyController_t *tty = (ttyController_t *)arg;
 	DWORD evtMask, error, readTotal;
 	asynPrint(tty->pasynUser, ASYN_TRACE_FLOW,
 		"%s started monitorComEvents thread.\n", tty->serialDeviceName);
@@ -213,45 +223,46 @@ static void monitorComEvents(void* arg)
 				break; /* terminates thread */
 			}
 		}
+		getTimestamp(datetime, sizeof(datetime));
 		if (evtMask & EV_ERR)
 		{
-			printf("%s COM event: line status error: frame, overrun or parity error\n", tty->serialDeviceName);
+			printf("%s: %s COM event: line status error: frame, overrun or parity error\n", datetime, tty->serialDeviceName);
 		}
 		if (evtMask & EV_CTS)
 		{
-			printf("%s COM event: CTS state change\n", tty->serialDeviceName);
+			printf("%s: %s COM event: CTS state change\n", datetime, tty->serialDeviceName);
 		}
 		if (evtMask & EV_DSR)
 		{
-			printf("%s COM event: DSR state change\n", tty->serialDeviceName);
+			printf("%s: %s COM event: DSR state change\n", datetime, tty->serialDeviceName);
 		}
 		if (evtMask & EV_BREAK)
 		{
-			printf("%s COM event: break detected\n", tty->serialDeviceName);
+			printf("%s: %s COM event: break detected\n", datetime, tty->serialDeviceName);
 		}
 		if (evtMask & EV_RLSD)
 		{
-			printf("%s COM event: DCD/RLSD state change\n", tty->serialDeviceName);
+			printf("%s: %s COM event: DCD/RLSD state change\n", datetime, tty->serialDeviceName);
 		}
 		if (evtMask & EV_RING)
 		{
-			printf("%s COM event: ring indicator detected\n", tty->serialDeviceName);
+			printf("%s: %s COM event: ring indicator detected\n", datetime, tty->serialDeviceName);
 		}
 		if (evtMask & EV_RXCHAR)
 		{
 			SetEvent(tty->bytesAvailableEvent);
 			if (tty->printCharEvent != 0)
 			{
-			    printf("%s COM event: character received and placed in input buffer\n", tty->serialDeviceName);
+			    printf("%s: %s COM event: character received and placed in input buffer\n", datetime, tty->serialDeviceName);
 			}
 		}
 		if (evtMask & EV_RXFLAG)
 		{
-			printf("%s COM event: event character received\n", tty->serialDeviceName);
+			printf("%s: %s COM event: event character received\n", datetime, tty->serialDeviceName);
 		}
 		if (evtMask & EV_TXEMPTY)
 		{
-			printf("%s COM event: last character sent from output buffer\n", tty->serialDeviceName);
+			printf("%s: %s COM event: last character sent from output buffer\n", datetime, tty->serialDeviceName);
 		}
 	}
 	asynPrint(tty->pasynUser, ASYN_TRACE_FLOW,
@@ -811,7 +822,7 @@ report(void *drvPvt, FILE *fp, int details)
         if (error != 0) {
 			printCOMError(tty->serialDeviceName, error, fp);
         }
-        fprintf(fp, "       waiting for CTS: %c\n", cstat.fCtsHold == TRUE ? 'Y' : 'N');
+		fprintf(fp, "       waiting for CTS: %c\n", cstat.fCtsHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "       waiting for DSR: %c\n", cstat.fDsrHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "  waiting for DCD/RLSD: %c\n", cstat.fRlsdHold == TRUE ? 'Y' : 'N');
         fprintf(fp, "  waiting as seen Xoff: %c\n", cstat.fXoffHold == TRUE ? 'Y' : 'N');
