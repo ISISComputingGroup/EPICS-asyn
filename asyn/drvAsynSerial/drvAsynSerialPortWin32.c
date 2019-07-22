@@ -188,7 +188,7 @@ static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeou
 		{
 			/* error code read earlier */
 			epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-				"WaitForSingleObject error=%d", error);
+				"waitForBytes: WaitForSingleObject error=%d", error);
 			return -1;
 		}
 	}
@@ -1231,19 +1231,11 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     if (gotEom) *gotEom = 0;
     nRead = thisRead = 0;
 	status = asynTimeout;
-    // we try and read one character with above timeout, and then read anything else that is present
-	if (getenv("WAITFORBYTES") != NULL)
+    // we try and read one character with above timeout, and then read anything else that is also present
+	navail = waitForBytes(tty, pasynUser, tty->readTimeout, 1);
+	if (navail < 0)
 	{
-		navail = waitForBytes(tty, pasynUser, tty->readTimeout, 1);
-		if (navail < 0)
-		{
-			printf("waitForBytes error\n");
-			status = asynError;
-		}
-	}
-	else
-	{
-		navail = 1;
+		status = asynError; /* pasynUser->errorMessage set in waitForBytes() */
 	}
 	if (navail > 0)
 	{
