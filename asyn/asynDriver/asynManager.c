@@ -559,7 +559,7 @@ static interfaceNode *locateInterfaceNode(
     pinterfaceNode = (interfaceNode *)ellFirst(plist);
     while(pinterfaceNode) {
         asynInterface *pif = pinterfaceNode->pasynInterface;
-        if(strcmp(pif->interfaceType,interfaceType)==0) break;
+        if(pif->interfaceType!=NULL && strcmp(pif->interfaceType,interfaceType)==0) break;
         pinterfaceNode = (interfaceNode *)ellNext(&pinterfaceNode->node);
     }
     if(!pinterfaceNode && allocNew) {

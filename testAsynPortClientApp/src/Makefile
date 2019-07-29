@@ -4,8 +4,13 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
-PROD_HOST += testAsynIPPortClient
-PROD_SRCS += testAsynIPPortClient.cpp
+PROD_HOST += testAsynIPPortClient testSerialPort
+
+testAsynIPPortClient_SRCS += testAsynIPPortClient.cpp
+
+testSerialPort_SRCS += testSerialPort.cpp
+
+testSerialPort_CXXFLAGS += -I$(CLI11)
 
 PROD_LIBS += asyn
 ifeq ($(EPICS_LIBCOM_ONLY),YES)

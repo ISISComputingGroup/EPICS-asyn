@@ -77,5 +77,6 @@ void asynPortClient::report(FILE *fp, int details)
     fprintf(fp, "asynInterfaceType=%s\n", asynInterfaceType_);
     fprintf(fp, "drvInfo=%s\n", drvInfo_);
     fprintf(fp, "pasynUser=%p\n", pasynUser_);
+	pasynManager->report(fp, details, portName_);
 }
 
