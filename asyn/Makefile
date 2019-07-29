@@ -223,6 +223,8 @@ ifneq ($(EPICS_LIBCOM_ONLY),YES)
 endif
 asyn_SRCS += boSRQonOff.c
 
+BIN_INSTALLS_WIN32 += $(wildcard $(ONCRPC)/bin/$(EPICS_HOST_ARCH)/oncrpc.*)
+
 include $(TOP)/configure/RULES
 
 # For 3.14
