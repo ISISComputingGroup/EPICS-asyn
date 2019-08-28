@@ -20,7 +20,7 @@ static CLI::Validator CheckEscape = CLI::IsMember({"clrbreak", "clrdtr", "clrrts
 static void addOption(CLI::App& app, std::map<std::string, std::string>& optMap, const std::string& opt, const std::string& desc, CLI::Validator validator)
 {
     app.add_option(std::string("--") + opt, optMap[opt], desc)->check(validator);
-}	
+}   
 
 // testSerialPort [options] COMPORT [outputString] [outputEos] [inputEos]
 
@@ -82,10 +82,10 @@ int main(int argc, char *argv[])
 
   for(std::map<std::string, std::string>::const_iterator it = optMap.begin(); it != optMap.end(); ++it)
   {
-	  if (it->second.size() > 0)
-	  {
-	      optClient->setOption(it->first.c_str(), it->second.c_str());
-	  }
+      if (it->second.size() > 0)
+      {
+          optClient->setOption(it->first.c_str(), it->second.c_str());
+      }
   }
   
   if (output_eos.size() > 0) {
@@ -102,8 +102,8 @@ int main(int argc, char *argv[])
       n = epicsStrnRawFromEscaped(output, sizeof(output), output_string.c_str(), output_string.size());
       if (serial_report >= 0)
       {
-	      printf("\n--- Report prior to write ---\n\n");
-		  pasynManager->report(stdout, serial_report, "L0");
+          printf("\n--- Report prior to write ---\n\n");
+          pasynManager->report(stdout, serial_report, "L0");
       } 
       writeStatus = client->write(output, n, &nOut);
   }
@@ -112,10 +112,10 @@ int main(int argc, char *argv[])
   {
       if (serial_report >= 0)
       {
-	      printf("\n--- Report prior to read ---\n\n");
-		  pasynManager->report(stdout, serial_report, "L0");
+          printf("\n--- Report prior to read ---\n\n");
+          pasynManager->report(stdout, serial_report, "L0");
       }
-	  input[0] = input_escaped[0] = '\0';
+      input[0] = input_escaped[0] = '\0';
       if (wait > 0.0)
       {
           epicsThreadSleep(wait);
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 
   if (serial_report >= 0)
   {
- 	  printf("\n--- Report at end ---\n\n");
+      printf("\n--- Report at end ---\n\n");
       pasynManager->report(stdout, serial_report, "L0");
   }
   
