@@ -225,7 +225,6 @@ struct port {
     epicsTimeStamp timeStamp;
     timeStampCallback timeStampSource;
     void          *timeStampPvt;
-    double        secondsBetweenPortConnect;
 };
 
 typedef struct queueLockPortPvt {

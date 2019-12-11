@@ -77,8 +77,8 @@ int main(int argc, char *argv[])
 
   drvAsynSerialPortConfigure("L0", serial_port.c_str(), 0, 0, 0);
   
-  std::auto_ptr<asynOctetClient> client(new asynOctetClient("L0", 0, 0, timeout));
-  std::auto_ptr<asynOptionClient> optClient(new asynOptionClient("L0", 0, 0));
+  std::auto_ptr<asynOctetClient> client(new asynOctetClient("L0", 0, NULL, timeout));
+  std::auto_ptr<asynOptionClient> optClient(new asynOptionClient("L0", 0, NULL));
 
   for(std::map<std::string, std::string>::const_iterator it = optMap.begin(); it != optMap.end(); ++it)
   {

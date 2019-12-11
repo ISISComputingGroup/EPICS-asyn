@@ -1244,102 +1244,6 @@ asynStatus asynPortDriver::getParamAlarmSeverity(int list, int index, int *alarm
     return status;
 }
 
-/** Sets the alarmStatus for a parameter in the parameter library.
-  * Calls setParamAlarmStatus(0, index, status) i.e. for parameter list 0.
-  * \param[in] index The parameter number 
-  * \param[in] alarmStatus Status to set. */
-asynStatus asynPortDriver::setParamAlarmStatus(int index, int alarmStatus)
-{
-    return this->setParamAlarmStatus(0, index, alarmStatus);
-}
-
-/** Sets the alarmStatus for a parameter in the parameter library.
-  * Calls paramList::setAlarmStatus(index, status) for the parameter list indexed by list.
-  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
-  * \param[in] index The parameter number 
-  * \param[in] alarmStatus Status to set. */
-asynStatus asynPortDriver::setParamAlarmStatus(int list, int index, int alarmStatus)
-{
-    asynStatus status;
-    static const char *functionName = "setParamAlarmStatus";
-    
-    status = this->params[list]->setAlarmStatus(index, alarmStatus);
-    if (status) reportSetParamErrors(status, index, list, functionName);
-    return(status);
-}
-
-/** Gets the alarmStatus for a parameter in the parameter library.
-  * Calls getParamAlarmStatus(0, index, status) i.e. for parameter list 0.
-  * \param[in] index The parameter number 
-  * \param[out] alarmStatus Address of alarmStatus to get. */
-asynStatus asynPortDriver::getParamAlarmStatus(int index, int *alarmStatus)
-{
-    return this->getParamAlarmStatus(0, index, alarmStatus);
-}
-
-/** Gets the alarmStatus for a parameter in the parameter library.
-  * Calls paramList::getAlarmStatus(index, status) for the parameter list indexed by list.
-  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
-  * \param[in] index The parameter number 
-  * \param[out] alarmStatus Address of status to get. */
-asynStatus asynPortDriver::getParamAlarmStatus(int list, int index, int *alarmStatus)
-{
-    asynStatus status;
-    static const char *functionName = "getParamAlarmStatus";
-
-    status = this->params[list]->getAlarmStatus(index, alarmStatus);
-    if (status) reportSetParamErrors(status, index, list, functionName);
-    return(status);
-}
-
-/** Sets the alarmSeverity for a parameter in the parameter library.
-  * Calls setParamAlarmSeverity(0, index, status) i.e. for parameter list 0.
-  * \param[in] index The parameter number 
-  * \param[in] alarmSeverity Severity to set. */
-asynStatus asynPortDriver::setParamAlarmSeverity(int index, int alarmSeverity)
-{
-    return this->setParamAlarmSeverity(0, index, alarmSeverity);
-}
-
-/** Sets the alarmSeverity for a parameter in the parameter library.
-  * Calls paramList::setAlarmSeverity(index, status) for the parameter list indexed by list.
-  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
-  * \param[in] index The parameter number 
-  * \param[in] alarmSeverity Severity to set. */
-asynStatus asynPortDriver::setParamAlarmSeverity(int list, int index, int alarmSeverity)
-{
-    asynStatus status;
-    static const char *functionName = "setParamAlarmSeverity";
-    
-    status = this->params[list]->setAlarmSeverity(index, alarmSeverity);
-    if (status) reportSetParamErrors(status, index, list, functionName);
-    return(status);
-}
-
-/** Gets the alarmSeverity for a parameter in the parameter library.
-  * Calls getParamAlarmSeverity(0, index, status) i.e. for parameter list 0.
-  * \param[in] index The parameter number 
-  * \param[out] alarmSeverity Address of alarmSeverity to get. */
-asynStatus asynPortDriver::getParamAlarmSeverity(int index, int *alarmSeverity)
-{
-    return this->getParamAlarmSeverity(0, index, alarmSeverity);
-}
-
-/** Gets the alarmSeverity for a parameter in the parameter library.
-  * Calls paramList::getAlarmSeverity(index, status) for the parameter list indexed by list.
-  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
-  * \param[in] index The parameter number 
-  * \param[out] alarmSeverity Address of status to get. */
-asynStatus asynPortDriver::getParamAlarmSeverity(int list, int index, int *alarmSeverity)
-{
-    asynStatus status;
-    static const char *functionName = "getParamAlarmSeverity";
-
-    status = this->params[list]->getAlarmSeverity(index, alarmSeverity);
-    if (status) reportSetParamErrors(status, index, list, functionName);
-    return(status);
-}
-
 /** Sets the value for an integer in the parameter library.
   * Calls setIntegerParam(0, index, value) i.e. for parameter list 0.
   * \param[in] index The parameter number 
@@ -1585,30 +1489,6 @@ asynStatus asynPortDriver::setStringParam(int list, int index, const std::string
     return status;
 }
 
-/** Sets the value for a string in the parameter library.
-  * Calls setStringParam(0, index, value) i.e. for parameter list 0.
-  * \param[in] index The parameter number 
-  * \param[in] value String value to set. */
-asynStatus asynPortDriver::setStringParam(int index, const std::string& value)
-{
-    return this->setStringParam(0, index, value);
-}
-
-/** Sets the value for a string in the parameter library.
-  * Calls paramList::setString (index, value) for the parameter list indexed by list.
-  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
-  * \param[in] index The parameter number 
-  * \param[in] value String value to set. */
-asynStatus asynPortDriver::setStringParam(int list, int index, const std::string& value)
-{
-    asynStatus status;
-    static const char *functionName = "setStringParam";
-
-    status = this->params[list]->setString(index, value);
-    if (status) reportSetParamErrors(status, index, list, functionName);
-    return(status);
-}
-
 /** Reports errors when getting parameters.  
   * asynParamBadIndex and asynParamWrongType are printed with ASYN_TRACE_ERROR because they should never happen.
   * asynParamUndefined is printed with ASYN_TRACE_FLOW because it is an expected error if the value is read before it
@@ -1786,30 +1666,6 @@ asynStatus asynPortDriver::getStringParam(int list, int index, std::string& valu
     status = this->params[list]->getString(index, value);
     if (status) reportGetParamErrors(status, index, list, functionName);
     return status;
-}
-
-/** Returns the value for a string from the parameter library.
-  * Calls getStringParam(0, index, value) i.e. for parameter list 0.
-  * \param[in] index The parameter number 
-  * \param[out] value String value to get. */
-asynStatus asynPortDriver::getStringParam(int index, std::string& value)
-{
-    return this->getStringParam(0, index, value);
-}
-
-/** Returns the value for a string from the parameter library.
-  * Calls paramList::getString (index, value) for the parameter list indexed by list.
-  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
-  * \param[in] index The parameter number 
-  * \param[out] value String value to get. */
-asynStatus asynPortDriver::getStringParam(int list, int index, std::string& value)
-{
-    asynStatus status;
-    static const char *functionName = "getStringParam";
-
-    status = this->params[list]->getString(index, value);
-    if (status) reportGetParamErrors(status, index, list, functionName);
-    return(status);
 }
 
 /** Calls callParamCallbacks(0, 0) i.e. with both list and asyn address. */
