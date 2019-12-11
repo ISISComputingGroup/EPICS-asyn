@@ -12,12 +12,14 @@
 typedef enum {
     asynParamNotDefined,     /**< Undefined */
     asynParamInt32,
+    asynParamInt64,
     asynParamUInt32Digital,
     asynParamFloat64,
     asynParamOctet,
     asynParamInt8Array,
     asynParamInt16Array,
     asynParamInt32Array,
+    asynParamInt64Array,
     asynParamFloat32Array,
     asynParamFloat64Array,
     asynParamGenericPointer

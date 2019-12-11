@@ -19,12 +19,26 @@
 #include <epicsTime.h>
 #include <ellLib.h>
 #include <shareLib.h>
+#include <epicsVersion.h>
 
 /* Version number names similar to those provide by base
  * These macros are always numeric */
 #define ASYN_VERSION       4
-#define ASYN_REVISION     32
+#define ASYN_REVISION     37
 #define ASYN_MODIFICATION  0
+
+#ifndef EPICS_VERSION_INT
+#define VERSION_INT(V,R,M,P) ( ((V)<<24) | ((R)<<16) | ((M)<<8) | (P))
+#define EPICS_VERSION_INT VERSION_INT(EPICS_VERSION, EPICS_REVISION, EPICS_MODIFICATION, EPICS_PATCH_LEVEL)
+#endif
+#define LT_EPICSBASE(V,R,M,P) (EPICS_VERSION_INT < VERSION_INT((V),(R),(M),(P)))
+
+#if LT_EPICSBASE(3,15,0,2)
+  #if __STDC_VERSION__ < 199901L
+    typedef long long          epicsInt64;
+    typedef unsigned long long epicsUInt64;
+  #endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {

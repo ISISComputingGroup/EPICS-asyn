@@ -16,12 +16,14 @@
 const char* paramVal::typeNames[] = {
     "asynParamTypeUndefined",
     "asynParamInt32",
+    "asynParamInt64",
     "asynParamUInt32Digital",
     "asynParamFloat64",
     "asynParamOctet",
     "asynParamInt8Array",
     "asynParamInt16Array",
     "asynParamInt32Array",
+    "asynParamInt64Array",
     "asynParamFloat32Array",
     "asynParamFloat64Array",
     "asynParamGenericPointer"
@@ -40,6 +42,7 @@ paramVal::paramVal(const char *name, asynParamType type):
     type(type), status_(asynSuccess), alarmStatus_(0), alarmSeverity_(0),
     valueDefined(false), valueChanged(false){
     this->name = epicsStrDup(name);
+    memset(&this->data, 0, sizeof(this->data));
 }
 
 paramVal::~paramVal(){
@@ -150,6 +153,35 @@ epicsInt32 paramVal::getInteger()
     return data.ival;
 }
 
+/** Sets the value for a 64-bit integer.
+  * \param[in] value Value to set.
+  * \throws ParamValWrongType if type is not asynParamInt64
+  */
+void paramVal::setInteger64(epicsInt64 value)
+{
+    if (type != asynParamInt64)
+        throw ParamValWrongType("paramVal::setInteger64 can only handle asynParamInt64");
+    if (!isDefined() || (data.ival != value))
+    {
+        setDefined(true);
+        data.i64val = value;
+        setValueChanged();
+    }
+}
+
+/** Gets the value for a 64-bit integer in the parameter library.
+  * \throws ParamValWrongType if type is not asynParamInt64
+  * \throws paramValNotDefined if the value is not defined
+  */
+epicsInt64 paramVal::getInteger64()
+{
+    if (type != asynParamInt64)
+        throw ParamValWrongType("paramVal::getInteger64 can only handle asynParamInt64");
+    if (!isDefined())
+        throw ParamValNotDefined("paramVal::getInteger64 value not defined");
+    return data.i64val;
+}
+
 /** Sets the value for a UInt32 in the parameter library.
   * \param[in] value Value to set.
   * \param[in] valueMask Mask to use when setting the value.
@@ -257,6 +289,12 @@ void paramVal::report(int id, FILE *fp, int details)
             else
                 fprintf(fp, "Parameter %d type=asynInt32, name=%s, value is undefined\n", id, getName());
             break;
+        case asynParamInt64:
+            if (isDefined())
+                fprintf(fp, "Parameter %d type=asynInt64, name=%s, value=%lld, status=%d\n", id, getName(), getInteger64(), getStatus());
+            else
+                fprintf(fp, "Parameter %d type=asynInt64, name=%s, value is undefined\n", id, getName());
+            break;
         case asynParamUInt32Digital:
             if (isDefined())
                 fprintf(fp, "Parameter %d type=asynUInt32Digital, name=%s, value=0x%x, status=%d, risingMask=0x%x, fallingMask=0x%x, callbackMask=0x%x\n",
@@ -267,7 +305,7 @@ void paramVal::report(int id, FILE *fp, int details)
             break;
         case asynParamFloat64:
             if (isDefined())
-                fprintf(fp, "Parameter %d type=asynFloat64, name=%s, value=%f, status=%d\n", id, getName(), getDouble(), getStatus());
+                fprintf(fp, "Parameter %d type=asynFloat64, name=%s, value=%g, status=%d\n", id, getName(), getDouble(), getStatus());
             else
                 fprintf(fp, "Parameter %d type=asynFloat64, name=%s, value is undefined\n", id, getName());
             break;
@@ -294,6 +332,12 @@ void paramVal::report(int id, FILE *fp, int details)
                 fprintf(fp, "Parameter %d type=asynInt32Array, name=%s, value=%p, status=%d\n", id, getName(), data.pi32, getStatus() );
             else
                 fprintf(fp, "Parameter %d type=asynInt32Array, name=%s, value is undefined\n", id, getName());
+            break;
+        case asynParamInt64Array:
+            if (isDefined())
+                fprintf(fp, "Parameter %d type=asynInt64Array, name=%s, value=%p, status=%d\n", id, getName(), data.pi64, getStatus() );
+            else
+                fprintf(fp, "Parameter %d type=asynInt64Array, name=%s, value is undefined\n", id, getName());
             break;
         case asynParamFloat32Array:
             if (isDefined())
