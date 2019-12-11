@@ -9,6 +9,8 @@ ASYN = $(TOP)
 ASYN_LIB = $(TOP)/lib/$(T_A)
 ASYN_BIN = $(TOP)/bin/$(T_A)
 
+USR_CFLAGS += -DUSE_TYPED_RSET -DUSE_TYPED_DSET -DUSE_TYPED_DRVET
+
 DBD += devTestGpib.dbd
 
 DBD += testGpib.dbd
@@ -40,6 +42,10 @@ testGpibVx_SRCS_vxWorks += testGpibVx_registerRecordDeviceDriver.cpp
 
 testGpib_LIBS += devTestGpib
 testGpib_LIBS += testSupport asyn
+ifeq ($(TIRPC),YES)
+  USR_INCLUDES += -I/usr/include/tirpc
+  testGpib_SYS_LIBS += tirpc
+endif
 SYS_PROD_LIBS_cygwin32 += $(CYGWIN_RPC_LIB)
 testGpib_LIBS += $(EPICS_BASE_IOC_LIBS)
 

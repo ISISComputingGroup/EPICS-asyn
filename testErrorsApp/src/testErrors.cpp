@@ -59,18 +59,18 @@ static void callbackTask(void *drvPvt);
 /** Constructor for the testErrors class.
   * Calls constructor for the asynPortDriver base class.
   * \param[in] portName The name of the asyn port driver to be created. */
-testErrors::testErrors(const char *portName) 
+testErrors::testErrors(const char *portName, int canBlock) 
    : asynPortDriver(portName, 
                     1, /* maxAddr */ 
                      /* Interface mask */
-                    asynInt32Mask       | asynFloat64Mask    | asynUInt32DigitalMask | asynOctetMask | 
-                      asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask    | asynFloat32ArrayMask | asynFloat64ArrayMask |
-                      asynOptionMask    | asynEnumMask       | asynDrvUserMask,
+                    asynInt32Mask     | asynInt64Mask      | asynFloat64Mask    | asynUInt32DigitalMask | asynOctetMask | 
+                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | asynInt64ArrayMask    | asynFloat32ArrayMask | asynFloat64ArrayMask |
+                    asynOptionMask    | asynEnumMask       | asynDrvUserMask,
                     /* Interrupt mask */
-                    asynInt32Mask       | asynFloat64Mask    | asynUInt32DigitalMask | asynOctetMask | 
-                      asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask    | asynFloat32ArrayMask | asynFloat64ArrayMask |
-                      asynEnumMask,
-                    0, /* asynFlags.  This driver does not block and it is not multi-device, so flag is 0 */
+                    asynInt32Mask     | asynInt64Mask      | asynFloat64Mask    | asynUInt32DigitalMask | asynOctetMask | 
+                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | asynInt64ArrayMask    | asynFloat32ArrayMask | asynFloat64ArrayMask |
+                    asynEnumMask,
+                    canBlock ? ASYN_CANBLOCK : 0, /* asynFlags */
                     1, /* Autoconnect */
                     0, /* Default priority */
                     0) /* Default stack size*/    
@@ -85,6 +85,7 @@ testErrors::testErrors(const char *portName)
     createParam(P_EnumOrderString,                  asynParamInt32,         &P_EnumOrder);
     createParam(P_DoUpdateString,                   asynParamInt32,         &P_DoUpdate);
     createParam(P_Int32ValueString,                 asynParamInt32,         &P_Int32Value);
+    createParam(P_Int64ValueString,                 asynParamInt64,         &P_Int64Value);
     createParam(P_BinaryInt32ValueString,           asynParamInt32,         &P_BinaryInt32Value);
     createParam(P_MultibitInt32ValueString,         asynParamInt32,         &P_MultibitInt32Value);
     createParam(P_Float64ValueString,               asynParamFloat64,       &P_Float64Value);
@@ -95,6 +96,7 @@ testErrors::testErrors(const char *portName)
     createParam(P_Int8ArrayValueString,             asynParamInt8Array,     &P_Int8ArrayValue);
     createParam(P_Int16ArrayValueString,            asynParamInt16Array,    &P_Int16ArrayValue);
     createParam(P_Int32ArrayValueString,            asynParamInt32Array,    &P_Int32ArrayValue);
+    createParam(P_Int64ArrayValueString,            asynParamInt64Array,    &P_Int64ArrayValue);
     createParam(P_Float32ArrayValueString,          asynParamFloat32Array,  &P_Float32ArrayValue);
     createParam(P_Float64ArrayValueString,          asynParamFloat64Array,  &P_Float64ArrayValue);
     
@@ -106,6 +108,7 @@ testErrors::testErrors(const char *portName)
     }
     setIntegerParam(P_StatusReturn,       asynSuccess);
     setIntegerParam(P_Int32Value,         0);
+    setInteger64Param(P_Int64Value,       0);
     setIntegerParam(P_BinaryInt32Value,   0);
     setIntegerParam(P_MultibitInt32Value, 0);
     setDoubleParam(P_Float64Value,        0.0);
@@ -149,6 +152,7 @@ void testErrors::callbackTask(void)
     epicsInt32 alarmSeverity;
     epicsInt32 itemp;
     epicsInt32 iVal;
+    epicsInt64 i64Val;
     epicsUInt32 uiVal;
     epicsFloat64 dVal;
     int i;
@@ -172,6 +176,14 @@ void testErrors::callbackTask(void)
         setParamStatus(       P_Int32Value, currentStatus);
         setParamAlarmStatus(  P_Int32Value, alarmStatus);
         setParamAlarmSeverity(P_Int32Value, alarmSeverity);
+
+        getInteger64Param(P_Int64Value, &i64Val);
+        i64Val++;
+        if (i64Val > 64) i64Val=0;
+        setInteger64Param(    P_Int64Value, i64Val);
+        setParamStatus(       P_Int64Value, currentStatus);
+        setParamAlarmStatus(  P_Int64Value, alarmStatus);
+        setParamAlarmSeverity(P_Int64Value, alarmSeverity);
 
         getIntegerParam(P_BinaryInt32Value, &iVal);
         iVal++;
@@ -230,6 +242,7 @@ void testErrors::callbackTask(void)
             int8ArrayValue_[i]    = iVal;
             int16ArrayValue_[i]   = iVal;
             int32ArrayValue_[i]   = iVal;
+            int64ArrayValue_[i]   = i64Val;
             float32ArrayValue_[i] = (epicsFloat32)dVal;
             float64ArrayValue_[i] = dVal;
         }
@@ -243,6 +256,9 @@ void testErrors::callbackTask(void)
         setParamStatus(       P_Int32ArrayValue,   currentStatus);
         setParamAlarmStatus(  P_Int32ArrayValue,   alarmStatus);
         setParamAlarmSeverity(P_Int32ArrayValue,   alarmSeverity);
+        setParamStatus(       P_Int64ArrayValue,   currentStatus);
+        setParamAlarmStatus(  P_Int64ArrayValue,   alarmStatus);
+        setParamAlarmSeverity(P_Int64ArrayValue,   alarmSeverity);
         setParamStatus(       P_Float32ArrayValue, currentStatus);
         setParamAlarmStatus(  P_Float32ArrayValue, alarmStatus);
         setParamAlarmSeverity(P_Float32ArrayValue, alarmSeverity);
@@ -252,6 +268,7 @@ void testErrors::callbackTask(void)
         doCallbacksInt8Array(int8ArrayValue_,       MAX_ARRAY_POINTS, P_Int8ArrayValue,    0);
         doCallbacksInt16Array(int16ArrayValue_,     MAX_ARRAY_POINTS, P_Int16ArrayValue,   0);
         doCallbacksInt32Array(int32ArrayValue_,     MAX_ARRAY_POINTS, P_Int32ArrayValue,   0);
+        doCallbacksInt64Array(int64ArrayValue_,     MAX_ARRAY_POINTS, P_Int64ArrayValue,   0);
         doCallbacksFloat32Array(float32ArrayValue_, MAX_ARRAY_POINTS, P_Float32ArrayValue, 0);
         doCallbacksFloat64Array(float64ArrayValue_, MAX_ARRAY_POINTS, P_Float64ArrayValue, 0);
     }
@@ -289,6 +306,18 @@ void testErrors::setEnums()
                     MAX_UINT32_ENUMS, P_MultibitUInt32DigitalValue, 0);
 }
 
+asynStatus testErrors::setStatusAndSeverity(asynUser *pasynUser)
+{
+    int status;
+    
+    getIntegerParam(P_StatusReturn, &status);
+    getIntegerParam(P_AlarmStatus, &pasynUser->alarmStatus);
+    getIntegerParam(P_AlarmSeverity, &pasynUser->alarmSeverity);
+    setParamStatus(pasynUser->reason, (asynStatus) status);
+    setParamAlarmStatus(pasynUser->reason, pasynUser->alarmStatus);
+    setParamAlarmSeverity(pasynUser->reason, pasynUser->alarmSeverity);
+    return (asynStatus) status;
+}
 /** Called when asyn clients call pasynInt32->write().
   * This function sends a signal to the simTask thread if the value of P_Run has changed.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
@@ -298,7 +327,6 @@ asynStatus testErrors::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    epicsInt32 itemp;
     const char *paramName;
     const char* functionName = "writeInt32";
 
@@ -317,10 +345,8 @@ asynStatus testErrors::writeInt32(asynUser *pasynUser, epicsInt32 value)
         setEnums();
     }
     else {
-        /* Set the parameter status in the parameter library except for the above commands with always return OK */
-        /* Get the current error status */
-        getIntegerParam(P_StatusReturn, &itemp); status = (asynStatus)itemp;
-        setParamStatus(function, status);
+        /* Set the parameter status in the parameter library except for the above commands which always return OK */
+        status = setStatusAndSeverity(pasynUser);
     }
     
     /* Do callbacks so higher layers see any changes */
@@ -337,6 +363,41 @@ asynStatus testErrors::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
+/** Called when asyn clients call pasynInt64->write().
+  * This function sends a signal to the simTask thread if the value of P_Run has changed.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
+asynStatus testErrors::writeInt64(asynUser *pasynUser, epicsInt64 value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *paramName;
+    const char* functionName = "writeInt64";
+
+    /* Fetch the parameter string name for use in debugging */
+    getParamName(function, &paramName);
+
+    /* Set the parameter value in the parameter library. */
+    setInteger64Param(function, value);
+
+    /* Set the parameter status in the parameter library */
+    status = setStatusAndSeverity(pasynUser);
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks();
+    
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, name=%s, value=%lld", 
+                  driverName, functionName, status, function, paramName, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, name=%s, value=%lld\n", 
+              driverName, functionName, function, paramName, value);
+    return status;
+}
+
 /** Called when asyn clients call pasynFloat64->write().
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
@@ -344,20 +405,17 @@ asynStatus testErrors::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    epicsInt32 itemp;
     const char *paramName;
     const char* functionName = "writeFloat64";
-
-    /* Get the current error status */
-    getIntegerParam(P_StatusReturn, &itemp);  status = (asynStatus)itemp;
 
     /* Fetch the parameter string name for use in debugging */
     getParamName(function, &paramName);
 
     /* Set the parameter in the parameter library. */
     setDoubleParam(function, value);
-    /* Set the parameter status in the parameter library. */
-    setParamStatus(function, status);
+
+    /* Set the parameter status in the parameter library */
+    status = setStatusAndSeverity(pasynUser);
 
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
@@ -381,20 +439,17 @@ asynStatus testErrors::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    epicsInt32 itemp;
     const char *paramName;
     const char* functionName = "writeUInt32D";
-
-    /* Get the current error status */
-    getIntegerParam(P_StatusReturn, &itemp); status = (asynStatus)itemp;
 
     /* Fetch the parameter string name for use in debugging */
     getParamName(function, &paramName);
 
     /* Set the parameter value in the parameter library. */
     setUIntDigitalParam(function, value, mask);
-    /* Set the parameter status in the parameter library. */
-    setParamStatus(function, status);
+
+    /* Set the parameter status in the parameter library */
+    status = setStatusAndSeverity(pasynUser);
     
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
@@ -422,28 +477,28 @@ asynStatus testErrors::writeOctet(asynUser *pasynUser, const char *value,
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    epicsInt32 itemp;
+    const char *paramName;
     const char *functionName = "writeOctet";
 
-    /* Get the current error status */
-    getIntegerParam(P_StatusReturn, &itemp); status = (asynStatus)itemp;
+    /* Fetch the parameter string name for use in debugging */
+    getParamName(function, &paramName);
 
     /* Set the parameter in the parameter library. */
     setStringParam(function, (char *)value);
-    /* Set the parameter status in the parameter library. */
-    setParamStatus(function, status);
+    /* Set the parameter status in the parameter library */
+    status = setStatusAndSeverity(pasynUser);
 
      /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
 
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%s", 
-                  driverName, functionName, status, function, value);
+                  "%s:%s: status=%d, function=%d, name=%s, value=%s", 
+                  driverName, functionName, status, function, paramName, value);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%s\n", 
-              driverName, functionName, function, value);
+              "%s:%s: function=%d, name=%s, value=%s\n", 
+              driverName, functionName, function, paramName, value);
     *nActual = nChars;
     return status;
 }
@@ -541,14 +596,12 @@ asynStatus testErrors::doReadArray(asynUser *pasynUser, epicsType *value,
     epicsTimeStamp timestamp;
     const char *functionName = "doReadArray";
 
-    /* Get the current error status */
-    getIntegerParam(P_StatusReturn, &status);
-    
     /* Get the current timestamp */
     getTimeStamp(&timestamp);
     pasynUser->timestamp = timestamp;
-    getParamAlarmStatus(function, &pasynUser->alarmStatus);
-    getParamAlarmSeverity(function, &pasynUser->alarmSeverity);
+
+    /* Set the parameter status in the parameter library */
+    status = setStatusAndSeverity(pasynUser);
 
     if (nElements < ncopy) ncopy = nElements;
     if (function == paramIndex) {
@@ -588,6 +641,13 @@ asynStatus testErrors::readInt32Array(asynUser *pasynUser, epicsInt32 *value,
         (pasynUser, value, nElements, nIn, P_Int32ArrayValue, int32ArrayValue_);
 }
 
+asynStatus testErrors::readInt64Array(asynUser *pasynUser, epicsInt64 *value, 
+                                        size_t nElements, size_t *nIn)
+{
+    return doReadArray<epicsInt64>
+        (pasynUser, value, nElements, nIn, P_Int64ArrayValue, int64ArrayValue_);
+}
+
 asynStatus testErrors::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value, 
                                         size_t nElements, size_t *nIn)
 {
@@ -610,21 +670,22 @@ extern "C" {
 
 /** EPICS iocsh callable function to call constructor for the testErrors class.
   * \param[in] portName The name of the asyn port driver to be created. */
-int testErrorsConfigure(const char *portName)
+int testErrorsConfigure(const char *portName, int canBlock)
 {
-    new testErrors(portName);
-    return(asynSuccess);
+    new testErrors(portName, canBlock);
+    return asynSuccess;
 }
 
 
 /* EPICS iocsh shell commands */
 
-static const iocshArg initArg0 = { "portName",iocshArgString};
-static const iocshArg * const initArgs[] = {&initArg0};
-static const iocshFuncDef initFuncDef = {"testErrorsConfigure",1,initArgs};
+static const iocshArg initArg0 = { "portName", iocshArgString};
+static const iocshArg initArg1 = { "canBlock", iocshArgInt};
+static const iocshArg * const initArgs[] = {&initArg0, &initArg1};
+static const iocshFuncDef initFuncDef = {"testErrorsConfigure", 2, initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    testErrorsConfigure(args[0].sval);
+    testErrorsConfigure(args[0].sval, args[1].ival);
 }
 
 void testErrorsRegister(void)
