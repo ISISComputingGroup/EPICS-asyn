@@ -906,17 +906,17 @@ paramVal* paramList::getParameter(int index)
     return this->vals[index];
 }
 
-callbackThread::callbackThread(asynPortDriver *portDriver) :
-        thread(*this, "asynPortDriverCallback", epicsThreadGetStackSize(epicsThreadStackMedium), epicsThreadPriorityMedium),
-        pPortDriver(portDriver)
+callbackThread::callbackThread(asynPortDriver *portDriver) : 
+    pThread(new epicsThread(*this, "asynPortDriverCallback", epicsThreadGetStackSize(epicsThreadStackMedium), epicsThreadPriorityMedium)),
+    pPortDriver(portDriver)
 {
-    thread.start();
+    pThread->start();
 }
 
 callbackThread::~callbackThread()
 {
     shutdown.signal();
-    thread.exitWait();
+    doneEvent.wait();
 }
 
 /* I thought this would be a temporary fix until EPICS supported PINI after interruptAccept, which would then be used
@@ -934,6 +934,9 @@ void callbackThread::run()
         pPortDriver->callParamCallbacks(addr, addr);
     }
     epicsMutexUnlock(pPortDriver->mutexId);
+    delete pThread;
+    pThread = NULL;
+    doneEvent.signal();
 }
 
 
