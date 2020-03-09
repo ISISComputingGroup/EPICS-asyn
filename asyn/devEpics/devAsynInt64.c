@@ -534,7 +534,7 @@ static void interruptCallbackAverage(void *drvPvt, asynUser *pasynUser,
          pai->name, driverName, functionName, value);
     if (!interruptAccept) return;
     epicsMutexLock(pPvt->devPvtLock);
-    pPvt->numAverage++;
+    pPvt->numAverage++; 
     pPvt->sum += (double)value;
     /* We use the SVAL field to hold the number of values to average when SCAN=I/O Intr
      * We should be calling dbScanLock when accessing pPvt->isIOIntrScan and pai->sval but that leads to deadlocks
@@ -544,7 +544,7 @@ static void interruptCallbackAverage(void *drvPvt, asynUser *pasynUser,
      * pai->sval is a double so it may not be completely safe to read without the lock? */
     if ((pPvt->isIOIntrScan)) {
         numToAverage = (int)(pai->sval + 0.5);
-        if (numToAverage < 1) numToAverage = 1;
+        if (numToAverage < 1) numToAverage = 1; 
         if (pPvt->numAverage >= numToAverage) {
             double dval;
             rp = &pPvt->ringBuffer[pPvt->ringHead];
@@ -570,10 +570,10 @@ static void interruptCallbackAverage(void *drvPvt, asynUser *pasynUser,
                 /* We only need to request the record to process if we added a new
                  * element to the ring buffer, not if we just replaced an element. */
                 scanIoRequest(pPvt->ioScanPvt);
-            }
+            }  
         } /* End numAverage=SVAL, so time to compute average */
     } /* End SCAN=I/O Intr */
-    else {
+    else { 
         pPvt->result.status |= pasynUser->auxStatus;
         pPvt->result.alarmStatus = pasynUser->alarmStatus;
         pPvt->result.alarmSeverity = pasynUser->alarmSeverity;
@@ -785,13 +785,13 @@ static long processAi(aiRecord *pr)
         if(pPvt->canBlock) pr->pact = 0;
         reportQueueRequestStatus(pPvt, status);
     }
-    pr->time = pPvt->result.time;
-    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status,
+    pr->time = pPvt->result.time; 
+    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status, 
                                             READ_ALARM, &pPvt->result.alarmStatus,
                                             INVALID_ALARM, &pPvt->result.alarmSeverity);
     (void)recGblSetSevr(pr, pPvt->result.alarmStatus, pPvt->result.alarmSeverity);
     if (pPvt->result.status == asynSuccess) {
-        pr->val = pPvt->result.value;
+        pr->val = pPvt->result.value; 
         pr->udf = 0;
         return 2;
     }
@@ -839,8 +839,8 @@ static long processAiAverage(aiRecord *pr)
     if (getCallbackValue(pPvt)) {
         /* Record is I/O Intr scanned and the average has been put in the ring buffer */
         val = pPvt->result.value;
-        pr->time = pPvt->result.time;
-    } else {
+        pr->time = pPvt->result.time; 
+    } else {        
         if (pPvt->numAverage == 0) {
             (void)recGblSetSevr(pr, UDF_ALARM, INVALID_ALARM);
             pr->udf = 1;
@@ -854,7 +854,7 @@ static long processAiAverage(aiRecord *pr)
     epicsMutexUnlock(pPvt->devPvtLock);
     asynPrint(pPvt->pasynUser, ASYN_TRACEIO_DEVICE,
         "%s %s::%s val=%f, status=%d\n",pr->name, driverName, functionName, val, pPvt->result.status);
-    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status,
+    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status, 
                                             READ_ALARM, &pPvt->result.alarmStatus,
                                             INVALID_ALARM, &pPvt->result.alarmSeverity);
     (void)recGblSetSevr(pr, pPvt->result.alarmStatus, pPvt->result.alarmSeverity);
@@ -874,7 +874,7 @@ static long initAo(aoRecord *pao)
     devPvt *pPvt;
     int status;
     epicsInt64 value;
-
+ 
     status = initCommon((dbCommon *)pao,&pao->out,
         processCallbackOutput,interruptCallbackOutput);
     if (status != INIT_OK) return status;
@@ -906,7 +906,7 @@ static long processAo(aoRecord *pr)
     asynStatus status;
     double     value;
     /* static const char *functionName="processAo"; */
-
+    
     epicsMutexLock(pPvt->devPvtLock);
     if (pPvt->newOutputCallbackValue && getCallbackValue(pPvt)) {
         /* We got a callback from the driver */
@@ -935,7 +935,7 @@ static long processAo(aoRecord *pr)
         if(pPvt->canBlock) pr->pact = 0;
         reportQueueRequestStatus(pPvt, status);
     }
-    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status,
+    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status, 
                                             WRITE_ALARM, &pPvt->result.alarmStatus,
                                             INVALID_ALARM, &pPvt->result.alarmSeverity);
     (void)recGblSetSevr(pr, pPvt->result.alarmStatus, pPvt->result.alarmSeverity);
@@ -978,7 +978,7 @@ static long processLi(longinRecord *pr)
         reportQueueRequestStatus(pPvt, status);
     }
     pr->time = pPvt->result.time;
-    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status,
+    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status, 
                                             READ_ALARM, &pPvt->result.alarmStatus,
                                             INVALID_ALARM, &pPvt->result.alarmSeverity);
     (void)recGblSetSevr(pr, pPvt->result.alarmStatus, pPvt->result.alarmSeverity);
@@ -1022,7 +1022,7 @@ static long processLo(longoutRecord *pr)
     if (pPvt->newOutputCallbackValue && getCallbackValue(pPvt)) {
         /* We got a callback from the driver */
         if (pPvt->result.status == asynSuccess) {
-            pr->val = pPvt->result.value;
+            pr->val = pPvt->result.value; 
             pr->udf = 0;
         }
     } else if(pr->pact == 0) {
@@ -1038,7 +1038,7 @@ static long processLo(longoutRecord *pr)
         epicsMutexLock(pPvt->devPvtLock);
         reportQueueRequestStatus(pPvt, status);
     }
-    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status,
+    pasynEpicsUtils->asynStatusToEpicsAlarm(pPvt->result.status, 
                                             WRITE_ALARM, &pPvt->result.alarmStatus,
                                             INVALID_ALARM, &pPvt->result.alarmSeverity);
     (void)recGblSetSevr(pr, pPvt->result.alarmStatus, pPvt->result.alarmSeverity);

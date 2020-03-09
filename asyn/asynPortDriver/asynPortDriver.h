@@ -226,9 +226,10 @@ public:
     ~callbackThread();
     void run();
 private:
-    epicsThread thread;
+    epicsThread *pThread;
     asynPortDriver *pPortDriver;
     epicsEvent shutdown;
+    epicsEvent doneEvent;
 };
 
 #endif /* cplusplus */
