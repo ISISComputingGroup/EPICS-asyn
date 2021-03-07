@@ -22,6 +22,12 @@
 #include <epicsString.h>
 #include <cantProceed.h>
 
+#include <dbCommon.h>
+#include <recGbl.h>
+#define INIT_OK 0
+#define INIT_DO_NOT_CONVERT 2
+#define INIT_ERROR -1
+
 #define epicsExportSharedSymbols
 #include <shareLib.h>
 #include "asynEpicsUtils.h"
@@ -35,9 +41,11 @@ static asynStatus parseLinkFree(asynUser *pasynUser,
 static void asynStatusToEpicsAlarm(asynStatus status, 
                                    epicsAlarmCondition defaultStat, epicsAlarmCondition *pStat, 
                                    epicsAlarmSeverity defaultSevr, epicsAlarmSeverity *pSevr);
+static int adjustForSim(dbCommon *pr, epicsEnum16 simm, 
+                        epicsEnum16 sims, int* status);
 
 static asynEpicsUtils utils = {
-    parseLink,parseLinkMask,parseLinkFree,asynStatusToEpicsAlarm
+    parseLink,parseLinkMask,parseLinkFree,asynStatusToEpicsAlarm,adjustForSim
 };
 
 epicsShareDef asynEpicsUtils *pasynEpicsUtils = &utils;
@@ -265,4 +273,18 @@ static void asynStatusToEpicsAlarm(asynStatus status,
             if (*pSevr == epicsSevNone)   *pSevr = defaultSevr;
             break;
     }
+}
+
+/* returns 1 if adjusted record due to simulation mode, 0 if it didn't */
+static int adjustForSim(dbCommon *pr, epicsEnum16 simm, epicsEnum16 sims, int* status)
+{
+    if (*status != INIT_OK && simm)
+    {
+        printf("adjustForSim: init record failed in sim mode, adjusting\n");
+        pr->pact = 0;
+        recGblSetSevr(pr, epicsAlarmSimm, sims);
+        *status = INIT_OK;
+        return 1;
+    }
+    return 0;
 }

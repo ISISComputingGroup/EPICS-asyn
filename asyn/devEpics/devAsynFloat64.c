@@ -587,6 +587,7 @@ static long initAi(aiRecord *pai)
 
     status = initCommon((dbCommon *)pai,&pai->inp,
         processCallbackInput,interruptCallbackInput);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pai, pai->simm, pai->sims, &status);
     return status;
 }
 
@@ -634,6 +635,10 @@ static long initAo(aoRecord *pao)
 
     status = initCommon((dbCommon *)pao,&pao->out,
         processCallbackOutput,interruptCallbackOutput);
+    if (pasynEpicsUtils->adjustForSim((dbCommon *)pao, pao->simm, pao->sims, &status))
+    {
+        return INIT_DO_NOT_CONVERT;
+    }
     if (status != INIT_OK) return status;
     pPvt = pao->dpvt;
     /* Read the current value from the device */
@@ -710,6 +715,7 @@ static long initAiAverage(aiRecord *pai)
 
     status = initCommon((dbCommon *)pai,&pai->inp,
         0,interruptCallbackAverage);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pai, pai->simm, pai->sims, &status);
     if (status != INIT_OK) return status;
     pPvt = pai->dpvt;
     pPvt->isAiAverage = 1;

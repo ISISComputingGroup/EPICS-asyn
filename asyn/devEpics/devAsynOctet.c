@@ -852,7 +852,9 @@ static long initSiCmdResponse(stringinRecord *psi)
 
     status = initCommon((dbCommon *)psi, &psi->inp, callbackSiCmdResponse, 
                         0, 0, 0, psi->val, NULL, sizeof(psi->val));
+    pasynEpicsUtils->adjustForSim((dbCommon *)psi, psi->simm, psi->sims, &status);
     if(status!=INIT_OK) return status;
+    
     pPvt = (devPvt *)psi->dpvt;
     return initCmdBuffer(pPvt);
 }
@@ -885,6 +887,7 @@ static long initSiWriteRead(stringinRecord *psi)
 
     status = initCommon((dbCommon *)psi, &psi->inp, callbackSiWriteRead,
                         0, 0, 0, psi->val, NULL, sizeof(psi->val));
+    pasynEpicsUtils->adjustForSim((dbCommon *)psi, psi->simm, psi->sims, &status);
     if(status!=INIT_OK) return status;
     pPvt = (devPvt *)psi->dpvt;
     return initDbAddr(pPvt);
@@ -926,8 +929,10 @@ static void callbackSiWriteRead(asynUser *pasynUser)
 
 static long initSiRead(stringinRecord *psi)
 {
-    return initCommon((dbCommon *)psi, &psi->inp, callbackSiRead, 
+    int status = initCommon((dbCommon *)psi, &psi->inp, callbackSiRead, 
                       0, 0, 1, psi->val, NULL, sizeof(psi->val));
+    pasynEpicsUtils->adjustForSim((dbCommon *)psi, psi->simm, psi->sims, &status);
+    return status;
 }
 
 static void callbackSiRead(asynUser *pasynUser)
@@ -950,8 +955,10 @@ static void callbackSiRead(asynUser *pasynUser)
 
 static long initSoWrite(stringoutRecord *pso)
 {
-    return initCommon((dbCommon *)pso, &pso->out, callbackSoWrite,
+    int status = initCommon((dbCommon *)pso, &pso->out, callbackSoWrite,
                       1, 0, 1, pso->val, NULL, sizeof(pso->val));
+    pasynEpicsUtils->adjustForSim((dbCommon *)pso, pso->simm, pso->sims, &status);
+    return status;
 }
 
 /* implementation of strnlen() as i'm not sure it is available everywhere */
@@ -980,6 +987,7 @@ static long initWfCmdResponse(waveformRecord *pwf)
 
     status = initCommon((dbCommon *)pwf, &pwf->inp, callbackWfCmdResponse,
                         0, 1, 0, pwf->bptr, &(pwf->nord), pwf->nelm);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pwf, pwf->simm, pwf->sims, &status);
     if (status != INIT_OK) return status;
     return initCmdBuffer((devPvt *)pwf->dpvt);
 }
@@ -1012,6 +1020,7 @@ static long initWfWriteRead(waveformRecord *pwf)
 
     status = initCommon((dbCommon *)pwf, &pwf->inp, callbackWfWriteRead,
                         0, 1, 0, pwf->bptr, &(pwf->nord), pwf->nelm);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pwf, pwf->simm, pwf->sims, &status);
     if (status != INIT_OK) return status;
     return initDbAddr((devPvt *)pwf->dpvt);
 }
@@ -1054,8 +1063,10 @@ static void callbackWfWriteRead(asynUser *pasynUser)
 
 static long initWfRead(waveformRecord *pwf)
 {
-    return initCommon((dbCommon *)pwf, &pwf->inp, callbackWfRead,
+    int status = initCommon((dbCommon *)pwf, &pwf->inp, callbackWfRead,
                       0, 1, 1, pwf->bptr, &(pwf->nord), pwf->nelm);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pwf, pwf->simm, pwf->sims, &status);
+    return status;
 }
 
 static void callbackWfRead(asynUser *pasynUser)
@@ -1079,8 +1090,10 @@ static void callbackWfRead(asynUser *pasynUser)
 
 static long initWfWrite(waveformRecord *pwf)
 {
-    return initCommon((dbCommon *)pwf, &pwf->inp, callbackWfWrite,
+    int status = initCommon((dbCommon *)pwf, &pwf->inp, callbackWfWrite,
                       1, 1, 1, pwf->bptr, &(pwf->nord), pwf->nelm);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pwf, pwf->simm, pwf->sims, &status);
+    return status;
 }
 
 static void callbackWfWrite(asynUser *pasynUser)
@@ -1094,8 +1107,10 @@ static void callbackWfWrite(asynUser *pasynUser)
 
 static long initWfWriteBinary(waveformRecord *pwf)
 {
-    return initCommon((dbCommon *)pwf, &pwf->inp, callbackWfWriteBinary,
+    int status = initCommon((dbCommon *)pwf, &pwf->inp, callbackWfWriteBinary,
                       1, 1, 1, pwf->bptr, &(pwf->nord), pwf->nelm);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pwf, pwf->simm, pwf->sims, &status);
+    return status;
 }
 
 static void callbackWfWriteBinary(asynUser *pasynUser)

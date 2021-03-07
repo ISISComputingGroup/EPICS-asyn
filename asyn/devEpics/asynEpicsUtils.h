@@ -22,6 +22,8 @@
 extern "C" {
 #endif  /* __cplusplus */
 
+struct dbCommon;
+
 typedef struct asynEpicsUtils {
     asynStatus (*parseLink)(asynUser *pasynUser, DBLINK *plink, 
                 char **port, int *addr, char **userParam);
@@ -32,6 +34,7 @@ typedef struct asynEpicsUtils {
     void       (*asynStatusToEpicsAlarm)(asynStatus status, 
                 epicsAlarmCondition defaultStat, epicsAlarmCondition *pStat, 
                 epicsAlarmSeverity defaultSevr, epicsAlarmSeverity *pSevr);
+    int        (*adjustForSim)(dbCommon *pr, epicsEnum16 simm, epicsEnum16 sims, int* status);
 } asynEpicsUtils;
 epicsShareExtern asynEpicsUtils *pasynEpicsUtils;
 

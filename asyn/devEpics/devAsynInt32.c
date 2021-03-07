@@ -192,6 +192,7 @@ epicsExportAddress(dset, asynBoInt32);
 epicsExportAddress(dset, asynMbbiInt32);
 epicsExportAddress(dset, asynMbboInt32);
 
+
 static long initCommon(dbCommon *pr, DBLINK *plink,
     userCallback processCallback,interruptCallbackInt32 interruptCallback, interruptCallbackEnum callbackEnum,
     int maxEnums, char *pFirstString, int *pFirstValue, epicsEnum16 *pFirstSeverity)
@@ -828,6 +829,7 @@ static long initAi(aiRecord *pr)
     status = initCommon((dbCommon *)pr,&pr->inp,
         processCallbackInput,interruptCallbackInput, NULL,
         0, NULL, NULL, NULL);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status);
     if(status != INIT_OK) return status;
     pPvt = pr->dpvt;
     /* Don't call getBounds if we already have non-zero values from
@@ -875,6 +877,7 @@ static long initAiAverage(aiRecord *pr)
     status = initCommon((dbCommon *)pr, &pr->inp,
         NULL, interruptCallbackAverage, NULL, 
         0, NULL, NULL, NULL);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status);
     if (status != INIT_OK) return status;
     pPvt = pr->dpvt;
     pPvt->isAiAverage = 1;
@@ -947,6 +950,10 @@ static long initAo(aoRecord *pao)
     status = initCommon((dbCommon *)pao,&pao->out,
         processCallbackOutput,interruptCallbackOutput, NULL,
         0, NULL, NULL, NULL);
+    if (pasynEpicsUtils->adjustForSim((dbCommon *)pao, pao->simm, pao->sims, &status))
+    {
+        return INIT_DO_NOT_CONVERT;
+    }
     if (status != INIT_OK) return status;
     pPvt = pao->dpvt;
     /* Don't call getBounds if we already have non-zero values from
@@ -1045,7 +1052,7 @@ static long initLi(longinRecord *pr)
     status = initCommon((dbCommon *)pr,&pr->inp,
        processCallbackInput,interruptCallbackInput, NULL,
        0, NULL, NULL, NULL);
-
+    pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status);
     return status;
 }
 
@@ -1086,6 +1093,10 @@ static long initLo(longoutRecord *pr)
     status = initCommon((dbCommon *)pr,&pr->out,
         processCallbackOutput,interruptCallbackOutput, NULL,
         0, NULL, NULL, NULL);
+    if (pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status))
+    {
+        return INIT_OK;
+    }
     if (status != INIT_OK) return status;
     pPvt = pr->dpvt;
     /* Read the current value from the device */
@@ -1151,6 +1162,7 @@ static long initBi(biRecord *pr)
     status = initCommon((dbCommon *)pr,&pr->inp,
         processCallbackInput,interruptCallbackInput, interruptCallbackEnumBi,
         2, (char*)&pr->znam, NULL, &pr->zsv);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status);
     return status;
 }
 
@@ -1191,6 +1203,10 @@ static long initBo(boRecord *pr)
     status = initCommon((dbCommon *)pr,&pr->out,
         processCallbackOutput,interruptCallbackOutput, interruptCallbackEnumBo,
         2, (char*)&pr->znam, NULL, &pr->zsv);
+    if (pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status))
+    {
+        return INIT_DO_NOT_CONVERT;
+    }
     if (status != INIT_OK) return status;
     pPvt = pr->dpvt;
     /* Read the current value from the device */
@@ -1256,6 +1272,7 @@ static long initMbbi(mbbiRecord *pr)
     status = initCommon((dbCommon *)pr,&pr->inp,
         processCallbackInput,interruptCallbackInput, interruptCallbackEnumMbbi,
         MAX_ENUM_STATES, (char*)&pr->zrst, (int*)&pr->zrvl, &pr->zrsv);
+    pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status);
     if (status != INIT_OK) return status;
     if(pr->nobt == 0) pr->mask = 0xffffffff;
     pr->mask <<= pr->shft;
@@ -1299,6 +1316,10 @@ static long initMbbo(mbboRecord *pr)
     status = initCommon((dbCommon *)pr,&pr->out,
         processCallbackOutput,interruptCallbackOutput, interruptCallbackEnumMbbo,
         MAX_ENUM_STATES, (char*)&pr->zrst, (int*)&pr->zrvl, &pr->zrsv);
+    if (pasynEpicsUtils->adjustForSim((dbCommon *)pr, pr->simm, pr->sims, &status))
+    {
+        return INIT_DO_NOT_CONVERT;
+    }
     if (status != INIT_OK) return status;
     pPvt = pr->dpvt;
     if(pr->nobt == 0) pr->mask = 0xffffffff;
