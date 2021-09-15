@@ -19,8 +19,6 @@
 
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynGenericPointer.h"
 #include "asynDrvUser.h"
@@ -59,8 +57,8 @@ static asynGenericPointerSyncIO interface = {
     readOpOnce,
     writeReadOpOnce
 };
-epicsShareDef asynGenericPointerSyncIO *pasynGenericPointerSyncIO = &interface;
-
+asynGenericPointerSyncIO *pasynGenericPointerSyncIO = &interface;
+
 static asynStatus connect(const char *port, int addr,
    asynUser **ppasynUser, const char *drvInfo)
 {
@@ -73,7 +71,7 @@ static asynStatus connect(const char *port, int addr,
     pasynUser = pasynManager->createAsynUser(0,0);
     pasynUser->userPvt = pioPvt;
     *ppasynUser = pasynUser;
-    status = pasynManager->connectDevice(pasynUser, port, addr);    
+    status = pasynManager->connectDevice(pasynUser, port, addr);
     if (status != asynSuccess) {
         return status;
     }
@@ -112,7 +110,7 @@ static asynStatus connect(const char *port, int addr,
     }
     return asynSuccess ;
 }
-
+
 static asynStatus disconnect(asynUser *pasynUser)
 {
     ioPvt      *pioPvt = (ioPvt *)pasynUser->userPvt;
@@ -131,7 +129,7 @@ static asynStatus disconnect(asynUser *pasynUser)
     free(pioPvt);
     return asynSuccess;
 }
-
+
 static asynStatus writeOp(asynUser *pasynUser,void *pvalue,double timeout)
 {
     asynStatus status, unlockStatus;
@@ -144,7 +142,7 @@ static asynStatus writeOp(asynUser *pasynUser,void *pvalue,double timeout)
     }
     status = pPvt->pasynGenericPointer->write(pPvt->pointerPvt, pasynUser,pvalue);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynGenericPointerSyncIO wrote: %p\n",
                   pvalue);
     }
@@ -167,7 +165,7 @@ static asynStatus readOp(asynUser *pasynUser,void *pvalue,double timeout)
     }
     status = pPvt->pasynGenericPointer->read(pPvt->pointerPvt, pasynUser, pvalue);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynGenericPointerSyncIO read: %p\n", pvalue);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -214,7 +212,7 @@ static asynStatus writeReadOp(asynUser *pasynUser,
   }
   return status;
 }
-
+
 static asynStatus writeOpOnce(const char *port, int addr,
     void *pvalue,double timeout,const char *drvInfo)
 {

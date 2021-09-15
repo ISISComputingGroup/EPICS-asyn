@@ -13,12 +13,14 @@
 #ifndef DRVASYNIPSERVERPORT_H
 #define DRVASYNIPSERVERPORT_H
 
+#include "asynAPI.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
 
-int drvAsynIPServerPortConfigure(const char *portName, const char *serverInfo,
-                                 unsigned int maxClients, unsigned int priority, 
+ASYN_API int drvAsynIPServerPortConfigure(const char *portName, const char *serverInfo,
+                                 unsigned int maxClients, unsigned int priority,
                                  int noAutoConnect, int noProcessEos);
 
 #ifdef __cplusplus

@@ -19,8 +19,6 @@
 
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynFloat32Array.h"
 #include "asynDrvUser.h"
@@ -53,8 +51,8 @@ static asynFloat32ArraySyncIO interface = {
     writeOpOnce,
     readOpOnce
 };
-epicsShareDef asynFloat32ArraySyncIO *pasynFloat32ArraySyncIO = &interface;
-
+asynFloat32ArraySyncIO *pasynFloat32ArraySyncIO = &interface;
+
 static asynStatus connect(const char *port, int addr,
    asynUser **ppasynUser, const char *drvInfo)
 {
@@ -67,7 +65,7 @@ static asynStatus connect(const char *port, int addr,
     pasynUser = pasynManager->createAsynUser(0,0);
     pasynUser->userPvt = pioPvt;
     *ppasynUser = pasynUser;
-    status = pasynManager->connectDevice(pasynUser, port, addr);    
+    status = pasynManager->connectDevice(pasynUser, port, addr);
     if (status != asynSuccess) {
         return status;
     }
@@ -106,7 +104,7 @@ static asynStatus connect(const char *port, int addr,
     }
     return asynSuccess ;
 }
-
+
 static asynStatus disconnect(asynUser *pasynUser)
 {
     ioPvt      *pioPvt = (ioPvt *)pasynUser->userPvt;
@@ -125,7 +123,7 @@ static asynStatus disconnect(asynUser *pasynUser)
     free(pioPvt);
     return asynSuccess;
 }
-
+
 static asynStatus writeOp(asynUser *pasynUser,epicsFloat32 *pvalue,size_t nelem,double timeout)
 {
     asynStatus status, unlockStatus;
@@ -138,7 +136,7 @@ static asynStatus writeOp(asynUser *pasynUser,epicsFloat32 *pvalue,size_t nelem,
     }
     status = pPvt->pasynFloat32Array->write(pPvt->float32ArrayPvt, pasynUser,pvalue,nelem);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynFloat32ArraySyncIO wrote: %e\n",
                   *pvalue);
     }
@@ -161,7 +159,7 @@ static asynStatus readOp(asynUser *pasynUser,epicsFloat32 *pvalue,size_t nelem,s
     }
     status = pPvt->pasynFloat32Array->read(pPvt->float32ArrayPvt, pasynUser, pvalue, nelem, nIn);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynFloat32ArraySyncIO read: %e\n", *pvalue);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -170,7 +168,7 @@ static asynStatus readOp(asynUser *pasynUser,epicsFloat32 *pvalue,size_t nelem,s
     }
     return status;
 }
-
+
 static asynStatus writeOpOnce(const char *port, int addr,
     epicsFloat32 *pvalue,size_t nelem,double timeout,const char *drvInfo)
 {

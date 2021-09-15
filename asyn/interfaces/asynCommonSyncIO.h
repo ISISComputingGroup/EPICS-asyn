@@ -17,7 +17,6 @@
 #include <asynDriver.h>
 #include <epicsTypes.h>
 #include <stdio.h>
-#include <shareLib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,14 +24,14 @@ extern "C" {
 
 #define asynCommonSyncIOType "asynCommonSyncIO"
 typedef struct asynCommonSyncIO {
-    asynStatus (*connect)(const char *port, int addr, 
+    asynStatus (*connect)(const char *port, int addr,
                           asynUser **ppasynUser, const char *drvInfo);
     asynStatus (*disconnect)(asynUser *pasynUser);
     asynStatus (*connectDevice)(asynUser *pasynUser);
     asynStatus (*disconnectDevice)(asynUser *pasynUser);
     asynStatus (*report)(asynUser *pasynUser, FILE *fd, int details);
 } asynCommonSyncIO;
-epicsShareExtern asynCommonSyncIO *pasynCommonSyncIO;
+ASYN_API extern asynCommonSyncIO *pasynCommonSyncIO;
 
 #ifdef __cplusplus
 }

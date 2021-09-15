@@ -15,15 +15,13 @@
 #include <epicsStdio.h>
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynFloat64.h"
 
 static asynStatus initialize(const char *portName, asynInterface *pfloat64Interface);
 
 static asynFloat64Base float64Base = {initialize};
-epicsShareDef asynFloat64Base *pasynFloat64Base = &float64Base;
+asynFloat64Base *pasynFloat64Base = &float64Base;
 
 static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser,
                                epicsFloat64 value);
@@ -33,7 +31,7 @@ static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
        interruptCallbackFloat64 callback, void *userPvt, void **registrarPvt);
 static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
        void *registrarPvt);
-
+
 static asynStatus initialize(const char *portName, asynInterface *pdriver)
 {
     asynFloat64   *pasynFloat64 = (asynFloat64 *)pdriver->pinterface;;
@@ -53,7 +51,7 @@ static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser,
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -71,7 +69,7 @@ static asynStatus readDefault(void *drvPvt, asynUser *pasynUser,
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -82,7 +80,7 @@ static asynStatus readDefault(void *drvPvt, asynUser *pasynUser,
         "%s %d read is not supported\n",portName,addr);
     return asynError;
 }
-    
+
 static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
       interruptCallbackFloat64 callback, void *userPvt, void **registrarPvt)
 {
@@ -92,7 +90,7 @@ static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
     interruptNode *pinterruptNode;
     void          *pinterruptPvt;
     asynFloat64Interrupt *pasynFloat64Interrupt;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -122,7 +120,7 @@ static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
     asynStatus    status;
     const char    *portName;
     int           addr;
-    asynFloat64Interrupt *pasynFloat64Interrupt = 
+    asynFloat64Interrupt *pasynFloat64Interrupt =
                                 (asynFloat64Interrupt *)pinterruptNode->drvPvt;
 
     status = pasynManager->getPortName(pasynUser,&portName);

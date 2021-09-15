@@ -16,13 +16,12 @@
 
 #include <asynDriver.h>
 #include <epicsTypes.h>
-#include <shareLib.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
 
-typedef void (*interruptCallbackInt64)(void *userPvt, asynUser *pasynUser, 
+typedef void (*interruptCallbackInt64)(void *userPvt, asynUser *pasynUser,
                                        epicsInt64 data);
 typedef struct asynInt64Interrupt {
     int addr;
@@ -34,7 +33,7 @@ typedef struct asynInt64Interrupt {
 typedef struct asynInt64 {
     asynStatus (*write)(void *drvPvt, asynUser *pasynUser, epicsInt64 value);
     asynStatus (*read)(void *drvPvt, asynUser *pasynUser, epicsInt64 *value);
-    asynStatus (*getBounds)(void *drvPvt, asynUser *pasynUser, 
+    asynStatus (*getBounds)(void *drvPvt, asynUser *pasynUser,
                            epicsInt64 *low, epicsInt64 *high);
     asynStatus (*registerInterruptUser)(void *drvPvt,asynUser *pasynUser,
                            interruptCallbackInt64 callback, void *userPvt,
@@ -56,7 +55,7 @@ typedef struct asynInt64Base {
     asynStatus (*initialize)(const char *portName,
                             asynInterface *pint64Interface);
 } asynInt64Base;
-epicsShareExtern asynInt64Base *pasynInt64Base;
+ASYN_API extern asynInt64Base *pasynInt64Base;
 
 #ifdef __cplusplus
 }

@@ -16,7 +16,6 @@
 
 #include <asynDriver.h>
 #include <epicsTypes.h>
-#include <shareLib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +23,7 @@ extern "C" {
 
 #define asynInt32ArraySyncIOType "asynInt32ArraySyncIO"
 typedef struct asynInt32ArraySyncIO {
-    asynStatus (*connect)(const char *port, int addr, 
+    asynStatus (*connect)(const char *port, int addr,
                        asynUser **ppasynUser, const char *drvInfo);
     asynStatus (*disconnect)(asynUser *pasynUser);
     asynStatus (*write)(asynUser *pasynUser,epicsInt32 *pvalue,size_t nelem,double timeout);
@@ -34,7 +33,7 @@ typedef struct asynInt32ArraySyncIO {
     asynStatus (*readOnce)(const char *port, int addr,
                        epicsInt32 *pvalue,size_t nelem,size_t *nIn,double timeout,const char *drvInfo);
 } asynInt32ArraySyncIO;
-epicsShareExtern asynInt32ArraySyncIO *pasynInt32ArraySyncIO;
+ASYN_API extern asynInt32ArraySyncIO *pasynInt32ArraySyncIO;
 
 #ifdef __cplusplus
 }

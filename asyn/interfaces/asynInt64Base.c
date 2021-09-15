@@ -14,21 +14,19 @@
 #include <epicsTypes.h>
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynInt64.h"
 
 static asynStatus initialize(const char *portName, asynInterface *pint64Interface);
 
 static asynInt64Base int64Base = {initialize};
-epicsShareDef asynInt64Base *pasynInt64Base = &int64Base;
+asynInt64Base *pasynInt64Base = &int64Base;
 
 static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser,
                               epicsInt64 value);
 static asynStatus readDefault(void *drvPvt, asynUser *pasynUser,
                               epicsInt64 *value);
-static asynStatus getBounds(void *drvPvt, asynUser *pasynUser, 
+static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
                             epicsInt64 *low, epicsInt64 *high);
 static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
                                interruptCallbackInt64 callback, void *userPvt,
@@ -36,7 +34,7 @@ static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
 static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
                                void *registrarPvt);
 
-
+
 asynStatus initialize(const char *portName, asynInterface *pdriver)
 {
     asynInt64 *pasynInt64 = (asynInt64 *)pdriver->pinterface;
@@ -57,7 +55,7 @@ static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser,
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -75,7 +73,7 @@ static asynStatus readDefault(void *drvPvt, asynUser *pasynUser,
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -87,13 +85,13 @@ static asynStatus readDefault(void *drvPvt, asynUser *pasynUser,
     return asynError;
 }
 
-static asynStatus getBounds(void *drvPvt, asynUser *pasynUser, 
+static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
                             epicsInt64 *low, epicsInt64 *high)
 {
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -103,7 +101,7 @@ static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
         "%s %d getBounds setting low=high=0\n",portName,addr);
     return asynSuccess;
 }
-
+
 static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
                                interruptCallbackInt64 callback, void *userPvt,
                                void **registrarPvt)
@@ -114,18 +112,18 @@ static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
     interruptNode *pinterruptNode;
     void          *pinterruptPvt;
     asynInt64Interrupt *pasynInt64Interrupt;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
     if(status!=asynSuccess) return status;
-    status = pasynManager->getInterruptPvt(pasynUser, asynInt64Type, 
+    status = pasynManager->getInterruptPvt(pasynUser, asynInt64Type,
                                            &pinterruptPvt);
     if(status!=asynSuccess) return status;
     pasynInt64Interrupt = pasynManager->memMalloc(sizeof(asynInt64Interrupt));
     pinterruptNode = pasynManager->createInterruptNode(pinterruptPvt);
     pinterruptNode->drvPvt = pasynInt64Interrupt;
-    pasynInt64Interrupt->pasynUser = 
+    pasynInt64Interrupt->pasynUser =
                        pasynManager->duplicateAsynUser(pasynUser, NULL, NULL);
     pasynInt64Interrupt->addr = addr;
     pasynInt64Interrupt->callback = callback;
@@ -140,12 +138,12 @@ static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
     void *registrarPvt)
 {
     interruptNode      *pinterruptNode = (interruptNode *)registrarPvt;
-    asynInt64Interrupt *pasynInt64Interrupt = 
+    asynInt64Interrupt *pasynInt64Interrupt =
                              (asynInt64Interrupt *)pinterruptNode->drvPvt;
     asynStatus status;
     const char *portName;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);

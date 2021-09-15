@@ -17,7 +17,6 @@
 
 #include <asynDriver.h>
 #include <epicsTypes.h>
-#include <shareLib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +24,7 @@ extern "C" {
 
 typedef void (*interruptCallbackGenericPointer)(void *userPvt, asynUser *pasynUser,
               void *pointer);
-              
+
 typedef struct asynGenericPointerInterrupt {
     asynUser *pasynUser;
     int addr;
@@ -57,7 +56,7 @@ typedef struct asynGenericPointerBase {
                             asynInterface *pasynGenericPointerInterface);
 } asynGenericPointerBase;
 
-epicsShareExtern asynGenericPointerBase *pasynGenericPointerBase;
+ASYN_API extern asynGenericPointerBase *pasynGenericPointerBase;
 
 
 #ifdef __cplusplus

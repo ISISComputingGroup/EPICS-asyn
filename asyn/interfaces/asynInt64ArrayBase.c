@@ -15,13 +15,11 @@
 #include <epicsTypes.h>
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynInt64Array.h"
 
 #include "asynXXXArrayBase.h"
- 
+
 ASYN_XXX_ARRAY_BASE_FUNCS(asynInt64Array, asynInt64ArrayType, asynInt64ArrayBase, pasynInt64ArrayBase,
                           asynInt64ArrayInterrupt, interruptCallbackInt64Array, epicsInt64)
 
