@@ -16,8 +16,6 @@
 #include <epicsStdio.h>
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include <asynDriver.h>
 
 #include "asynGenericPointer.h"
@@ -25,7 +23,7 @@
 static asynStatus initialize(const char *portName, asynInterface *pGenericPointerInterface);
 
 static asynGenericPointerBase GenericPointerBase = {initialize};
-epicsShareDef asynGenericPointerBase *pasynGenericPointerBase = &GenericPointerBase;
+asynGenericPointerBase *pasynGenericPointerBase = &GenericPointerBase;
 
 static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser, void *pointer);
 static asynStatus readDefault(void *drvPvt, asynUser *pasynUser, void *pointer);
@@ -33,7 +31,7 @@ static asynStatus registerInterruptUser(void *drvPvt, asynUser *pasynUser,
                     interruptCallbackGenericPointer callback, void *userPvt, void **registrarPvt);
 static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
                     void *registrarPvt);
-
+
 
 static asynStatus initialize(const char *portName, asynInterface *pdriver)
 {
@@ -53,7 +51,7 @@ static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser, void *pointer)
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -70,7 +68,7 @@ static asynStatus readDefault(void *drvPvt, asynUser *pasynUser, void *pointer)
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -81,7 +79,7 @@ static asynStatus readDefault(void *drvPvt, asynUser *pasynUser, void *pointer)
         "%s %d read is not supported\n",portName,addr);
     return asynError;
 }
-    
+
 static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
       interruptCallbackGenericPointer callback, void *userPvt, void **registrarPvt)
 {
@@ -91,7 +89,7 @@ static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
     interruptNode *pinterruptNode;
     void          *pinterruptPvt;
     asynGenericPointerInterrupt *pasynGenericPointerInterrupt;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -121,7 +119,7 @@ static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
     asynStatus    status;
     const char    *portName;
     int           addr;
-    asynGenericPointerInterrupt *pasynGenericPointerInterrupt = 
+    asynGenericPointerInterrupt *pasynGenericPointerInterrupt =
                                 (asynGenericPointerInterrupt *)pinterruptNode->drvPvt;
 
     status = pasynManager->getPortName(pasynUser,&portName);

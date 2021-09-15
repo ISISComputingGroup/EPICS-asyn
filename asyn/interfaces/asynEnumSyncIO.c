@@ -19,8 +19,6 @@
 
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynEnum.h"
 #include "asynDrvUser.h"
@@ -39,13 +37,13 @@ typedef struct ioPvt{
 static asynStatus connect(const char *port, int addr,
                           asynUser **ppasynUser, const char *drvInfo);
 static asynStatus disconnect(asynUser *pasynUser);
-static asynStatus writeOp(asynUser *pasynUser, char *strings[], int values[], int severities[], 
+static asynStatus writeOp(asynUser *pasynUser, char *strings[], int values[], int severities[],
                           size_t nElements, double timeout);
-static asynStatus readOp(asynUser *pasynUser, char *strings[], int values[], int severities[], 
+static asynStatus readOp(asynUser *pasynUser, char *strings[], int values[], int severities[],
                          size_t nElements, size_t *nIn, double timeout);
-static asynStatus writeOpOnce(const char *port, int addr, char *strings[], int values[], int severities[], 
+static asynStatus writeOpOnce(const char *port, int addr, char *strings[], int values[], int severities[],
                               size_t nElements, double timeout,const char *drvInfo);
-static asynStatus readOpOnce(const char *port, int addr, char *strings[], int values[], int severities[], 
+static asynStatus readOpOnce(const char *port, int addr, char *strings[], int values[], int severities[],
                              size_t nElements, size_t *nIn, double timeout, const char *drvInfo);
 static asynEnumSyncIO interface = {
     connect,
@@ -55,8 +53,8 @@ static asynEnumSyncIO interface = {
     writeOpOnce,
     readOpOnce,
 };
-epicsShareDef asynEnumSyncIO *pasynEnumSyncIO = &interface;
-
+asynEnumSyncIO *pasynEnumSyncIO = &interface;
+
 static asynStatus connect(const char *port, int addr,
    asynUser **ppasynUser, const char *drvInfo)
 {
@@ -69,7 +67,7 @@ static asynStatus connect(const char *port, int addr,
     pasynUser = pasynManager->createAsynUser(0,0);
     pasynUser->userPvt = pioPvt;
     *ppasynUser = pasynUser;
-    status = pasynManager->connectDevice(pasynUser, port, addr);    
+    status = pasynManager->connectDevice(pasynUser, port, addr);
     if (status != asynSuccess) {
         return status;
     }
@@ -108,7 +106,7 @@ static asynStatus connect(const char *port, int addr,
     }
     return asynSuccess ;
 }
-
+
 static asynStatus disconnect(asynUser *pasynUser)
 {
     ioPvt      *pioPvt = (ioPvt *)pasynUser->userPvt;
@@ -127,7 +125,7 @@ static asynStatus disconnect(asynUser *pasynUser)
     free(pioPvt);
     return asynSuccess;
 }
- 
+
 
 static asynStatus writeOp(asynUser *pasynUser, char *strings[], int values[], int severities[], size_t nElements, double timeout)
 {
@@ -143,7 +141,7 @@ static asynStatus writeOp(asynUser *pasynUser, char *strings[], int values[], in
     if (status==asynSuccess) {
         int i;
         for (i=0; i<(int)nElements; i++) {
-          asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+          asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                     "asynEnumSyncIO wrote: %d string=%s, value=%d severity=%d\n", i, strings[i], values[i], severities[i]);
         }
     }
@@ -168,7 +166,7 @@ static asynStatus readOp(asynUser *pasynUser, char *strings[], int values[], int
     if (status==asynSuccess) {
         int i;
         for (i=0; i<(int)*nIn; i++) {
-          asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+          asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                     "asynEnumSyncIO read: %d string=%s, value=%d, severity=%d\n", i, strings[i], values[i], severities[i]);
         }
     }
@@ -178,7 +176,7 @@ static asynStatus readOp(asynUser *pasynUser, char *strings[], int values[], int
     }
     return(status);
 }
-
+
 static asynStatus writeOpOnce(const char *port, int addr,
     char *strings[], int values[], int severities[], size_t nElements, double timeout, const char *drvInfo)
 {

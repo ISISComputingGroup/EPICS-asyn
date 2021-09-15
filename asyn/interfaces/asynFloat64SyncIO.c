@@ -19,8 +19,6 @@
 
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynFloat64.h"
 #include "asynDrvUser.h"
@@ -53,8 +51,8 @@ static asynFloat64SyncIO interface = {
     writeOpOnce,
     readOpOnce
 };
-epicsShareDef asynFloat64SyncIO *pasynFloat64SyncIO = &interface;
-
+asynFloat64SyncIO *pasynFloat64SyncIO = &interface;
+
 static asynStatus connect(const char *port, int addr,
    asynUser **ppasynUser, const char *drvInfo)
 {
@@ -67,7 +65,7 @@ static asynStatus connect(const char *port, int addr,
     pasynUser = pasynManager->createAsynUser(0,0);
     pasynUser->userPvt = pioPvt;
     *ppasynUser = pasynUser;
-    status = pasynManager->connectDevice(pasynUser, port, addr);    
+    status = pasynManager->connectDevice(pasynUser, port, addr);
     if (status != asynSuccess) {
         return status;
     }
@@ -106,7 +104,7 @@ static asynStatus connect(const char *port, int addr,
     }
     return asynSuccess ;
 }
-
+
 static asynStatus disconnect(asynUser *pasynUser)
 {
     ioPvt      *pioPvt = (ioPvt *)pasynUser->userPvt;
@@ -125,7 +123,7 @@ static asynStatus disconnect(asynUser *pasynUser)
     free(pioPvt);
     return asynSuccess;
 }
-
+
 static asynStatus writeOp(asynUser *pasynUser,epicsFloat64 value,double timeout)
 {
     asynStatus status, unlockStatus;
@@ -138,7 +136,7 @@ static asynStatus writeOp(asynUser *pasynUser,epicsFloat64 value,double timeout)
     }
     status = pPvt->pasynFloat64->write(pPvt->float64Pvt, pasynUser,value);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynFloat64SyncIO wrote: %e\n",
                   value);
     }
@@ -161,7 +159,7 @@ static asynStatus readOp(asynUser *pasynUser,epicsFloat64 *pvalue,double timeout
     }
     status = pPvt->pasynFloat64->read(pPvt->float64Pvt, pasynUser, pvalue);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynFloat64SyncIO read: %e\n", *pvalue);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -170,7 +168,7 @@ static asynStatus readOp(asynUser *pasynUser,epicsFloat64 *pvalue,double timeout
     }
     return status;
 }
-
+
 static asynStatus writeOpOnce(const char *port, int addr,
     epicsFloat64 value,double timeout,const char *drvInfo)
 {

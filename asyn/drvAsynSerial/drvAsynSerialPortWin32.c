@@ -3,7 +3,7 @@
 *
 * Mark Rivers
 * July 26, 2011
-**********************************************************************/       
+**********************************************************************/
 /***********************************************************************
 * Copyright (c) 2002 The University of Chicago, as Operator of Argonne
 * National Laboratory, and the Regents of the University of
@@ -282,7 +282,7 @@ getOption(void *drvPvt, asynUser *pasynUser,
     BOOL ret;
     DWORD error;
     int l;
-    
+
     val[0] = '\0';
     assert(tty);
     if (tty->commHandle == INVALID_HANDLE_VALUE) {
@@ -524,7 +524,7 @@ setOption(void *drvPvt, asynUser *pasynUser, const char *key, const char *val)
     else if (epicsStrCaseCmp(key, "ixany") == 0) {
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                                     "Option ixany not supported on Windows");
-        return asynError;       
+        return asynError;
     }
     else if (epicsStrCaseCmp(key, "ixoff") == 0) {
         if (epicsStrCaseCmp(val, "Y") == 0) {
@@ -1352,7 +1352,7 @@ static const struct asynCommon asynCommonMethods = {
 /*
  * Configure and register a generic serial device
  */
-epicsShareFunc int
+ASYN_API int
 drvAsynSerialPortConfigure(const char *portName,
                      const char *ttyName,
                      unsigned int priority,
@@ -1393,14 +1393,14 @@ drvAsynSerialPortConfigure(const char *portName,
     }
     tty->commHandle = INVALID_HANDLE_VALUE;
     if ( (epicsStrnCaseCmp(ttyName, "\\\\.\\", 4) != 0)) {
-        /* 
+        /*
          * The user did not pass a Windows device name, so prepend \\.\
          */
         epicsSnprintf(winTtyName, sizeof(winTtyName), "\\\\.\\%s", ttyName);
-    } 
+    }
     else {
         strncpy(winTtyName, ttyName, sizeof(winTtyName));
-    }   
+    }
     tty->serialDeviceName = epicsStrDup(winTtyName);
     tty->portName = epicsStrDup(portName);
     tty->flush_on_write = 0;
