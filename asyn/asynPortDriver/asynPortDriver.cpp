@@ -90,6 +90,8 @@ private:
     asynPortDriver *pasynPortDriver;
     std::vector<unsigned> flags;
     std::vector<paramVal*> vals;
+
+    epicsMutex paramLock; // for protecting writes to internal lists
 };
 
 /** Constructor for paramList class.
@@ -129,6 +131,7 @@ asynStatus paramList::createParam(const char *name, asynParamType type, int *ind
 {
     //static const char *functionName = "createParam";
 
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (this->findParam(name, index) == asynSuccess) return asynParamAlreadyExists;
 
     std::auto_ptr<paramVal> param(new paramVal(name, type));
@@ -179,6 +182,7 @@ void paramList::registerParameterChange(paramVal *param,int index)
   * \return Returns asynParamBadIndex if the index is not valid or asynParamWrongType if the parametertype is not asynParamInt32. */
 asynStatus paramList::setInteger(int index, int value)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     try{
         getParameter(index)->setInteger(value);
         registerParameterChange(getParameter(index), index);
@@ -199,6 +203,7 @@ asynStatus paramList::setInteger(int index, int value)
   * \return Returns asynParamBadIndex if the index is not valid or asynParamWrongType if the parametertype is not asynParamInt64. */
 asynStatus paramList::setInteger64(int index, epicsInt64 value)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     try{
         getParameter(index)->setInteger64(value);
         registerParameterChange(getParameter(index), index);
@@ -221,6 +226,7 @@ asynStatus paramList::setInteger64(int index, epicsInt64 value)
   * \return Returns asynParamBadIndex if the index is not valid or asynParamWrongType if the parameter type is not asynParamUInt32Digital. */
 asynStatus paramList::setUInt32(int index, epicsUInt32 value, epicsUInt32 valueMask, epicsUInt32 interruptMask)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     try {
         getParameter(index)->setUInt32(value, valueMask, interruptMask);
         registerParameterChange(getParameter(index), index);
@@ -241,6 +247,7 @@ asynStatus paramList::setUInt32(int index, epicsUInt32 value, epicsUInt32 valueM
   * \return Returns asynParamBadIndex if the index is not valid or asynParamWrongType if the parameter type is not asynParamFloat64. */
 asynStatus paramList::setDouble(int index, double value)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     try
     {
         getParameter(index)->setDouble(value);
@@ -262,6 +269,7 @@ asynStatus paramList::setDouble(int index, double value)
   * \return Returns asynParamBadIndex if the index is not valid or asynParamWrongType if the parameter type is not asynParamOctet. */
 asynStatus paramList::setString(int index, const char *value)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (index < 0 || (size_t)index >= this->vals.size()) return asynParamBadIndex;
     try {
         getParameter(index)->setString(value);
@@ -282,6 +290,7 @@ asynStatus paramList::setString(int index, const char *value)
   * \return Returns asynParamBadIndex if the index is not valid or asynParamWrongType if the parameter type is not asynParamOctet. */
 asynStatus paramList::setString(int index, const std::string& value)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (index < 0 || (size_t)index >= this->vals.size()) return asynParamBadIndex;
     try {
         getParameter(index)->setString(value);
@@ -422,6 +431,7 @@ asynStatus paramList::getStatus(int index, asynStatus *status)
   * \return Returns asynParamBadIndex if the index is not valid */
 asynStatus paramList::setStatus(int index, asynStatus status)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (index < 0 || (size_t)index >= this->vals.size()) return asynParamBadIndex;
     this->vals[index]->setStatus(status);
     registerParameterChange(getParameter(index), index);
@@ -445,6 +455,7 @@ asynStatus paramList::getAlarmStatus(int index,  int *alarmStatus)
   * \return Returns asynParamBadIndex if the index is not valid */
 asynStatus paramList::setAlarmStatus(int index, int alarmStatus)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (index < 0 || (size_t)index >= this->vals.size()) return asynParamBadIndex;
     this->vals[index]->setAlarmStatus(alarmStatus);
     registerParameterChange(getParameter(index), index);
@@ -468,6 +479,7 @@ asynStatus paramList::getAlarmSeverity(int index,  int *alarmSeverity)
   * \return Returns asynParamBadIndex if the index is not valid */
 asynStatus paramList::setAlarmSeverity(int index, int alarmSeverity)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (index < 0 || (size_t)index >= this->vals.size()) return asynParamBadIndex;
     this->vals[index]->setAlarmSeverity(alarmSeverity);
     registerParameterChange(getParameter(index), index);
@@ -482,6 +494,7 @@ asynStatus paramList::setAlarmSeverity(int index, int alarmSeverity)
   * or asynParamWrongType if the parameter type is not asynParamUInt32Digital */
 asynStatus paramList::setUInt32Interrupt(int index, epicsUInt32 mask, interruptReason reason)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (index < 0 || (size_t)index >= this->vals.size()) return asynParamBadIndex;
     if (this->vals[index]->type != asynParamUInt32Digital) return asynParamWrongType;
     switch (reason) {
@@ -506,6 +519,7 @@ asynStatus paramList::setUInt32Interrupt(int index, epicsUInt32 mask, interruptR
   * or asynParamWrongType if the parameter type is not asynParamUInt32Digital */
 asynStatus paramList::clearUInt32Interrupt(int index, epicsUInt32 mask)
 {
+    epicsGuard<epicsMutex> _lock(paramLock);
     if (index < 0 || (size_t)index >= this->vals.size()) return asynParamBadIndex;
     if (this->vals[index]->type != asynParamUInt32Digital) return asynParamWrongType;
     this->vals[index]->uInt32RisingMask &= ~mask;
@@ -837,6 +851,7 @@ asynStatus paramList::callCallbacks(int addr)
 {
     int index;
     asynStatus status = asynSuccess;
+    epicsGuard<epicsMutex> _lock(paramLock);
 
     if (!interruptAccept) return asynSuccess;
 
