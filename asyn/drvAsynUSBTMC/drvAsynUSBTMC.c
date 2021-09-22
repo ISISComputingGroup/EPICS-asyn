@@ -41,7 +41,7 @@
 #define ASYN_REASON_REN 4347
 
 #if (!defined(LIBUSBX_API_VERSION) || (LIBUSBX_API_VERSION < 0x01000102))
-# error "You need to get a newer version of libsb-1.0 (16 at the very least)"
+# error "You need to get a newer version of libusb-1.0 (16 at the very least)"
 #endif
 
 typedef struct drvPvt {
@@ -250,7 +250,7 @@ pcomma(FILE *fp, size_t n)
     pcomma(fp, n/1000);
     fprintf(fp, ",%03zu", n%1000);
 }
-    
+
 static void
 showCount(FILE *fp, const char *label, size_t count)
 {
@@ -977,9 +977,9 @@ asynOctetGetOutputEos(void *pvt, asynUser *pasynUser, char *eos, int eossize, in
     return asynError;
 }
 
-static asynOctet octetMethods = { 
-    .write        = asynOctetWrite, 
-    .read         = asynOctetRead, 
+static asynOctet octetMethods = {
+    .write        = asynOctetWrite,
+    .read         = asynOctetRead,
     .flush        = asynOctetFlush,
     .setInputEos  = asynOctetSetInputEos,
     .getInputEos  = asynOctetGetInputEos,

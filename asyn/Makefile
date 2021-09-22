@@ -38,6 +38,7 @@ ifeq ($(TIRPC),YES)
 endif
 
 SRC_DIRS += $(ASYN)/asynDriver
+INC += asynAPI.h
 INC += asynDriver.h
 INC += epicsInterruptibleSyscall.h
 asyn_SRCS += asynManager.c
@@ -132,6 +133,7 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
 endif
 INC += asynParamType.h
 INC += paramErrors.h
+INC += asynParamSet.h
 INC += asynPortDriver.h
 asyn_SRCS += paramVal.cpp
 asyn_SRCS += asynPortDriver.cpp
@@ -194,11 +196,9 @@ ifneq ($(EPICS_LIBCOM_ONLY),YES)
   # do we have EPICS calc module (scalcout etc.)
   # applications should include asynCalc.dbd as well as asyn.dbd if support is needed
   ifdef CALC
-  ifdef SSCAN
     USR_CFLAGS += -DHAVE_CALCMOD
-    ASYN_LIBS += calc sscan
+    ASYN_LIBS += calc
     DBD += asynCalc.dbd
-  endif
   endif
 
   ifdef HAVE_DEVINT64
@@ -234,6 +234,10 @@ asyn_SRCS += E5810Reboot.c
 asyn_SRCS += E2050Reboot.c
 asyn_SRCS += TDS3000Reboot.c
 DBD += drvVxi11.dbd
+
+SRC_DIRS += $(ASYN)/drvPrologixGPIB
+asyn_SRCS += drvPrologixGPIB.c
+DBD += drvPrologixGPIB.dbd
 
 ifdef IPAC
   SRC_DIRS += $(ASYN)/gsIP488
@@ -360,3 +364,4 @@ else
 	@$(MV) $(notdir $@) $@
 endif
 
+USR_CPPFLAGS += -DBUILDING_asyn_API

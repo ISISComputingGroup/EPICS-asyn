@@ -19,8 +19,6 @@
 
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynUInt32Digital.h"
 #include "asynDrvUser.h"
@@ -77,8 +75,8 @@ static asynUInt32DigitalSyncIO interface = {
     clearInterruptOnce,
     getInterruptOnce
 };
-epicsShareDef asynUInt32DigitalSyncIO *pasynUInt32DigitalSyncIO = &interface;
-
+asynUInt32DigitalSyncIO *pasynUInt32DigitalSyncIO = &interface;
+
 static asynStatus connect(const char *port, int addr,
    asynUser **ppasynUser, const char *drvInfo)
 {
@@ -92,7 +90,7 @@ static asynStatus connect(const char *port, int addr,
     pasynUser = pasynManager->createAsynUser(0,0);
     pasynUser->userPvt = pioPvt;
     *ppasynUser = pasynUser;
-    status = pasynManager->connectDevice(pasynUser, port, addr);    
+    status = pasynManager->connectDevice(pasynUser, port, addr);
     if (status != asynSuccess) {
         return status;
     }
@@ -131,7 +129,7 @@ static asynStatus connect(const char *port, int addr,
     }
     return asynSuccess ;
 }
-
+
 static asynStatus disconnect(asynUser *pasynUser)
 {
     ioPvt      *pioPvt = (ioPvt *)pasynUser->userPvt;
@@ -150,7 +148,7 @@ static asynStatus disconnect(asynUser *pasynUser)
     free(pioPvt);
     return asynSuccess;
 }
- 
+
 
 static asynStatus writeOp(asynUser *pasynUser,
        epicsUInt32 value,epicsUInt32 mask,double timeout)
@@ -166,7 +164,7 @@ static asynStatus writeOp(asynUser *pasynUser,
     status = pioPvt->pasynUInt32Digital->write(
        pioPvt->uint32DigitalPvt, pasynUser, value,mask);
     if(status==asynSuccess) {
-         asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+         asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
              "asynUInt32DigitalSyncIO wrote: 0x%x\n",value);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -190,7 +188,7 @@ static asynStatus readOp(asynUser *pasynUser,
     status = pioPvt->pasynUInt32Digital->read(
         pioPvt->uint32DigitalPvt, pasynUser,pvalue,mask);
     if(status==asynSuccess) {
-       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                    "asynUInt32DigitalSyncIO read: 0x%x\n",*pvalue);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -199,7 +197,7 @@ static asynStatus readOp(asynUser *pasynUser,
     }
     return status;
 }
-
+
 static asynStatus setInterrupt(asynUser *pasynUser,
                    epicsUInt32 mask, interruptReason reason,double timeout)
 {
@@ -214,7 +212,7 @@ static asynStatus setInterrupt(asynUser *pasynUser,
     status = pioPvt->pasynUInt32Digital->setInterrupt(
         pioPvt->uint32DigitalPvt, pasynUser,mask,reason);
     if(status==asynSuccess) {
-       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                    "asynUInt32DigitalSyncIO setInterrupt: 0x%x\n",mask);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -238,7 +236,7 @@ static asynStatus clearInterrupt(asynUser *pasynUser,
     status = pioPvt->pasynUInt32Digital->clearInterrupt(
        pioPvt->uint32DigitalPvt, pasynUser,mask);
     if(status==asynSuccess) {
-       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                    "asynUInt32DigitalSyncIO clearInterrupt: 0x%x\n",mask);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -262,7 +260,7 @@ static asynStatus getInterrupt(asynUser *pasynUser,
     status = pioPvt->pasynUInt32Digital->getInterrupt(
         pioPvt->uint32DigitalPvt, pasynUser,mask,reason);
     if(status==asynSuccess) {
-       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+       asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                    "asynUInt32DigitalSyncIO getInterrupt: 0x%x\n", *mask);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -271,7 +269,7 @@ static asynStatus getInterrupt(asynUser *pasynUser,
     }
     return status;
 }
-
+
 static asynStatus writeOpOnce(const char *port, int addr,
     epicsUInt32 value,epicsUInt32 mask,double timeout,const char *drvInfo)
 {

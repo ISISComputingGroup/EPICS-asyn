@@ -33,8 +33,6 @@
 #include <errlog.h>
 #include <menuFtype.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynGpibDriver.h"
 #include "devSupportGpib.h"
@@ -46,7 +44,7 @@ static void genericFinish(gpibDpvt * pgpibDpvt,int failure)
 {
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static void aiFinish(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initAi(aiRecord * pai)
 {
@@ -75,7 +73,7 @@ long  devGpib_readAi(aiRecord * pai)
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pai);
     int cmdType;
     DEVSUPFUN got_special_linconv = ((gDset *) pai->dset)->funPtr[5];
- 
+
     if(pai->pact) return (got_special_linconv ? 0 : 2);
     cmdType = gpibCmdGetType(pgpibDpvt);
     if(cmdType&GPIBSOFT) {
@@ -125,7 +123,7 @@ static void aiFinish(gpibDpvt * pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(pai, READ_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static int aoStart(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initAo(aoRecord * pao)
 {
@@ -155,7 +153,7 @@ long  devGpib_writeAo(aoRecord * pao)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pao);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(pao->pact) return 0;
     if(cmdType&GPIBSOFT) {
         pdevSupportGpib->processGPIBSOFT(pgpibDpvt);
@@ -182,7 +180,7 @@ static int aoStart(gpibDpvt *pgpibDpvt,int failure)
     }
     return failure;
 }
-
+
 static void biFinish(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initBi(biRecord * pbi)
 {
@@ -206,10 +204,14 @@ long  devGpib_initBi(biRecord * pbi)
     }
     pdevGpibNames = devGpibNamesGet(pgpibDpvt);
     if(pdevGpibNames) {
-        if (pbi->znam[0] == 0)
+        if (pbi->znam[0] == 0) {
             strncpy(pbi->znam, pdevGpibNames->item[0], sizeof(pbi->znam));
-        if (pbi->onam[0] == 0)
+            pbi->znam[sizeof(pbi->znam)-1] = '\0';
+        }
+        if (pbi->onam[0] == 0) {
             strncpy(pbi->onam, pdevGpibNames->item[1], sizeof(pbi->onam));
+            pbi->onam[sizeof(pbi->onam)-1] = '\0';
+        }
     }
     return  0;
 }
@@ -218,7 +220,7 @@ long  devGpib_readBi(biRecord * pbi)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pbi);
     int cmdType;
- 
+
     if(pbi->pact) return 0;
     cmdType = gpibCmdGetType(pgpibDpvt);
     if(cmdType&GPIBSOFT) {
@@ -228,7 +230,7 @@ long  devGpib_readBi(biRecord * pbi)
     }
     return 0;
 }
-
+
 static void biFinish(gpibDpvt * pgpibDpvt,int failure)
 {
     biRecord *pbi = ((biRecord *) (pgpibDpvt->precord));
@@ -271,7 +273,7 @@ static void biFinish(gpibDpvt * pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(pbi, READ_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static int boStart(gpibDpvt *pgpibDpvt,int failure);
 static void writeBoSpecial(boRecord * pbo);
 static void boWorkSpecial(gpibDpvt *pgpibDpvt,int failure);
@@ -310,10 +312,14 @@ long  devGpib_initBo(boRecord * pbo)
                 "%s devGpib_initBo logic error\n",pbo->name);
         }
         if (papname) {
-            if (pbo->znam[0] == 0)
+            if (pbo->znam[0] == 0) {
                 strncpy(pbo->znam, papname[0], sizeof(pbo->znam));
-            if (pbo->onam[0] == 0)
+                pbo->znam[sizeof(pbo->znam)-1] = '\0';
+            }
+            if (pbo->onam[0] == 0) {
                 strncpy(pbo->onam, papname[1], sizeof(pbo->onam));
+                pbo->onam[sizeof(pbo->onam)-1] = '\0';
+            }
         }
     } else if(!(cmdType&(GPIBWRITE|GPIBCMD|GPIBACMD|GPIBEFASTO|GPIBSOFT|GPIBCVTIO))) {
         asynPrint(pgpibDpvt->pasynUser,ASYN_TRACE_ERROR,
@@ -324,19 +330,23 @@ long  devGpib_initBo(boRecord * pbo)
     }
     pdevGpibNames = devGpibNamesGet(pgpibDpvt);
     if(pdevGpibNames) {
-        if (pbo->znam[0] == 0)
+        if (pbo->znam[0] == 0) {
             strncpy(pbo->znam, pdevGpibNames->item[0], sizeof(pbo->znam));
-        if (pbo->onam[0] == 0)
+            pbo->znam[sizeof(pbo->znam)-1] = '\0';
+        }
+        if (pbo->onam[0] == 0) {
             strncpy(pbo->onam, pdevGpibNames->item[1], sizeof(pbo->onam));
+            pbo->onam[sizeof(pbo->onam)-1] = '\0';
+        }
     }
     return 2;
 }
-
+
 long  devGpib_writeBo(boRecord * pbo)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pbo);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(pbo->pact) return 0;
     if(cmdType&GPIBSOFT) {
         pdevSupportGpib->processGPIBSOFT(pgpibDpvt);
@@ -363,12 +373,12 @@ static int boStart(gpibDpvt * pgpibDpvt,int failure)
     }
     return failure;
 }
-
+
 static void writeBoSpecial(boRecord * pbo)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pbo);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(pbo->pact) return;
     if(cmdType&(GPIBIFC|GPIBDCL|GPIBLLO|GPIBSDC|GPIBGTL)) {
         if(pbo->val==0) return;
@@ -413,7 +423,7 @@ static void boWorkSpecial(gpibDpvt *pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(precord, WRITE_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static void evFinish(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initEv(eventRecord * pev)
 {
@@ -441,7 +451,7 @@ long  devGpib_readEv(eventRecord * pev)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pev);
     int cmdType;
- 
+
     if(pev->pact) return 0;
     cmdType = gpibCmdGetType(pgpibDpvt);
     if(cmdType&GPIBSOFT) {
@@ -495,7 +505,7 @@ static void evFinish(gpibDpvt * pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(pev, READ_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static void liFinish(gpibDpvt *pgpibDpvt,int failure);
 static void liSrqHandler(void *userPrivate,asynUser *pasynUser,
                 epicsInt32 statusByte)
@@ -536,7 +546,7 @@ long  devGpib_readLi(longinRecord * pli)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pli);
     int cmdType;
- 
+
 /*printf("READ -- %s %d      %p\n", pli->name, pli->val, &pli->val);*/
     if(pli->pact) return 0;
     cmdType = gpibCmdGetType(pgpibDpvt);
@@ -584,7 +594,7 @@ static void liFinish(gpibDpvt * pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(pli, READ_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static int loStart(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initLo(longoutRecord * plo)
 {
@@ -612,7 +622,7 @@ long  devGpib_writeLo(longoutRecord * plo)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(plo);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(plo->pact) return 0;
     if(cmdType&GPIBSOFT) {
         pdevSupportGpib->processGPIBSOFT(pgpibDpvt);
@@ -634,7 +644,7 @@ static int loStart(gpibDpvt * pgpibDpvt,int failure)
     }
     return failure;
 }
-
+
 static void mbbiFinish(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initMbbi(mbbiRecord * pmbbi)
 {
@@ -689,7 +699,7 @@ long  devGpib_readMbbi(mbbiRecord * pmbbi)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pmbbi);
     int cmdType;
- 
+
     if(pmbbi->pact) return 0;
     cmdType = gpibCmdGetType(pgpibDpvt);
     if(cmdType&GPIBSOFT) {
@@ -699,7 +709,7 @@ long  devGpib_readMbbi(mbbiRecord * pmbbi)
     }
     return 0;
 }
-
+
 static void mbbiFinish(gpibDpvt * pgpibDpvt,int failure)
 {
     mbbiRecord *pmbbi = ((mbbiRecord *) (pgpibDpvt->precord));
@@ -742,7 +752,7 @@ static void mbbiFinish(gpibDpvt * pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(pmbbi, READ_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static void mbbiDirectFinish(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initMbbiDirect(mbbiDirectRecord * pmbbiDirect)
 {
@@ -770,7 +780,7 @@ long  devGpib_readMbbiDirect(mbbiDirectRecord * pmbbiDirect)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pmbbiDirect);
     int cmdType;
- 
+
     if(pmbbiDirect->pact) return 0;
     cmdType = gpibCmdGetType(pgpibDpvt);
     if(cmdType&GPIBSOFT) {
@@ -816,7 +826,7 @@ static void mbbiDirectFinish(gpibDpvt * pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(pmbbiDirect, READ_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static int mbboStart(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initMbbo(mbboRecord * pmbbo)
 {
@@ -866,12 +876,12 @@ long  devGpib_initMbbo(mbboRecord * pmbbo)
     }
     return 2;
 }
-
+
 long  devGpib_writeMbbo(mbboRecord * pmbbo)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pmbbo);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(pmbbo->pact) return 0;
     if(cmdType&GPIBSOFT) {
         pdevSupportGpib->processGPIBSOFT(pgpibDpvt);
@@ -895,7 +905,7 @@ static int mbboStart(gpibDpvt * pgpibDpvt,int failure)
     }
     return failure;
 }
-
+
 static int mbboDirectStart(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initMbboDirect(mbboDirectRecord * pmbboDirect)
 {
@@ -923,7 +933,7 @@ long  devGpib_writeMbboDirect(mbboDirectRecord * pmbboDirect)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pmbboDirect);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(pmbboDirect->pact) return 0;
     if(cmdType&GPIBSOFT) {
         pdevSupportGpib->processGPIBSOFT(pgpibDpvt);
@@ -946,7 +956,7 @@ static int mbboDirectStart(gpibDpvt * pgpibDpvt,int failure)
     }
     return failure;
 }
-
+
 static void siFinish(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initSi(stringinRecord * psi)
 {
@@ -974,7 +984,7 @@ long  devGpib_readSi(stringinRecord * psi)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(psi);
     int cmdType;
- 
+
     if(psi->pact) return 0;
     cmdType = gpibCmdGetType(pgpibDpvt);
     if(cmdType&GPIBSOFT) {
@@ -1018,7 +1028,7 @@ static void siFinish(gpibDpvt * pgpibDpvt,int failure)
     if(failure==-1) recGblSetSevr(psi, READ_ALARM, INVALID_ALARM);
     pdevSupportGpib->completeProcess(pgpibDpvt);
 }
-
+
 static int soStart(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initSo(stringoutRecord * pso)
 {
@@ -1046,7 +1056,7 @@ long  devGpib_writeSo(stringoutRecord * pso)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pso);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(pso->pact) return 0;
     if(cmdType&GPIBSOFT) {
         pdevSupportGpib->processGPIBSOFT(pgpibDpvt);
@@ -1068,7 +1078,7 @@ static int soStart(gpibDpvt *pgpibDpvt,int failure)
     }
     return failure;
 }
-
+
 static int wfStart(gpibDpvt *pgpibDpvt,int failure);
 static void wfFinish(gpibDpvt *pgpibDpvt,int failure);
 long  devGpib_initWf(waveformRecord * pwf)
@@ -1106,7 +1116,7 @@ long  devGpib_readWf(waveformRecord * pwf)
 {
     gpibDpvt *pgpibDpvt = gpibDpvtGet(pwf);
     int cmdType = gpibCmdGetType(pgpibDpvt);
- 
+
     if(pwf->pact) return 0;
     if(cmdType&GPIBSOFT) {
         pdevSupportGpib->processGPIBSOFT(pgpibDpvt);
@@ -1119,7 +1129,7 @@ long  devGpib_readWf(waveformRecord * pwf)
     }
     return 0;
 }
-
+
 static int wfStart(gpibDpvt * pgpibDpvt,int failure)
 {
     waveformRecord *pwf = (waveformRecord *)pgpibDpvt->precord;
@@ -1159,7 +1169,7 @@ static void wfFinish(gpibDpvt * pgpibDpvt,int failure)
         } else if(pwf->ftvl!=menuFtypeCHAR) {
             asynPrint(pgpibDpvt->pasynUser,ASYN_TRACE_ERROR,
                 "%s ftvl != CHAR but no convert\n",pwf->name);
-            failure = -1; 
+            failure = -1;
         } else {
             char *format = (pgpibCmd->format) ? pgpibCmd->format : "%s";
             int lenDest = pwf->nelm;

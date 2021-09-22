@@ -14,15 +14,13 @@
 #include <epicsTypes.h>
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynEnum.h"
 
 static asynStatus initialize(const char *portName, asynInterface *pEnumInterface);
 
 static asynEnumBase enumBase = {initialize};
-epicsShareDef asynEnumBase *pasynEnumBase = &enumBase;
+asynEnumBase *pasynEnumBase = &enumBase;
 
 static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser,
                               char *strings[], int values[], int severities[], size_t nElements);
@@ -34,7 +32,7 @@ static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
 static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
                                void *registrarPvt);
 
-
+
 asynStatus initialize(const char *portName, asynInterface *pdriver)
 {
     asynEnum *pasynEnum = (asynEnum *)pdriver->pinterface;
@@ -54,7 +52,7 @@ static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser,
     const char *portName;
     asynStatus status;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
@@ -94,18 +92,18 @@ static asynStatus registerInterruptUser(void *drvPvt,asynUser *pasynUser,
     interruptNode *pinterruptNode;
     void          *pinterruptPvt;
     asynEnumInterrupt *pasynEnumInterrupt;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);
     if(status!=asynSuccess) return status;
-    status = pasynManager->getInterruptPvt(pasynUser, asynEnumType, 
+    status = pasynManager->getInterruptPvt(pasynUser, asynEnumType,
                                            &pinterruptPvt);
     if(status!=asynSuccess) return status;
     pasynEnumInterrupt = pasynManager->memMalloc(sizeof(asynEnumInterrupt));
     pinterruptNode = pasynManager->createInterruptNode(pinterruptPvt);
     pinterruptNode->drvPvt = pasynEnumInterrupt;
-    pasynEnumInterrupt->pasynUser = 
+    pasynEnumInterrupt->pasynUser =
                        pasynManager->duplicateAsynUser(pasynUser, NULL, NULL);
     pasynEnumInterrupt->addr = addr;
     pasynEnumInterrupt->callback = callback;
@@ -120,12 +118,12 @@ static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
     void *registrarPvt)
 {
     interruptNode      *pinterruptNode = (interruptNode *)registrarPvt;
-    asynEnumInterrupt *pasynEnumInterrupt = 
+    asynEnumInterrupt *pasynEnumInterrupt =
                              (asynEnumInterrupt *)pinterruptNode->drvPvt;
     asynStatus status;
     const char *portName;
     int        addr;
-    
+
     status = pasynManager->getPortName(pasynUser,&portName);
     if(status!=asynSuccess) return status;
     status = pasynManager->getAddr(pasynUser,&addr);

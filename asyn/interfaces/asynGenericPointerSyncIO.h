@@ -16,7 +16,6 @@
 
 #include <asynDriver.h>
 #include <epicsTypes.h>
-#include <shareLib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +23,7 @@ extern "C" {
 
 #define asynGenericPointerSyncIOType "asynGenericPointerSyncIO"
 typedef struct asynGenericPointerSyncIO {
-    asynStatus (*connect)(const char *port, int addr, 
+    asynStatus (*connect)(const char *port, int addr,
                        asynUser **ppasynUser, const char *drvInfo);
     asynStatus (*disconnect)(asynUser *pasynUser);
     asynStatus (*write)(asynUser *pasynUser,void *pvalue,double timeout);
@@ -37,7 +36,7 @@ typedef struct asynGenericPointerSyncIO {
     asynStatus (*writeReadOnce)(const char *port, int addr,
                        void *pwrite_buffer,void *pread_buffer,double timeout,const char *drvInfo);
 } asynGenericPointerSyncIO;
-epicsShareExtern asynGenericPointerSyncIO *pasynGenericPointerSyncIO;
+ASYN_API extern asynGenericPointerSyncIO *pasynGenericPointerSyncIO;
 
 #ifdef __cplusplus
 }

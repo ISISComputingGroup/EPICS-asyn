@@ -19,8 +19,6 @@
 
 #include <cantProceed.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynOption.h"
 #include "asynDrvUser.h"
@@ -53,8 +51,8 @@ static asynOptionSyncIO interface = {
     setOptionOnce,
     getOptionOnce,
 };
-epicsShareDef asynOptionSyncIO *pasynOptionSyncIO = &interface;
-
+asynOptionSyncIO *pasynOptionSyncIO = &interface;
+
 static asynStatus connect(const char *port, int addr,
    asynUser **ppasynUser, const char *drvInfo)
 {
@@ -67,7 +65,7 @@ static asynStatus connect(const char *port, int addr,
     pasynUser = pasynManager->createAsynUser(0,0);
     pasynUser->userPvt = pioPvt;
     *ppasynUser = pasynUser;
-    status = pasynManager->connectDevice(pasynUser, port, addr);    
+    status = pasynManager->connectDevice(pasynUser, port, addr);
     if (status != asynSuccess) {
         return status;
     }
@@ -106,7 +104,7 @@ static asynStatus connect(const char *port, int addr,
     }
     return asynSuccess ;
 }
-
+
 static asynStatus disconnect(asynUser *pasynUser)
 {
     ioPvt      *pioPvt = (ioPvt *)pasynUser->userPvt;
@@ -125,7 +123,7 @@ static asynStatus disconnect(asynUser *pasynUser)
     free(pioPvt);
     return asynSuccess;
 }
- 
+
 
 static asynStatus setOption(asynUser *pasynUser, const char *key, const char *val, double timeout)
 {
@@ -139,7 +137,7 @@ static asynStatus setOption(asynUser *pasynUser, const char *key, const char *va
     }
     status = pioPvt->pasynOption->setOption(pioPvt->OptionPvt, pasynUser, key, val);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynOptionSyncIO wrote: key=%s, val=%s\n",key, val);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -161,7 +159,7 @@ static asynStatus getOption(asynUser *pasynUser, const char *key, char *val, int
     }
     status = pioPvt->pasynOption->getOption(pioPvt->OptionPvt, pasynUser, key, val, sizeval);
     if (status==asynSuccess) {
-        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
                   "asynOptionSyncIO read: key=%s, val=%s\n", key, val);
     }
     unlockStatus = pasynManager->queueUnlockPort(pasynUser);
@@ -170,7 +168,7 @@ static asynStatus getOption(asynUser *pasynUser, const char *key, char *val, int
     }
     return(status);
 }
-
+
 static asynStatus setOptionOnce(const char *port, int addr,
     const char *key, const char *val, double timeout, const char *drvInfo)
 {

@@ -20,8 +20,6 @@
 #include <cantProceed.h>
 #include <epicsEvent.h>
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynDrvUser.h"
 #include "asynCommonSyncIO.h"
@@ -36,7 +34,7 @@ typedef struct ioPvt{
    epicsEventId connectEvent;
    int          connect;
    asynStatus   connectStatus;
-   
+
 }ioPvt;
 
 /*asynCommonSyncIO methods*/
@@ -53,11 +51,11 @@ static asynCommonSyncIO interface = {
     disconnectDevice,
     report
 };
-epicsShareDef asynCommonSyncIO *pasynCommonSyncIO = &interface;
+asynCommonSyncIO *pasynCommonSyncIO = &interface;
 
 /* Private methods */
 static void connectDeviceCallback(asynUser *pasynUser);
-
+
 static asynStatus connect(const char *port, int addr,
    asynUser **ppasynUser, const char *drvInfo)
 {
@@ -71,7 +69,7 @@ static asynStatus connect(const char *port, int addr,
     pasynUser = pasynManager->createAsynUser(connectDeviceCallback,0);
     pasynUser->userPvt = pioPvt;
     *ppasynUser = pasynUser;
-    status = pasynManager->connectDevice(pasynUser, port, addr);    
+    status = pasynManager->connectDevice(pasynUser, port, addr);
     if (status != asynSuccess) {
         return status;
     }
@@ -102,7 +100,7 @@ static asynStatus connect(const char *port, int addr,
     }
     return asynSuccess ;
 }
-
+
 static asynStatus disconnect(asynUser *pasynUser)
 {
     ioPvt      *pioPvt = (ioPvt *)pasynUser->userPvt;
@@ -122,7 +120,7 @@ static asynStatus disconnect(asynUser *pasynUser)
     free(pioPvt);
     return asynSuccess;
 }
- 
+
 
 static void connectDeviceCallback(asynUser *pasynUser)
 {

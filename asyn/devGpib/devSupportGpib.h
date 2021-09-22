@@ -20,7 +20,6 @@
 #include <callback.h>
 #include <dbScan.h>
 #include <devSup.h>
-#include <shareLib.h>
 
 /* supported record types */
 #include <dbCommon.h>
@@ -57,7 +56,7 @@ typedef struct gDset gDset;
 typedef struct gpibDpvt gpibDpvt;
 typedef struct devGpibPvt devGpibPvt;
 typedef struct devSupportGpib devSupportGpib;
-
+
 struct gpibCmd {
     gDset *dset; /* used to indicate record type supported */
     int type;    /* enum - GPIBREAD...GPIBSRQHANDLER */
@@ -127,7 +126,7 @@ struct devGpibParmBlock {
     static char *xxxx[] = {"xxx","yyy",...,0};
     IT MUST PROVIDE A 0 AS THE LAST STRING
 */
-
+
 struct gDset {
     long number;
     DEVSUPFUN funPtr[6];
@@ -135,7 +134,7 @@ struct gDset {
 };
 
 struct gpibDpvt {
-    devGpibParmBlock *pdevGpibParmBlock; 
+    devGpibParmBlock *pdevGpibParmBlock;
     CALLBACK callback;
     dbCommon *precord;
     asynUser *pasynUser;
@@ -176,7 +175,7 @@ struct devSupportGpib {
     int (*restoreEos)(gpibDpvt *pgpibDpvt,gpibCmd *pgpibCmd);
     void (*completeProcess)(gpibDpvt *pgpibDpvt);
 };
-epicsShareExtern devSupportGpib *pdevSupportGpib;
+ASYN_API extern devSupportGpib *pdevSupportGpib;
 
 /* macros for accessing some commonly used fields*/
 #define gpibDpvtGet(precord) ((gpibDpvt *)(precord)->dpvt)
@@ -187,7 +186,7 @@ epicsShareExtern devSupportGpib *pdevSupportGpib;
     ((pdpvt)->pdevGpibParmBlock->gpibCmds[((pdpvt))->parm].type)
 #define devGpibNamesGet(pdpvt) \
     ((pdpvt)->pdevGpibParmBlock->gpibCmds[((pdpvt))->parm].pdevGpibNames)
-
+
 /*  gpibCmd.type ************************************************************
  *
  * GPIBREAD: (1) gpibDpvt.cmd is sent to the instrument
@@ -235,7 +234,7 @@ epicsShareExtern devSupportGpib *pdevSupportGpib;
  *         convert(pgpibDpvt,P1,P2,P3);
  *     where P1,P2,P3 are from gpibCmd
  ******************************************************************************/
-
+
 /*  devGpibNames ************************************************
  * devGpibNames defines strings that are put into the record's
  *     znam & onam fields for BI an BO records
@@ -278,7 +277,7 @@ epicsShareExtern devSupportGpib *pdevSupportGpib;
  * rsp rspLen
  *   Set by devSupportGpib. The rsp size is the largest rspLen in all gppibCmds
  ******************************************************************************/
-
+
 /*    gDset  ************************************
  * Overloads the EPICS base definition of a DSET.
  * It allows for exactly 6 methods.
