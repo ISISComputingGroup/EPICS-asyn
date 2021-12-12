@@ -968,16 +968,16 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         *nbytesTransfered = 0;
         return asynSuccess;
     }
+    ret = GetCommTimeouts(tty->commHandle, &ctimeout);
+    if (ret == 0) {
+        error = GetLastError();
+        epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                      "Can't get \"%s\" timeout: %f, error=%d",
+                      tty->serialDeviceName, pasynUser->timeout, error);
+        return asynError;
+    }
     if (tty->writeTimeout != pasynUser->timeout) {
         if (pasynUser->timeout >= 0) {
-            ret = GetCommTimeouts(tty->commHandle, &ctimeout);
-            if (ret == 0) {
-                error = GetLastError();
-                epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
-                              "Can't get \"%s\" timeout: %f, error=%d",
-                              tty->serialDeviceName, pasynUser->timeout, error);
-                return asynError;
-            }
             if (pasynUser->timeout == 0) {
                 ctimeout.WriteTotalTimeoutMultiplier  = 0;
                 ctimeout.WriteTotalTimeoutConstant    = 0;
