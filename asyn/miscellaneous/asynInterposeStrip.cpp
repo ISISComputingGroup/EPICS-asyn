@@ -2,7 +2,9 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
+#include <vector>
 #include <string>
+#include <algorithm>
 
 #include <cantProceed.h>
 #include <epicsAssert.h>
@@ -26,8 +28,7 @@ struct stripPvt {
     asynOctet      *poctet;           /* low level driver */
     void           *octetPvt;
     asynUser       *pasynUser;  /* For connect/disconnect reporting */
-    std::string    stripInChars;
-    std::string    stripOutChars;
+    std::vector<char>    stripInChars;
 };
 
 /* asynOctet methods */
@@ -55,18 +56,27 @@ static asynOctet octet = {
     setInputEos,getInputEos,setOutputEos,getOutputEos
 };
 
-ASYN_API int asynInterposeStripConfig(const char *portName, int addr,
-                                        const char* stripInChars, const char* stripOutChars) 
+ASYN_API int asynInterposeStripConfig(const char *portName, int addr, const char* stripInChars) 
 {
-    stripPvt     *pPvt = new stripPvt;
     asynInterface *pasynInterface;
     asynStatus    status;
     asynUser      *pasynUser;
 
+    if (portName == NULL) {
+        printf("asynInterposeStripConfig: no port specified\n");
+        return -1;
+    }
+
+    stripPvt     *pPvt = new stripPvt;
     pPvt->portName = portName;
     pPvt->addr = addr;
-    pPvt->stripInChars = (stripInChars != NULL ? stripInChars : "");
-    pPvt->stripOutChars = (stripOutChars != NULL ? stripOutChars : "");
+    
+    if (stripInChars != NULL) {
+        pPvt->stripInChars.resize(strlen(stripInChars) + 1); // need +1 as epicsStrnRawFromEscaped() expects space for final NULL
+        int nIn = epicsStrnRawFromEscaped(&(pPvt->stripInChars[0]), pPvt->stripInChars.size(),
+                                          stripInChars, pPvt->stripInChars.size() - 1);
+        pPvt->stripInChars.resize(nIn);
+    }
     pPvt->stripInterface.interfaceType = asynOctetType;
     pPvt->stripInterface.pinterface = &octet;
     pPvt->stripInterface.drvPvt = pPvt;
@@ -108,18 +118,8 @@ static asynStatus writeIt(void *ppvt,asynUser *pasynUser,
     const char *data,size_t numchars,size_t *nbytesTransfered)
 {
     stripPvt     *pPvt = (stripPvt *)ppvt;
-
-    if (pPvt->stripOutChars.size() == 0) {
-        return pPvt->poctet->write(pPvt->octetPvt,
-                pasynUser,data,numchars,nbytesTransfered);
-    }
-    
-    // need to process properly
-    asynPrint(pasynUser, ASYN_TRACE_ERROR, "%s asynInterposeStrip::writeIt not implemented yet\n",
-               pPvt->portName);
-    *nbytesTransfered = 0;
-    return asynError;
-    
+    return pPvt->poctet->write(pPvt->octetPvt,
+                pasynUser,data,numchars,nbytesTransfered);    
 }
 
 static asynStatus readIt(void *ppvt,asynUser *pasynUser,
@@ -133,7 +133,7 @@ static asynStatus readIt(void *ppvt,asynUser *pasynUser,
     }
     size_t n = 0;
     for(size_t i=0; i<*nbytesTransfered; ++i) {
-        if (pPvt->stripInChars.find(data[i]) == std::string::npos) {
+        if (std::find(pPvt->stripInChars.begin(), pPvt->stripInChars.end(), data[i]) == pPvt->stripInChars.end()) {
             data[n++] = data[i];
         }
     }
@@ -214,17 +214,15 @@ static const iocshArg asynInterposeStripConfigArg1 =
     { "addr", iocshArgInt };
 static const iocshArg asynInterposeStripConfigArg2 =
     { "stripInChars", iocshArgString };
-static const iocshArg asynInterposeStripConfigArg3 =
-    { "stripOutChars", iocshArgString };
 static const iocshArg *asynInterposeStripConfigArgs[] =
     {&asynInterposeStripConfigArg0,&asynInterposeStripConfigArg1,
-     &asynInterposeStripConfigArg2,&asynInterposeStripConfigArg3};
+     &asynInterposeStripConfigArg2};
 static const iocshFuncDef asynInterposeStripConfigFuncDef =
-    {"asynInterposeStripConfig", 4, asynInterposeStripConfigArgs};
+    {"asynInterposeStripConfig", 3, asynInterposeStripConfigArgs};
 static void asynInterposeStripConfigCallFunc(const iocshArgBuf *args)
 {
     asynInterposeStripConfig(args[0].sval,args[1].ival,
-          args[2].sval,args[3].sval);
+          args[2].sval);
 }
 
 extern "C" {

@@ -5,8 +5,7 @@
 extern "C" {
 #endif  /* __cplusplus */
 
-ASYN_API int asynInterposeStripConfig(const char *portName, int addr,
-                                        const char* stripInChars, const char* stripOutChars);
+ASYN_API int asynInterposeStripConfig(const char *portName, int addr, const char* stripInChars);
 
 #ifdef __cplusplus
 }
