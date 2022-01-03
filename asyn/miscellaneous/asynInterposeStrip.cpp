@@ -140,7 +140,7 @@ static asynStatus readIt(void *ppvt,asynUser *pasynUser,
     if (n != *nbytesTransfered) {
         asynPrintIO(pasynUser,ASYN_TRACEIO_FILTER,
             data,n,"asynInterposeStrip:readIt %s stripped %llu characters\n",
-               pPvt->portName, (epicsUInt64)(*nbytesTransfered - n));
+               pPvt->portName.c_str(), (epicsUInt64)(*nbytesTransfered - n));
         *nbytesTransfered = n;
         if (n < maxchars) {
             data[n] = 0;
