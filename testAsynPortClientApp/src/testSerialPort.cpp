@@ -7,6 +7,7 @@
 #include <epicsString.h>
 #include <epicsThread.h>
 #include <drvAsynSerialPort.h>
+#include <drvAsynIPPort.h>
 #include <asynPortClient.h>
 
 #include <CLI/CLI.hpp>
@@ -75,7 +76,11 @@ int main(int argc, char *argv[])
   int eomReason = 0, n;
   asynStatus readStatus, writeStatus;
 
-  drvAsynSerialPortConfigure("L0", serial_port.c_str(), 0, 0, 0);
+  if (serial_port.compare(0, 3, "COM") == 0) {
+      drvAsynSerialPortConfigure("L0", serial_port.c_str(), 0, 0, 0);
+  } else {
+      drvAsynIPPortConfigure("L0", serial_port.c_str(), 0, 0, 0);
+  }
   
   std::auto_ptr<asynOctetClient> client(new asynOctetClient("L0", 0, nullptr, timeout));
   std::auto_ptr<asynOptionClient> optClient(new asynOptionClient("L0", 0, nullptr));
