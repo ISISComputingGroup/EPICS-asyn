@@ -937,7 +937,11 @@ static asynStatus vxiConnectPort(vxiPort *pvxiPort,asynUser *pasynUser)
     }
     /* now establish a link to the gateway (for docmds etc.) */
     pvxiPort->abortPort = 0;
-    if(!vxiCreateDeviceLink(pvxiPort,pvxiPort->vxiName,&link)) return asynError;
+    if(!vxiCreateDeviceLink(pvxiPort,pvxiPort->vxiName,&link)) {
+        clnt_destroy(pvxiPort->rpcClient);
+        pvxiPort->rpcClient = NULL;
+        return asynError;
+    }
     pvxiPort->server.lid = link;
     pvxiPort->server.connected = TRUE;
     pvxiPort->ctrlAddr = -1;
