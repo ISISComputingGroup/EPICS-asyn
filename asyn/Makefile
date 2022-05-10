@@ -113,6 +113,7 @@ asyn_SRCS += asynInterposeFlush.c
 asyn_SRCS += asynInterposeDelay.c
 asyn_SRCS += asynInterposeEcho.c
 asyn_SRCS += asynInterposeStrip.cpp
+asyn_SRCS += asynInterposeThrottle.cpp
 
 SRC_DIRS += $(ASYN)/asynPortDriver/exceptions
 INC += ParamListInvalidIndex.h
