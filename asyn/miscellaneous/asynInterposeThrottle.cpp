@@ -121,10 +121,10 @@ static asynStatus writeIt(void *ppvt,asynUser *pasynUser,
     epicsTimeGetCurrent(&now);
     double delay = pPvt->minDelay - epicsTimeDiffInSeconds(&now, &pPvt->ts);
     if (delay > 0.0) {
-        epicsThreadSleep(delay);
         asynPrintIO(pasynUser, ASYN_TRACEIO_FILTER, data, numchars,
                "asynInterposeThrottle:writeIt %s delaying %f seconds\n",
                pPvt->portName.c_str(), delay);
+        epicsThreadSleep(delay);
     }
     asynStatus status = pPvt->poctet->write(pPvt->octetPvt,
                 pasynUser,data,numchars,nbytesTransfered);    
