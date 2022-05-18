@@ -4,6 +4,7 @@ registrar(asynInterposeEosRegister)
 registrar(asynInterposeDelayRegister)
 registrar(asynInterposeEchoRegister)
 registrar(asynInterposeStripRegister)
+registrar(asynInterposeThrottleRegister)
 
 #
 # The following ties this to EPICS records.
