@@ -224,27 +224,27 @@ static void monitorComEvents(void* arg)
 			}
 		}
 		getTimestamp(datetime, sizeof(datetime));
-		if (evtMask & EV_ERR)
+		if ((evtMask & EV_ERR) && (tty->commEventMask & EV_ERR))
 		{
 			printf("%s: %s COM event: line status error: frame, overrun or parity error\n", datetime, tty->serialDeviceName);
 		}
-		if (evtMask & EV_CTS)
+		if ((evtMask & EV_CTS) && (tty->commEventMask & EV_CTS))
 		{
 			printf("%s: %s COM event: CTS state change\n", datetime, tty->serialDeviceName);
 		}
-		if (evtMask & EV_DSR)
+		if ((evtMask & EV_DSR) && (tty->commEventMask & EV_DSR))
 		{
 			printf("%s: %s COM event: DSR state change\n", datetime, tty->serialDeviceName);
 		}
-		if (evtMask & EV_BREAK)
+		if ((evtMask & EV_BREAK) && (tty->commEventMask & EV_BREAK))
 		{
 			printf("%s: %s COM event: break detected\n", datetime, tty->serialDeviceName);
 		}
-		if (evtMask & EV_RLSD)
+		if ((evtMask & EV_RLSD) && (tty->commEventMask & EV_RLSD))
 		{
 			printf("%s: %s COM event: DCD/RLSD state change\n", datetime, tty->serialDeviceName);
 		}
-		if (evtMask & EV_RING)
+		if ((evtMask & EV_RING) && (tty->commEventMask & EV_RING))
 		{
 			printf("%s: %s COM event: ring indicator detected\n", datetime, tty->serialDeviceName);
 		}
@@ -256,11 +256,11 @@ static void monitorComEvents(void* arg)
 			    printf("%s: %s COM event: character received and placed in input buffer\n", datetime, tty->serialDeviceName);
 			}
 		}
-		if (evtMask & EV_RXFLAG)
+		if ((evtMask & EV_RXFLAG) && (tty->commEventMask & EV_RXFLAG))
 		{
 			printf("%s: %s COM event: event character received\n", datetime, tty->serialDeviceName);
 		}
-		if (evtMask & EV_TXEMPTY)
+		if ((evtMask & EV_TXEMPTY) && (tty->commEventMask & EV_TXEMPTY))
 		{
 			printf("%s: %s COM event: last character sent from output buffer\n", datetime, tty->serialDeviceName);
 		}
