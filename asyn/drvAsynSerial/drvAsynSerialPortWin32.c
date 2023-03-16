@@ -224,6 +224,11 @@ static void monitorComEvents(void* arg)
 			}
 		}
 		getTimestamp(datetime, sizeof(datetime));
+
+		/* The following extra logic has been added to hide messages from a USB driver which did not strictly adhere to event masks.
+		   It checks the received masks against those suppied and so ensures that even if the driver sends an unsolicited message, it does not get printed.
+		*/
+
 		if ((evtMask & EV_ERR) && (tty->commEventMask & EV_ERR))
 		{
 			printf("%s: %s COM event: line status error: frame, overrun or parity error\n", datetime, tty->serialDeviceName);
