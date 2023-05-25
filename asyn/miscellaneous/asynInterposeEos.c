@@ -377,16 +377,18 @@ static asynStatus getOutputEos(void *ppvt,asynUser *pasynUser,
                                 peosPvt->portName,eossize,peosPvt->eosOutLen);
         return(asynError);
     }
-    switch (peosPvt->eosOutLen) {
+	peosPvt->eosOut = eos;
+    /*switch (peosPvt->eosOutLen) {
     default:
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
             "%s illegal peosPvt->eosOutLen %d", peosPvt->portName,peosPvt->eosOutLen);
         return asynError;
-	case 3: eos[2] = peosPvt->eosOut[2]; /* fall through to case 2 */
-    case 2: eos[1] = peosPvt->eosOut[1]; /* fall through to case 1 */
+	
+	case 3: eos[2] = peosPvt->eosOut[2]; /* fall through to case 2 
+    case 2: eos[1] = peosPvt->eosOut[1]; /* fall through to case 1
     case 1: eos[0] = peosPvt->eosOut[0]; break;
     case 0: break;
-    }
+    } */
     *eoslen = peosPvt->eosOutLen;
     asynPrintIO(pasynUser, ASYN_TRACE_FLOW, eos, *eoslen,
             "%s get Eos %d\n", peosPvt->portName, *eoslen);
