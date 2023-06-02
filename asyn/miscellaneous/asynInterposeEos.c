@@ -44,13 +44,13 @@ typedef struct eosPvt {
     char          *inBuf;
     unsigned int  inBufHead;
     unsigned int  inBufTail;
-    char          eosIn[2];
+    char          eosIn[3];
     int           eosInLen;
     int           eosInMatch;
     int           processEosOut;
     size_t        outBufSize;
     char          *outBuf;
-    char          eosOut[2];
+    char          eosOut[3];
     int           eosOutLen;
 }eosPvt;
 
@@ -377,18 +377,18 @@ static asynStatus getOutputEos(void *ppvt,asynUser *pasynUser,
                                 peosPvt->portName,eossize,peosPvt->eosOutLen);
         return(asynError);
     }
-	peosPvt->eosOut = eos;
-    /*switch (peosPvt->eosOutLen) {
+	
+    switch (peosPvt->eosOutLen) {
     default:
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
             "%s illegal peosPvt->eosOutLen %d", peosPvt->portName,peosPvt->eosOutLen);
         return asynError;
 	
-	case 3: eos[2] = peosPvt->eosOut[2]; /* fall through to case 2 
-    case 2: eos[1] = peosPvt->eosOut[1]; /* fall through to case 1
+	case 3: eos[2] = peosPvt->eosOut[2]; /* fall through to case 2 */
+    case 2: eos[1] = peosPvt->eosOut[1]; /* fall through to case 1 */
     case 1: eos[0] = peosPvt->eosOut[0]; break;
     case 0: break;
-    } */
+    }
     *eoslen = peosPvt->eosOutLen;
     asynPrintIO(pasynUser, ASYN_TRACE_FLOW, eos, *eoslen,
             "%s get Eos %d\n", peosPvt->portName, *eoslen);
