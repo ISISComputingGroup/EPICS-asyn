@@ -107,6 +107,7 @@ typedef struct devPvt {
     int                 ringSize;
     int                 ringBufferOverflows;
     ringBufferElement   result;
+    asynStatus          lastStatus;
     char                *pValue;
     size_t              valSize;
     epicsUInt32         nord;
@@ -688,20 +689,24 @@ static asynStatus writeIt(asynUser *pasynUser,const char *message,size_t nbytes)
     pPvt->result.alarmStatus = pPvt->pasynUser->alarmStatus;
     pPvt->result.alarmSeverity = pPvt->pasynUser->alarmSeverity;
     if(pPvt->result.status!=asynSuccess) {
-        asynPrint(pasynUser,ASYN_TRACE_ERROR,
-            "%s %s::%s failed %s\n",
-            precord->name, driverName, functionName, pasynUser->errorMessage);
-        return pPvt->result.status;
+        if (pPvt->result.status != pPvt->lastStatus) {
+            asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                "%s %s::%s failed %s\n",
+                precord->name, driverName, functionName, pasynUser->errorMessage);
+        }
     }
-    if(nbytes != nbytesTransfered) {
+    else if(nbytes != nbytesTransfered) {
         asynPrint(pasynUser,ASYN_TRACE_ERROR,
             "%s %s::%s requested %lu but sent %lu bytes\n",
             precord->name, driverName, functionName, (unsigned long)nbytes, (unsigned long)nbytesTransfered);
         recGblSetSevr(precord, WRITE_ALARM, MINOR_ALARM);
         return asynError;
     }
-    asynPrintIO(pasynUser,ASYN_TRACEIO_DEVICE,message,nbytes,
-       "%s %s::%s\n",precord->name, driverName, functionName);
+    else {
+        asynPrintIO(pasynUser, ASYN_TRACEIO_DEVICE, message, nbytes,
+            "%s %s::%s\n", precord->name, driverName, functionName);
+    }
+    pPvt->lastStatus = pPvt->result.status;
     return pPvt->result.status;
 }
 
@@ -720,14 +725,17 @@ static asynStatus readIt(asynUser *pasynUser,char *message,
     pPvt->result.time = pPvt->pasynUser->timestamp;
     pPvt->result.alarmStatus = pPvt->pasynUser->alarmStatus;
     pPvt->result.alarmSeverity = pPvt->pasynUser->alarmSeverity;
-    if(pPvt->result.status!=asynSuccess) {
-        asynPrint(pasynUser,ASYN_TRACE_ERROR,
-            "%s %s::%s failed %s\n",
-            precord->name, driverName, functionName, pasynUser->errorMessage);
-        return pPvt->result.status;
+    if (pPvt->result.status == asynSuccess) {
+        asynPrintIO(pasynUser, ASYN_TRACEIO_DEVICE, message, *nBytesRead,
+            "%s %s::%s eomReason %d\n", precord->name, driverName, functionName, eomReason);
+    } else {
+        if (pPvt->result.status != pPvt->lastStatus) {
+            asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                "%s %s::%s failed %s\n",
+                precord->name, driverName, functionName, pasynUser->errorMessage);
+        }
     }
-    asynPrintIO(pasynUser,ASYN_TRACEIO_DEVICE,message,*nBytesRead,
-       "%s %s::%s eomReason %d\n",precord->name, driverName, functionName, eomReason);
+    pPvt->lastStatus = pPvt->result.status;
     return pPvt->result.status;
 }
 
