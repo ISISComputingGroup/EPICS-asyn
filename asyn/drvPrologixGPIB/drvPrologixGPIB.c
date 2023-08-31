@@ -30,6 +30,7 @@ typedef struct dPvt {
     asynUser    *pasynUserTCPoctet;
     int          isConnected;
     int          autoConnect;
+    int          timeout; /* prologix inter character timeout in milliseconds */
 
     /*
      * Input/Output staging buffer
@@ -50,6 +51,8 @@ typedef struct dPvt {
 } dPvt;
 
 #define EOT_MARKER  0xEF
+
+#define DEFAULT_PROLOGIX_READ_TIMEOUT 500 /* default for dPvt->timeout, must be between 1 and 3000ms according to prologix manual */
 
 /*
  * Set the address of the device to which we wish to communicate.
@@ -173,14 +176,17 @@ prologixConnect(void *drvPvt, asynUser *pasynUser)
         if (status != asynSuccess)
             return status;
         n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity,
-                    "++savecfg 0\n"    /* Don't save changes in EEPROM */
-                    "++mode 1\n"       /* We are controller            */
-                    "++ifc\n"          /* Clear the bus                */
-                    "++eos 3\n"        /* Handle EOS ourselves         */
-                    "++eoi 1\n"        /* Generate EOI on output       */
-                    "++eot_char %d\n"  /* Mark EOT on input            */
+                    "++savecfg 0\n"          /* Don't save changes in EEPROM */
+                    "++auto 0\n"             /* Disable auto read after send */
+                    "++read_tmo_ms %d\n"     /* set inter character timeout  */
+                    "++mode 1\n"             /* We are controller            */
+                    "++ifc\n"                /* Clear the bus                */
+                    "++eos 3\n"              /* Handle EOS ourselves         */
+                    "++eoi 1\n"              /* Generate EOI on output       */
+                    "++eot_char %d\n"        /* Mark EOT on input            */
                     "++eot_enable 1\n"
-                    "++ver\n"          /* Request version information  */
+                    "++ver\n"                /* Request version information  */
+                    , pdpvt->timeout
                     , EOT_MARKER
                     );
         status = pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf,
@@ -545,7 +551,7 @@ static asynGpibPort prologixMethods = {
 };
 
 static void
-prologixGPIBConfigure(const char *portName, const char *host, int priority, int noAutoConnect)
+prologixGPIBConfigure(const char *portName, const char *host, int priority, int noAutoConnect, int timeout)
 {
     dPvt *pdpvt;
     asynStatus status;
@@ -558,6 +564,7 @@ prologixGPIBConfigure(const char *portName, const char *host, int priority, int 
     pdpvt->bufCapacity = 4096;
     pdpvt->buf = callocMustSucceed(1, pdpvt->bufCapacity, portName);
     pdpvt->eos = -1;
+    pdpvt->timeout = (timeout != 0 ? timeout : DEFAULT_PROLOGIX_READ_TIMEOUT);
 
     /*
      * Create the port that we'll use for I/O.
@@ -609,15 +616,18 @@ static const iocshArg prologixGPIBConfigureArg0 = { "port",iocshArgString};
 static const iocshArg prologixGPIBConfigureArg1 = { "host",iocshArgString};
 static const iocshArg prologixGPIBConfigureArg2 = { "priority",iocshArgInt};
 static const iocshArg prologixGPIBConfigureArg3 = { "noAutoConnect",iocshArgInt};
+static const iocshArg prologixGPIBConfigureArg4 = { "timeout_ms",iocshArgInt};
 static const iocshArg *prologixGPIBConfigureArgs[] = {
                     &prologixGPIBConfigureArg0, &prologixGPIBConfigureArg1,
-                    &prologixGPIBConfigureArg2, &prologixGPIBConfigureArg3 };
+                    &prologixGPIBConfigureArg2, &prologixGPIBConfigureArg3,
+                    &prologixGPIBConfigureArg4};
 static const iocshFuncDef prologixGPIBConfigureFuncDef =
-      {"prologixGPIBConfigure", 4, prologixGPIBConfigureArgs};
+      {"prologixGPIBConfigure", 5, prologixGPIBConfigureArgs};
 static void prologixGPIBConfigureCallFunc(const iocshArgBuf *args)
 {
     prologixGPIBConfigure(args[0].sval, args[1].sval,
-                          args[2].ival, args[3].ival);
+                          args[2].ival, args[3].ival,
+                          args[4].ival);
 }
 
 static void
