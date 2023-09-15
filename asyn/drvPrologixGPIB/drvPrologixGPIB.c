@@ -564,7 +564,6 @@ prologixGPIBConfigure(const char *portName, const char *host, int priority, int 
     pdpvt->bufCapacity = 4096;
     pdpvt->buf = callocMustSucceed(1, pdpvt->bufCapacity, portName);
     pdpvt->eos = -1;
-    pdpvt->autoConnect = !noAutoConnect;
     pdpvt->timeout = (timeout != 0 ? timeout : DEFAULT_PROLOGIX_READ_TIMEOUT);
 
     /*
@@ -579,7 +578,7 @@ prologixGPIBConfigure(const char *portName, const char *host, int priority, int 
         sprintf(pdpvt->hostTCP, "%s:1234 TCP", host);
     drvAsynIPPortConfigure(pdpvt->portNameTCP, pdpvt->hostTCP,
                                                priority, 
-                                               noAutoConnect, /* No auto connect  */
+                                               1, /* No auto connect  */
                                                1  /* No process EOS */ );
     status = pasynCommonSyncIO->connect(pdpvt->portNameTCP, -1,
                                                 &pdpvt->pasynUserTCPcommon, NULL);
