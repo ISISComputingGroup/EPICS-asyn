@@ -119,6 +119,12 @@ menu(gpibACMD) {
     choice(gpibACMD_Serial_Poll,"Serial Poll")
 }
 
+menu(gpibREN) {
+    choice(gpibREN_None,"None")
+    choice(gpibREN_Remote_Disable,"Remote Disable")
+    choice(gpibREN_Remote_Enable,"Remote Enable")
+}
+
 recordtype(asyn) {
     include "dbCommon.dbd" 
     field(VAL,DBF_LONG) {
@@ -471,6 +477,13 @@ recordtype(asyn) {
         prompt("Serial poll response")
         interest(2)
         special(SPC_NOMOD)
+    }
+    field(REN,DBF_MENU) {
+        prompt("Remote enable/disable")
+        promptgroup(GUI_OUTPUT)
+        pp(TRUE)
+        interest(2)
+		menu(gpibREN)
     }
 
 # Trace control fields

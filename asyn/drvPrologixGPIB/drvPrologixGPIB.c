@@ -468,16 +468,55 @@ static asynStatus
 prologixAddressedCmd(void *drvPvt, asynUser *pasynUser,
                      const char *data, int length)
 {
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, "prologixAddressedCmd unimplemented");
-    return asynError;
+    dPvt *pdpvt = (dPvt *)drvPvt;
+    size_t n = 0, nt;
+    char cmd;
+    int addr;
+    asynStatus status = asynSuccess;
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+        "%s prologixAddressedCmd %2.2x\n",pdpvt->portName,cmd);
+    status = pasynManager->getAddr(pasynUser,&addr);
+    if(status!=asynSuccess) return status;
+    /* sort out addressing if needed, data[2] = pasynRec->addr + LADBASE if from asyn record 
+       we may need to swap current address of gpib device */
+    cmd = data[3];
+    if (cmd == IBGTL[0]) {
+        n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity, "++loc\n");
+    } else {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, "prologixAddressedCmd %2.2x unimplemented",cmd);
+        status = asynError;
+    }
+    if (n > 0) {
+        status = pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf, n, 1.0, &nt);
+    }
+    return status;
 }
 
 static asynStatus
 prologixUniversalCmd(void *drvPvt, asynUser *pasynUser, int cmd)
 {
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, "prologixUniversalCmd unimplemented");
-    return asynError;
-}
+    dPvt *pdpvt = (dPvt *)drvPvt;
+    size_t n = 0, nt;
+    asynStatus status = asynSuccess;
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+        "%s prologixUniversalCmd %2.2x\n",pdpvt->portName,cmd);
+    switch(cmd) {
+        case IBLLO:
+            n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity, "++llo\n");
+            break;
+        case IBDCL:
+            n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity, "++clr\n");
+            break;
+        default:
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, "prologixUniversalCmd %2.2x unimplemented",cmd);
+            status = asynError;
+            break;
+    }
+    if (n > 0) {
+        status = pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf, n, 1.0, &nt);
+    }
+    return status;
+}    
 
 static asynStatus
 prologixIfc(void *drvPvt, asynUser *pasynUser)
@@ -492,8 +531,13 @@ prologixIfc(void *drvPvt, asynUser *pasynUser)
 static asynStatus
 prologixRen(void *drvPvt, asynUser *pasynUser, int onOff)
 {
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, "prologixRen unimplemented");
-    return asynError;
+    dPvt *pdpvt = (dPvt *)drvPvt;
+    size_t n, nt;
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+        "%s prologixRen %d\n",pdpvt->portName,onOff);
+
+    n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity, (onOff ? "++llo\n" : "++loc\n"));
+    return pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf, n, 1.0, &nt);
 }
 
 static asynStatus
