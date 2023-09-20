@@ -470,16 +470,18 @@ prologixAddressedCmd(void *drvPvt, asynUser *pasynUser,
 {
     dPvt *pdpvt = (dPvt *)drvPvt;
     size_t n = 0, nt;
-    char cmd;
+    int cmd = 0;
     int addr;
     asynStatus status = asynSuccess;
+    if (length > 3) {
+        cmd = data[3];
+    }
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
         "%s prologixAddressedCmd %2.2x\n",pdpvt->portName,cmd);
     status = pasynManager->getAddr(pasynUser,&addr);
     if(status!=asynSuccess) return status;
     /* sort out addressing if needed, data[2] = pasynRec->addr + LADBASE if from asyn record 
        we may need to swap current address of gpib device */
-    cmd = data[3];
     if (cmd == IBGTL[0]) {
         n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity, "++loc\n");
     } else {
