@@ -106,6 +106,7 @@ static void callbackInterruptFloat64(void *drvPvt, asynUser *pasynUser,
 static asynStatus cancelIOInterruptScan(asynRecord *pasynRec);
 static void gpibUniversalCmd(asynUser * pasynUser);
 static void gpibAddressedCmd(asynUser * pasynUser);
+static void gpibRenCmd(asynUser * pasynUser);
 static void asynCallbackProcess(asynUser * pasynUser);
 static void asynCallbackSpecial(asynUser * pasynUser);
 static void queueTimeoutCallbackProcess(asynUser * pasynUser);
@@ -181,6 +182,7 @@ typedef struct oldValues {  /* Used in monitor() and monitorStatus() */
     char hostinfo[40];      /* IP host info */
     epicsEnum16 ucmd;       /* Universal command */
     epicsEnum16 acmd;       /* Addressed command */
+    epicsEnum16 ren;        /* remote enable command */  
     unsigned char spr;      /* Serial poll response */
     epicsInt32 tmsk;        /* Trace mask */
     epicsEnum16 tb0;        /* Trace error */
@@ -336,6 +338,7 @@ static long process(dbCommon *pRec)
             REMEMBER_STATE(acmd);
             REMEMBER_STATE(nowt);
             REMEMBER_STATE(nrrd);
+            REMEMBER_STATE(ren);
             resetError(pasynRec);
             /* If we got value from interrupt no need to read */
             if(pasynRecPvt->gotValue) goto done;
@@ -822,7 +825,11 @@ static void asynCallbackProcess(asynUser * pasynUser)
     }
     else if(pasynRec->acmd != gpibACMD_None) {
         gpibAddressedCmd(pasynUser);
-        pasynRec->acmd = gpibUCMD_None;
+        pasynRec->acmd = gpibACMD_None;
+    }
+    else if(pasynRec->ren != gpibREN_None) {
+        gpibRenCmd(pasynUser);
+        pasynRec->ren = gpibREN_None;
     }
     else if(pasynRec->tmod != asynTMOD_NoIO) performIO(pasynUser);
     yesNo = 0;
@@ -1024,6 +1031,7 @@ static void monitor(asynRecord * pasynRec)
     POST_IF_NEW(spr);
     POST_IF_NEW(ucmd);
     POST_IF_NEW(acmd);
+    POST_IF_NEW(ren);
     POST_IF_NEW(eomr);
     POST_IF_NEW(i32inp);
     POST_IF_NEW(ui32inp);
@@ -1754,6 +1762,41 @@ static void gpibAddressedCmd(asynUser * pasynUser)
         recGblSetSevr(pasynRec,WRITE_ALARM, MAJOR_ALARM);
     }
 }
+
+static void gpibRenCmd(asynUser * pasynUser)
+{
+    asynRecPvt *pasynRecPvt = pasynUser->userPvt;
+    asynRecord *pasynRec = pasynRecPvt->prec;
+    asynGpib   *pasynGpib = pasynRecPvt->pasynGpib;
+    void       *asynGpibPvt = pasynRecPvt->asynGpibPvt;
+    asynStatus status = asynSuccess;
+    int       onOff = -1;
+    if (!pasynRec->gpibiv) {
+        reportError(pasynRec, asynError, "No asynGpib interface");
+        recGblSetSevr(pasynRec,COMM_ALARM, MAJOR_ALARM);
+        return;
+    }
+    switch (pasynRec->ren) {
+    case gpibREN_Remote_Enable:
+        onOff = 1;
+        break;
+    case gpibREN_Remote_Disable:
+        onOff = 0;
+        break;
+    default:
+        break;
+    }
+    if (onOff >= 0) {
+        status = pasynGpib->ren(asynGpibPvt, pasynUser, onOff);
+    }
+    if(status) {
+        /* Something is wrong if we couldn't write */
+        reportError(pasynRec, status,"GPIB Remote Enable command %s",
+                    pasynUser->errorMessage);
+        recGblSetSevr(pasynRec,WRITE_ALARM, MAJOR_ALARM);
+    }
+}
+
 
 static void setOption(asynUser * pasynUser)
 {
