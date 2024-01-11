@@ -171,7 +171,7 @@ prologixConnect(void *drvPvt, asynUser *pasynUser)
     pdpvt->bufCount = 0;
     if ((status = pasynManager->getAddr(pasynUser, &address)) != asynSuccess)
         return status;
-    if (address < 0) {
+    if (!pdpvt->isConnected) {
         status = pasynCommonSyncIO->connectDevice(pdpvt->pasynUserTCPcommon);
         if (status != asynSuccess)
             return status;
@@ -215,6 +215,7 @@ prologixConnect(void *drvPvt, asynUser *pasynUser)
                 break;
             }
         }
+        pdpvt->isConnected = 1;
     }
     pasynManager->exceptionConnect(pasynUser);
     return asynSuccess;
@@ -229,8 +230,12 @@ prologixDisconnect(void *drvPvt, asynUser *pasynUser)
 
     if ((status = pasynManager->getAddr(pasynUser, &address)) != asynSuccess)
         return status;
+    if (!pdpvt->isConnected) {
+        return asynError;
+    }
     if (address < 0) {
         status = pasynCommonSyncIO->disconnectDevice(pdpvt->pasynUserTCPcommon);
+        pdpvt->isConnected = 0;
         if (status != asynSuccess)
             return status;
     }
@@ -248,6 +253,7 @@ prologixRead(void *drvPvt, asynUser *pasynUser,
     dPvt *pdpvt = (dPvt *)drvPvt;
     size_t n;
     int eom;
+    *nbytesTransfered = 0;
 
     /*
      * Get entire reply on first invocation of this method following
@@ -282,7 +288,6 @@ prologixRead(void *drvPvt, asynUser *pasynUser,
         /*
          * Read until we see the appropriate terminator
          */
-        *nbytesTransfered = 0;
         for (;;)  {
             /*
              * Ensure that there's space for the read
@@ -366,6 +371,7 @@ prologixWrite(void *drvPvt, asynUser *pasynUser,
     dPvt *pdpvt = (dPvt *)drvPvt;
     size_t n, nt;
     asynStatus status;
+    *nbytesTransfered = 0;
 
     /*
      * Check for output buffer space.
@@ -387,7 +393,6 @@ prologixWrite(void *drvPvt, asynUser *pasynUser,
      */
     asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, data, numchars,
                  "%s %d prologixWrite\n", pdpvt->portName, pdpvt->lastAddress);
-    *nbytesTransfered = 0;
     n = numchars;
     pdpvt->bufCount = 0;
     while (n) {
@@ -410,6 +415,10 @@ prologixWrite(void *drvPvt, asynUser *pasynUser,
      */
     status = pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf,
                                     pdpvt->bufCount, pasynUser->timeout, &nt);
+    if (status == asynDisconnected) {
+        prologixDisconnect(drvPvt, pasynUser);
+        prologixDisconnect(drvPvt, pdpvt->pasynUserTCPcommon);
+    }
     if (status == asynSuccess)
         *nbytesTransfered = numchars;
     pdpvt->bufCount = 0;
