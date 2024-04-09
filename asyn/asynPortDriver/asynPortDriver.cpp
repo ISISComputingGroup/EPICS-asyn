@@ -1950,6 +1950,7 @@ asynStatus asynPortDriver::parseAsynUser(asynUser *pasynUser, int *reason, int *
 
 paramList* asynPortDriver::getParamList(int list)
 {
+    if (this->params.size() == 0) return NULL;
     if ((list < 0) || (list >= this->maxAddr)) return NULL;
     return this->params[list];
 }
