@@ -66,6 +66,7 @@
 #include "asynOctet.h"
 #include "asynOctetSyncIO.h"
 #include "asynEpicsUtils.h"
+#include "devEpicsPvt.h"
 
 #define INIT_OK 0
 #define INIT_ERROR -1
@@ -329,19 +330,11 @@ static long initCommon(dbCommon *precord, DBLINK *plink, userCallback callback,
         const char *readbackString;
         int enableInitialReadback = 0;
         const char *initialReadbackString;
-        DBENTRY *pdbentry = dbAllocEntry(pdbbase);
         size_t nBytesRead;
         int eomReason;
         asynUser *pasynUserSync;
 
-        status = dbFindRecord(pdbentry, precord->name);
-        if (status) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                "%s %s::%s error finding record\n",
-                precord->name, driverName, functionName);
-            goto bad;
-        }
-        readbackString = dbGetInfo(pdbentry, "asyn:READBACK");
+        readbackString = asynDbGetInfo(precord, "asyn:READBACK");
         if (readbackString) enableReadbacks = atoi(readbackString);
         if (enableReadbacks) {
             /* If enableReabacks is set we will get a deadlock if not using ring buffer.
@@ -361,7 +354,7 @@ static long initCommon(dbCommon *precord, DBLINK *plink, userCallback callback,
             callbackSetUser(pPvt, &pPvt->outputCallback);
         }
 
-        initialReadbackString = dbGetInfo(pdbentry, "asyn:INITIAL_READBACK");
+        initialReadbackString = asynDbGetInfo(precord, "asyn:INITIAL_READBACK");
         if (initialReadbackString) enableInitialReadback = atoi(initialReadbackString);
         if (enableInitialReadback) {
             /* Initialize synchronous interface */
@@ -402,22 +395,12 @@ bad:
 static long createRingBuffer(dbCommon *pr, int minRingSize)
 {
     devPvt *pPvt = (devPvt *)pr->dpvt;
-    asynStatus status;
     int i;
     const char *sizeString;
-    static const char *functionName="createRingBuffer";
 
     if (!pPvt->ringBuffer) {
-        DBENTRY *pdbentry = dbAllocEntry(pdbbase);
-        status = dbFindRecord(pdbentry, pr->name);
-        if (status) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                "%s %s::%s error finding record\n",
-                pr->name, driverName, functionName);
-            return -1;
-        }
         pPvt->ringSize = minRingSize;
-        sizeString = dbGetInfo(pdbentry, "asyn:FIFO");
+        sizeString = asynDbGetInfo(pr, "asyn:FIFO");
         if (sizeString) pPvt->ringSize = atoi(sizeString);
         if (pPvt->ringSize > 0) {
             pPvt->ringBuffer = callocMustSucceed(pPvt->ringSize+1, sizeof *pPvt->ringBuffer,
@@ -592,6 +575,8 @@ static void outputCallbackCallback(CALLBACK *pcb)
         dbScanLock(pr);
         epicsMutexLock(pPvt->devPvtLock);
         pPvt->newOutputCallbackValue = 1;
+        /* We need to set udf=0 here so that it is already cleared when dbProcess is called */
+        pr->udf = 0;
         dbProcess(pr);
         if (pPvt->newOutputCallbackValue != 0) {
             /* We called dbProcess but the record did not process, perhaps because PACT was 1
