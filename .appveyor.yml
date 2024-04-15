@@ -24,7 +24,7 @@ init:
   #- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 # Set clone depth (do not fetch complete history)
-clone_depth: 50
+clone_depth: 5
 
 # Skipping commits affecting only specific files
 skip_commits:
@@ -92,23 +92,30 @@ environment:
 
   matrix:
   - CMP: vs2019
-    SET: base7
+    BASE: "7.0"
+    SET: "deps2"
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   - CMP: gcc
-    SET: base7
+    BASE: "7.0"
+    SET: "deps2"
   - CMP: vs2019
-    SET: base3-15
+    BASE: "3.15"
+    SET: "deps2"
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   - CMP: vs2019
-    SET: base3-14
+    BASE: "3.14"
+    SET: "deps1"
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   #- CMP: vs2017
-  #  SET: base7
+  #  BASE: "7.0"
+  #  SET: "deps2"
   #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
   - CMP: vs2015
-    SET: base7
+    BASE: "7.0"
+    SET: "deps2"
   #- CMP: vs2013
-  #  SET: base7
+  #  BASE: "7.0"
+  #  SET: "deps2"
 
 # Platform: processor architecture
 platform:
@@ -134,11 +141,11 @@ build_script:
   - cmd: python .ci/cue.py build
 
 test_script:
-  - cmd: python .ci/cue.py test
+  - cmd: python .ci/cue.py -T 20M test
 
 on_finish:
   - ps: Get-ChildItem *.tap -Recurse -Force | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-  - cmd: python .ci/cue.py test-results
+  - cmd: python .ci/cue.py -T 5M test-results
 
 #---------------------------------#
 #         debugging               #
@@ -160,10 +167,4 @@ on_finish:
 #---------------------------------#
 
 notifications:
-
-  - provider: Email
-    to:
-      - me@example.com
-    on_build_success: false
-
   - provider: GitHubPullRequest

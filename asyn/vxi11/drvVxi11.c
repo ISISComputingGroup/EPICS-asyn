@@ -108,7 +108,7 @@ typedef struct vxiPort {
     unsigned char lockDevices;/*lock devices when creating link*/
     asynInterface option;
     epicsEventId  srqThreadDone;
-    SOCKET           srqBindSock; /*socket for bind*/
+    SOCKET        srqBindSock; /*socket for bind*/
     osiSockAddr   vxiServerAddr; /*addess of vxi11 server*/
     char          *srqThreadName;
     epicsInterruptibleSyscallContext *srqInterrupt;
@@ -609,7 +609,7 @@ static void vxiCreateIrqChannel(vxiPort *pvxiPort,asynUser *pasynUser)
     Device_Error       devErr;
     Device_RemoteFunc  devRemF;
     osiSockAddr        tempAddr;
-    SOCKET                tempSock;
+    SOCKET             tempSock;
     osiSockAddr        srqBindAddr;
     osiSocklen_t       addrlen;
 

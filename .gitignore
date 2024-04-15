@@ -4,6 +4,10 @@
 /db/
 /dbd/
 /html/
+_build/
+/docs/doxygenHTML/
+/docs/source/_extra
+/docs/_docs/
 /include/
 /templates/
 /configure/*.local
