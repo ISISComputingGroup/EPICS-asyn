@@ -154,14 +154,10 @@ ifneq ($(EPICS_LIBCOM_ONLY),YES)
   SRC_DIRS += $(ASYN)/devEpics
   devEpics_DBD += devAsynOctet.dbd
   devEpics_DBD += devAsynInt32.dbd
-  devEpics_DBD += devAsynInt8Array.dbd
-  devEpics_DBD += devAsynInt16Array.dbd
-  devEpics_DBD += devAsynInt32Array.dbd
+  devEpics_DBD += devAsynXXXArray.dbd
   devEpics_DBD += devAsynInt32TimeSeries.dbd
   devEpics_DBD += devAsynUInt32Digital.dbd
   devEpics_DBD += devAsynFloat64.dbd
-  devEpics_DBD += devAsynFloat32Array.dbd
-  devEpics_DBD += devAsynFloat64Array.dbd
   devEpics_DBD += devAsynFloat64TimeSeries.dbd
   devEpics_DBD += devAsynRecord.dbd
   DB  += asynInt32TimeSeries.db
@@ -170,15 +166,12 @@ ifneq ($(EPICS_LIBCOM_ONLY),YES)
   asyn_SRCS += devAsynOctet.c
   asyn_SRCS += asynEpicsUtils.c
   asyn_SRCS += devAsynInt32.c
-  asyn_SRCS += devAsynInt8Array.c
-  asyn_SRCS += devAsynInt16Array.c
-  asyn_SRCS += devAsynInt32Array.c
   asyn_SRCS += devAsynInt32TimeSeries.c
   asyn_SRCS += devAsynUInt32Digital.c
   asyn_SRCS += devAsynFloat64.c
-  asyn_SRCS += devAsynFloat32Array.c
-  asyn_SRCS += devAsynFloat64Array.c
+  asyn_SRCS += devAsynXXXArray.cpp
   asyn_SRCS += devAsynFloat64TimeSeries.c
+  asyn_SRCS += devEpicsPvt.c
 
   # These require 64-bit support
   ifdef BASE_7_0
@@ -210,7 +203,6 @@ ifneq ($(EPICS_LIBCOM_ONLY),YES)
     devEpics_DBD += devAsynInt64.dbd
     devEpics_DBD += devAsynInt64Array.dbd
     devEpics_DBD += devAsynInt64TimeSeries.dbd
-    asyn_SRCS += devAsynInt64Array.c
     asyn_SRCS += devAsynInt64TimeSeries.c
   endif
   devEpics_DBD += devAsynInt64Misc.dbd

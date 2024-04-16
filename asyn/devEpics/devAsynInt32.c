@@ -54,6 +54,7 @@
 #include "asynEnum.h"
 #include "asynEnumSyncIO.h"
 #include "asynEpicsUtils.h"
+#include "devEpicsPvt.h"
 
 #define INIT_OK 0
 #define INIT_DO_NOT_CONVERT 2
@@ -325,16 +326,7 @@ static long initCommon(dbCommon *pr, DBLINK *plink,
      * then register for callbacks on output records */
     if (interruptCallback) {
         int enableCallbacks=0;
-        const char *callbackString;
-        DBENTRY *pdbentry = dbAllocEntry(pdbbase);
-        status = dbFindRecord(pdbentry, pr->name);
-        if (status) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                "%s %s::%s error finding record\n",
-                pr->name, driverName, functionName);
-            goto bad;
-        }
-        callbackString = dbGetInfo(pdbentry, "asyn:READBACK");
+        const char *callbackString = asynDbGetInfo(pr, "asyn:READBACK");
         if (callbackString) enableCallbacks = atoi(callbackString);
         if (enableCallbacks) {
             status = createRingBuffer(pr);
@@ -362,21 +354,11 @@ bad:
 static long createRingBuffer(dbCommon *pr)
 {
     devPvt *pPvt = (devPvt *)pr->dpvt;
-    asynStatus status;
     const char *sizeString;
-    static const char *functionName="createRingBuffer";
-
+ 
     if (!pPvt->ringBuffer) {
-        DBENTRY *pdbentry = dbAllocEntry(pdbbase);
         pPvt->ringSize = DEFAULT_RING_BUFFER_SIZE;
-        status = dbFindRecord(pdbentry, pr->name);
-        if (status) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                "%s %s::%s error finding record\n",
-                pr->name, driverName, functionName);
-            return -1;
-        }
-        sizeString = dbGetInfo(pdbentry, "asyn:FIFO");
+        sizeString = asynDbGetInfo(pr, "asyn:FIFO");
         if (sizeString) pPvt->ringSize = atoi(sizeString);
         pPvt->ringBuffer = callocMustSucceed(pPvt->ringSize+1, sizeof *pPvt->ringBuffer, "devAsynInt32::createRingBuffer");
     }
@@ -645,6 +627,8 @@ static void outputCallbackCallback(CALLBACK *pcb)
         dbScanLock(pr);
         epicsMutexLock(pPvt->devPvtLock);
         pPvt->newOutputCallbackValue = 1;
+        /* We need to set udf=0 here so that it is already cleared when dbProcess is called */
+        pr->udf = 0;
         dbProcess(pr);
         if (pPvt->newOutputCallbackValue != 0) {
             /* We called dbProcess but the record did not process, perhaps because PACT was 1
@@ -987,7 +971,6 @@ static long processAo(aoRecord *pr)
         /* We got a callback from the driver */
         if (pPvt->result.status == asynSuccess) {
             pr->rval = pPvt->result.value;
-            pr->udf = 0;
             value = (double)pr->rval + (double)pr->roff;
             if(pr->aslo!=0.0) value *= pr->aslo;
             value += pr->aoff;
@@ -1113,7 +1096,6 @@ static long processLo(longoutRecord *pr)
         /* We got a callback from the driver */
         if (pPvt->result.status == asynSuccess) {
             pr->val = pPvt->result.value;
-            pr->udf = 0;
         }
     } else if(pr->pact == 0) {
         pPvt->result.value = pr->val;
@@ -1219,7 +1201,6 @@ static long processBo(boRecord *pr)
         if (pPvt->result.status == asynSuccess) {
             pr->rval = pPvt->result.value;
             pr->val = (pr->rval) ? 1 : 0;
-            pr->udf = 0;
         }
     } else if(pr->pact == 0) {
         pPvt->result.value = pr->rval;
