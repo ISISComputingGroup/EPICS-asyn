@@ -42,6 +42,7 @@
 #include "asynFloat64SyncIO.h"
 #include "asynEpicsUtils.h"
 #include "asynFloat64.h"
+#include "devEpicsPvt.h"
 
 #define INIT_OK 0
 #define INIT_DO_NOT_CONVERT 2
@@ -144,7 +145,7 @@ static long initCommon(dbCommon *pr, DBLINK *plink,
     asynInterface *pasynInterface;
     static const char *functionName="initCommon";
 
-    pPvt = callocMustSucceed(1, sizeof(*pPvt), "%s::%s");
+    pPvt = callocMustSucceed(1, sizeof(*pPvt), "devAsynFloat64::initCommon");
     pr->dpvt = pPvt;
     pPvt->pr = pr;
     /* Create asynUser */
@@ -214,16 +215,7 @@ static long initCommon(dbCommon *pr, DBLINK *plink,
      * then register for callbacks on output records */
     if (interruptCallback) {
         int enableCallbacks=0;
-        const char *callbackString;
-        DBENTRY *pdbentry = dbAllocEntry(pdbbase);
-        status = dbFindRecord(pdbentry, pr->name);
-        if (status) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                "%s %s::%s error finding record\n",
-                pr->name, driverName, functionName);
-            goto bad;
-        }
-        callbackString = dbGetInfo(pdbentry, "asyn:READBACK");
+        const char *callbackString = asynDbGetInfo(pr, "asyn:READBACK");
         if (callbackString) enableCallbacks = atoi(callbackString);
         if (enableCallbacks) {
             status = createRingBuffer(pr);
@@ -251,23 +243,13 @@ bad:
 static long createRingBuffer(dbCommon *pr)
 {
     devPvt *pPvt = (devPvt *)pr->dpvt;
-    asynStatus status;
     const char *sizeString;
-    static const char *functionName="createRingBuffer";
 
     if (!pPvt->ringBuffer) {
-        DBENTRY *pdbentry = dbAllocEntry(pdbbase);
         pPvt->ringSize = DEFAULT_RING_BUFFER_SIZE;
-        status = dbFindRecord(pdbentry, pr->name);
-        if (status) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                "%s %s::%s error finding record\n",
-                pr->name, driverName, functionName);
-            return -1;
-        }
-        sizeString = dbGetInfo(pdbentry, "asyn:FIFO");
+        sizeString = asynDbGetInfo(pr, "asyn:FIFO");
         if (sizeString) pPvt->ringSize = atoi(sizeString);
-        pPvt->ringBuffer = callocMustSucceed(pPvt->ringSize+1, sizeof *pPvt->ringBuffer, "%s::createRingBuffer");
+        pPvt->ringBuffer = callocMustSucceed(pPvt->ringSize+1, sizeof *pPvt->ringBuffer, "devAsynFloat64::createRingBuffer");
     }
     return asynSuccess;
 }
@@ -366,7 +348,6 @@ static void processCallbackOutput(asynUser *pasynUser)
         }
     }
     pPvt->lastStatus = pPvt->result.status;
-    pPvt->lastStatus = pPvt->result.status;
     if(pr->pact) callbackRequestProcessCallback(&pPvt->processCallback,pr->prio,pr);
 }
 
@@ -463,6 +444,8 @@ static void outputCallbackCallback(CALLBACK *pcb)
         dbScanLock(pr);
         epicsMutexLock(pPvt->devPvtLock);
         pPvt->newOutputCallbackValue = 1;
+        /* We need to set udf=0 here so that it is already cleared when dbProcess is called */
+        pr->udf = 0;
         dbProcess(pr);
         if (pPvt->newOutputCallbackValue != 0) {
             /* We called dbProcess but the record did not process, perhaps because PACT was 1
@@ -664,7 +647,6 @@ static long processAo(aoRecord *pr)
             if (pr->aslo != 0.0) val64 *= pr->aslo;
             val64 += pr->aoff;
             pr->val = val64;
-            pr->udf = 0;
         }
     } else if(pr->pact == 0) {
         /* ASLO/AOFF conversion */
