@@ -530,6 +530,7 @@ static void dpCommonFree(dpCommon *pdpCommon)
 
 static dpCommon *findDpCommon(userPvt *puserPvt)
 {
+    if (!puserPvt) return(0);
     port *pport = puserPvt->pport;
     device *pdevice = puserPvt->pdevice;
 
