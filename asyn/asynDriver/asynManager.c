@@ -483,11 +483,9 @@ static const char *asynStripPath(const char *file)
   return file;
 }
 
-static void asynInit(void)
+static void asynInitOnceImpl(void* arg)
 {
     int i;
-
-    if(pasynBase) return;
     pasynBase = callocMustSucceed(1,sizeof(asynBase),"asynInit");
     ellInit(&pasynBase->asynPortList);
     ellInit(&pasynBase->asynUserFreeList);
@@ -501,6 +499,13 @@ static void asynInit(void)
     pasynBase->connectPortTimerQueue = epicsTimerQueueAllocate(
         0,epicsThreadPriorityScanLow);
     pasynBase->autoConnectTimeout = DEFAULT_AUTOCONNECT_TIMEOUT;
+}
+
+static epicsThreadOnceId asynInitOnce = EPICS_THREAD_ONCE_INIT;
+
+static void asynInit(void)
+{
+    epicsThreadOnce(&asynInitOnce, asynInitOnceImpl, NULL);
 }
 
 static void dpCommonInit(port *pport,device *pdevice,BOOL autoConnect)
@@ -530,6 +535,7 @@ static void dpCommonFree(dpCommon *pdpCommon)
 
 static dpCommon *findDpCommon(userPvt *puserPvt)
 {
+    if (!puserPvt) return(0);
     port *pport = puserPvt->pport;
     device *pdevice = puserPvt->pdevice;
 
@@ -540,6 +546,7 @@ static dpCommon *findDpCommon(userPvt *puserPvt)
 
 static tracePvt *findTracePvt(userPvt *puserPvt)
 {
+    if(!pasynBase) asynInit();
     dpCommon *pdpCommon = findDpCommon(puserPvt);
     if(pdpCommon) return(&pdpCommon->trace);
     return(&pasynBase->trace);
