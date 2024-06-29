@@ -56,7 +56,7 @@ DRV_FTDI_USE_LIBFTDI1=NO
 
 # Some linux systems moved RPC related symbols to libtirpc
 # To enable linking against this library, uncomment the following line
-# TIRPC=YES
+TIRPC=YES
 
 -include $(SUPPORT)/configure/CONFIG_SITE
 
