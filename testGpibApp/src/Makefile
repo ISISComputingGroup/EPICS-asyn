@@ -44,8 +44,8 @@ testGpib_LIBS += devTestGpib
 testGpib_LIBS += testSupport asyn
 testGpib_LIBS_WIN32 += oncrpc
 ifeq ($(TIRPC),YES)
-  USR_INCLUDES += -I/usr/include/tirpc
-  testGpib_SYS_LIBS += tirpc
+  USR_INCLUDES_Linux += -I/usr/include/tirpc
+  testGpib_SYS_LIBS_Linux += tirpc
 endif
 SYS_PROD_LIBS_cygwin32 += $(CYGWIN_RPC_LIB)
 testGpib_LIBS += $(EPICS_BASE_IOC_LIBS)
