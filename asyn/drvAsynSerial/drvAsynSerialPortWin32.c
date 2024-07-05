@@ -198,9 +198,9 @@ static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeou
 /* monitor and print requested comm events */
 static void monitorComEvents(void* arg)
 {
-    /* if we wanted to asynPrint etc then we probably need to duplicate and asynUser as
-       sharing tty->pasynUser is not recommended. However i was not sure how freeing this duplicate
-       and disconnect() interact, but as we don't need to print really i'll just remove prints asynPrint for now */
+    /* if we wanted to asynPrint() etc then we probably need to duplicateAsynUser() as
+       sharing tty->pasynUser is not recommended. However i was not sure how freeAsynUser with this duplicate
+       and disconnect() interact, but as we don't need to asynPrint explicitly i'll just use printf instead */
 	char datetime[64];
 	ttyController_t *tty = (ttyController_t *)arg;
 	DWORD evtMask, error, readTotal;
