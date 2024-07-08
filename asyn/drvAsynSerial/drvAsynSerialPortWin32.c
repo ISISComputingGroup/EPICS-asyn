@@ -198,11 +198,13 @@ static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeou
 /* monitor and print requested comm events */
 static void monitorComEvents(void* arg)
 {
+    /* if we wanted to asynPrint() etc then we probably need to duplicateAsynUser() as
+       sharing tty->pasynUser is not recommended. However i was not sure how freeAsynUser with this duplicate
+       and disconnect() interact, but as we don't need to asynPrint explicitly i'll just use printf instead */
 	char datetime[64];
 	ttyController_t *tty = (ttyController_t *)arg;
 	DWORD evtMask, error, readTotal;
-	asynPrint(tty->pasynUser, ASYN_TRACE_FLOW,
-		"%s started monitorComEvents thread.\n", tty->serialDeviceName);
+	printf("%s started monitorComEvents thread.\n", tty->serialDeviceName);
 	while(1)
 	{
 		if (GetCommMask(tty->commHandle, &evtMask) == 0 || evtMask == 0)
@@ -270,8 +272,7 @@ static void monitorComEvents(void* arg)
 			printf("%s: %s COM event: last character sent from output buffer\n", datetime, tty->serialDeviceName);
 		}
 	}
-	asynPrint(tty->pasynUser, ASYN_TRACE_FLOW,
-		"%s terminated monitorComEvents thread.\n", tty->serialDeviceName);
+	printf("%s terminated monitorComEvents thread.\n", tty->serialDeviceName);
 }
 
 /*
