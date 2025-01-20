@@ -172,6 +172,7 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     int reason = 0;
     int x;
     asynStatus status = asynSuccess;
+    char sockerrmsg[256];
 
     assert(tty);
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
@@ -212,16 +213,17 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
         tty->nRead += thisRead;
     }
     if (thisRead < 0) {
+        epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
         if ((SOCKERRNO != SOCK_EINTR)) {
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                     "%s read error: %s",
-                    tty->IPDeviceName, strerror(SOCKERRNO));
+                    tty->IPDeviceName, sockerrmsg);
             closeConnection(pasynUser, tty);
             status = asynError;
         } else {
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                     "%s timeout: %s",
-                    tty->IPDeviceName, strerror(SOCKERRNO));
+                    tty->IPDeviceName, sockerrmsg);
             status = asynTimeout;
         }
     }
@@ -295,6 +297,7 @@ static void connectionListener(void *drvPvt)
     int i;
     portList_t *pl, *p;
     int connected;
+    char sockerrmsg[256];
 
     /*
      * Sanity check
@@ -328,9 +331,10 @@ static void connectionListener(void *drvPvt)
                     "drvAsynIPServerPort: new connection, socket=%d on %s\n",
                     clientFd, tty->serverInfo);
             if (clientFd < 0) {
+                epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
                 asynPrint(pasynUser, ASYN_TRACE_ERROR,
                         "drvAsynIPServerPort: accept error on %s: fd=%d, %s\n", tty->serverInfo,
-                        tty->fd, strerror(errno));
+                        tty->fd, sockerrmsg);
                 continue;
             }
             /* Search for a port which is disconnected */
@@ -384,13 +388,15 @@ int createServerSocket(ttyController_t *tty) {
     struct sockaddr_in serverAddr;
     int oneVal=1;
     char srvaddrtxt[256];
+    char sockerrmsg[256];
     assert(tty);
     /*
      * Create the socket
      */
     if (tty->fd == INVALID_SOCKET) {
         if ((tty->fd = (int)epicsSocketCreate(PF_INET, tty->socketType, 0)) < 0) {
-            printf("Can't create socket: %s", strerror(SOCKERRNO));
+            epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
+            printf("Can't create socket: %s", sockerrmsg);
             return -1;
         }
 
@@ -406,8 +412,9 @@ int createServerSocket(ttyController_t *tty) {
         if (tty->interfaceInfo != NULL && *tty->interfaceInfo &&
             epicsStrCaseCmp(tty->interfaceInfo, "localhost")) {
             if (hostToIPAddr(tty->interfaceInfo, &serverAddr.sin_addr) < 0) {
+                epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
                 printf("using ANY interface, cannot lookup '%s': %s\n",
-                       tty->interfaceInfo, strerror(SOCKERRNO));
+                       tty->interfaceInfo, sockerrmsg);
                 return -1;
           }
         }
@@ -422,13 +429,15 @@ int createServerSocket(ttyController_t *tty) {
             epicsSocketEnableAddressUseForDatagramFanout(tty->fd);
         }
         if (setsockopt(tty->fd, SOL_SOCKET, SO_REUSEADDR, (const void *)&oneVal, sizeof(int))) {
-            printf("Error calling setsockopt %s: %s\n", tty->serverInfo, strerror(errno));
+            epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
+            printf("Error calling setsockopt %s: %s\n", tty->serverInfo, sockerrmsg);
             epicsSocketDestroy(tty->fd);
             tty->fd = INVALID_SOCKET;
             return -1;
         }
         if (bind(tty->fd, (struct sockaddr *) &serverAddr, sizeof (serverAddr)) < 0) {
-            printf("Error in binding %s: %s\n", tty->serverInfo, strerror(errno));
+            epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
+            printf("Error in binding %s: %s\n", tty->serverInfo, sockerrmsg);
             epicsSocketDestroy(tty->fd);
             tty->fd = INVALID_SOCKET;
             return -1;
@@ -440,8 +449,9 @@ int createServerSocket(ttyController_t *tty) {
         if (tty->socketType != SOCK_DGRAM) {
             i = listen(tty->fd, tty->maxClients);
             if (i < 0) {
+                epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
                 printf("Error calling listen() on %s:  %s\n",
-                        tty->serverInfo, strerror(errno));
+                        tty->serverInfo, sockerrmsg);
                 epicsSocketDestroy(tty->fd);
                 tty->fd = INVALID_SOCKET;
                 return -1;
