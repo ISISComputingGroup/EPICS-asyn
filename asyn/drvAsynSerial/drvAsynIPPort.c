@@ -411,6 +411,7 @@ connectIt(void *drvPvt, asynUser *pasynUser)
     SOCKET fd;
     int i;
     int sockOpt;
+    char sockerrmsg[256];
 
     /*
      * Sanity check
@@ -440,8 +441,9 @@ connectIt(void *drvPvt, asynUser *pasynUser)
          * Create the socket
          */
         if ((fd = epicsSocketCreate(tty->farAddr.oa.sa.sa_family, tty->socketType, 0)) < 0) {
+            epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
-                                  "Can't create socket: %s", strerror(SOCKERRNO));
+                                  "Can't create socket: %s", sockerrmsg);
             return asynError;
         }
 
@@ -451,9 +453,10 @@ connectIt(void *drvPvt, asynUser *pasynUser)
         i = 1;
         if ((tty->flags & FLAG_BROADCAST)
          && (setsockopt(fd, SOL_SOCKET, SO_BROADCAST, (void *)&i, sizeof i) < 0)) {
+            epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                           "Can't set %s socket BROADCAST option: %s",
-                          tty->IPDeviceName, strerror(SOCKERRNO));
+                          tty->IPDeviceName, sockerrmsg);
             epicsSocketDestroy(fd);
             return asynError;
         }
@@ -469,9 +472,10 @@ connectIt(void *drvPvt, asynUser *pasynUser)
         #endif
         if ((tty->flags & FLAG_SO_REUSEPORT)
          && (setsockopt(fd, SOL_SOCKET, sockOpt, (void *)&i, sizeof i) < 0)) {
+            epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                           "Can't set %s socket SO_REUSEPORT option: %s",
-                          tty->IPDeviceName, strerror(SOCKERRNO));
+                          tty->IPDeviceName, sockerrmsg);
             epicsSocketDestroy(fd);
             return asynError;
         }
@@ -498,8 +502,9 @@ connectIt(void *drvPvt, asynUser *pasynUser)
          */
         if (tty->localAddrSize > 0) {
             if (bind(fd, &tty->localAddr.sa, tty->localAddrSize)) {
+                epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
                 epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
-                                            "unable to bind to local port: %s", strerror(SOCKERRNO));
+                                            "unable to bind to local port: %s", sockerrmsg);
                 epicsSocketDestroy(fd);
                 return asynError;
             }
@@ -512,9 +517,10 @@ connectIt(void *drvPvt, asynUser *pasynUser)
          */
         if (tty->socketType != SOCK_DGRAM) {
             if (connect(fd, &tty->farAddr.oa.sa, (int)tty->farAddrSize) < 0) {
+                epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
                 epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                               "Can't connect to %s: %s",
-                              tty->IPDeviceName, strerror(SOCKERRNO));
+                              tty->IPDeviceName, sockerrmsg);
                 epicsSocketDestroy(fd);
                 if (tty->flags & FLAG_DONE_LOOKUP)
                     tty->flags |=  FLAG_NEED_LOOKUP;
@@ -526,17 +532,19 @@ connectIt(void *drvPvt, asynUser *pasynUser)
     if ((tty->socketType == SOCK_STREAM)
      && (tty->farAddr.oa.sa.sa_family == AF_INET)
      && (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (void *)&i, sizeof i) < 0)) {
+        epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                       "Can't set %s socket NODELAY option: %s",
-                      tty->IPDeviceName, strerror(SOCKERRNO));
+                      tty->IPDeviceName, sockerrmsg);
         epicsSocketDestroy(fd);
         return asynError;
     }
 #ifdef USE_POLL
     if (setNonBlock(fd, 1) < 0) {
+        epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                                "Can't set %s O_NONBLOCK option: %s",
-                                       tty->IPDeviceName, strerror(SOCKERRNO));
+                                       tty->IPDeviceName, sockerrmsg);
         epicsSocketDestroy(fd);
         return asynError;
     }
@@ -588,6 +596,7 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     epicsTimeStamp startTime;
     epicsTimeStamp endTime;
     int haveStartTime;
+    char sockerrmsg[256];
 
     assert(tty);
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
@@ -621,9 +630,10 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     tv.tv_sec = writePollmsec / 1000;
     tv.tv_usec = (writePollmsec % 1000) * 1000;
     if (setsockopt(tty->fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof tv) < 0) {
+        epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                       "Can't set %s socket send timeout: %s",
-                      tty->IPDeviceName, strerror(SOCKERRNO));
+                      tty->IPDeviceName, sockerrmsg);
         return asynError;
     }
     }
@@ -637,9 +647,10 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         pollfd.events = POLLOUT;
         epicsTimeGetCurrent(&startTime);
         while ((pollstatus = poll(&pollfd, 1, writePollmsec)) < 0) {
-            if (errno != EINTR) {
+            if (SOCKERRNO != SOCK_EINTR) {
+                epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
                 epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
-                                          "%s poll() failed: %s", tty->IPDeviceName, strerror(errno));
+                                          "%s poll() failed: %s", tty->IPDeviceName, sockerrmsg);
                 return asynError;
             }
             epicsTimeGetCurrent(&endTime);
@@ -690,9 +701,10 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
             break;
         }
         else {
+            epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                                      "%s write error: %s", tty->IPDeviceName,
-                                                           strerror(SOCKERRNO));
+                                                           sockerrmsg);
             closeConnection(pasynUser,tty,"Write error");
             status = asynError;
             break;
@@ -718,6 +730,7 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     epicsTimeStamp startTime;
     epicsTimeStamp endTime;
     asynStatus status = asynSuccess;
+    char sockerrmsg[256];
 
     assert(tty);
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
@@ -747,9 +760,10 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     tv.tv_sec = readPollmsec / 1000;
     tv.tv_usec = (readPollmsec % 1000) * 1000;
     if (setsockopt(tty->fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv) < 0) {
+        epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                       "Can't set %s socket receive timeout: %s",
-                      tty->IPDeviceName, strerror(SOCKERRNO));
+                      tty->IPDeviceName, sockerrmsg);
         status = asynError;
     }
     }
@@ -762,9 +776,10 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
         pollfd.events = POLLIN;
         epicsTimeGetCurrent(&startTime);
         while (poll(&pollfd, 1, readPollmsec) < 0) {
-            if (errno != EINTR) {
+            if (SOCKERRNO != SOCK_EINTR) {
+                epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
                 epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
-                                          "Poll() failed: %s", strerror(errno));
+                                          "Poll() failed: %s", sockerrmsg);
                 return asynError;
             }
             epicsTimeGetCurrent(&endTime);
@@ -798,16 +813,17 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     if (thisRead < 0) {
         int should_disconnect = (((tty->disconnectOnReadTimeout) && (pasynUser->timeout > 0)) ||
                                  ((SOCKERRNO != SOCK_EWOULDBLOCK) && (SOCKERRNO != SOCK_EINTR)));
+        epicsSocketConvertErrnoToString(sockerrmsg, sizeof(sockerrmsg));
         if (should_disconnect) {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                           "%s read error: %s",
-                          tty->IPDeviceName, strerror(SOCKERRNO));
+                          tty->IPDeviceName, sockerrmsg);
             closeConnection(pasynUser,tty,"Read error");
             status = asynError;
         } else {
             epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                           "%s timeout: %s",
-                          tty->IPDeviceName, strerror(SOCKERRNO));
+                          tty->IPDeviceName, sockerrmsg);
             status = asynTimeout;
         }
     }
