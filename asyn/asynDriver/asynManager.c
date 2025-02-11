@@ -2175,6 +2175,8 @@ static asynStatus autoConnectAsyn(asynUser *pasynUser,int yesNo)
     }
     pdpCommon->autoConnect = (yesNo ? 1 : 0);
     if(!pdpCommon->connected && pdpCommon->autoConnect) {
+        printf("asynManager:autoConnectAsyn started on port %s\n",
+          pport->portName);
         epicsTimerStartDelay(pport->connectTimer,.01);
     }
     exceptionOccurred(pasynUser,asynExceptionAutoConnect);
