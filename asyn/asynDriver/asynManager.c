@@ -535,9 +535,11 @@ static void dpCommonFree(dpCommon *pdpCommon)
 
 static dpCommon *findDpCommon(userPvt *puserPvt)
 {
+    port *pport;
+    device *pdevice;
     if (!puserPvt) return(0);
-    port *pport = puserPvt->pport;
-    device *pdevice = puserPvt->pdevice;
+    pport = puserPvt->pport;
+    pdevice = puserPvt->pdevice;
 
     if(!pport) return(0);
     if(!(pport->attributes&ASYN_MULTIDEVICE) || !pdevice) return(&pport->dpc);
@@ -546,8 +548,9 @@ static dpCommon *findDpCommon(userPvt *puserPvt)
 
 static tracePvt *findTracePvt(userPvt *puserPvt)
 {
+	dpCommon *pdpCommon;
     if(!pasynBase) asynInit();
-    dpCommon *pdpCommon = findDpCommon(puserPvt);
+    pdpCommon = findDpCommon(puserPvt);
     if(pdpCommon) return(&pdpCommon->trace);
     return(&pasynBase->trace);
 }
