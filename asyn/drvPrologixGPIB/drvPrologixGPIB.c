@@ -29,6 +29,7 @@ typedef struct dPvt {
     asynUser    *pasynUserTCPcommon;
     asynUser    *pasynUserTCPoctet;
     int          isConnected;
+    int          reconnectCount;
     int          autoConnect;
     int          timeout; /* prologix inter character timeout in milliseconds */
 
@@ -47,8 +48,12 @@ typedef struct dPvt {
     int          lastAddress;
     int          lastPrimaryAddress;
     int          lastSecondaryAddress;
-    int          eos;
+    int          eos; /* our end of read char if >= 0, also sent on send */
+    int          send_eoi;
 } dPvt;
+
+
+static dPvt *g_pdpvt;
 
 #define EOT_MARKER  0xEF
 
@@ -139,7 +144,7 @@ stashChar(dPvt *pdpvt, asynUser *pasynUser, int c)
     switch (c) {
     case '\r':
     case '\n':
-    case '\033':
+    case '\033': /* escape char */
     case '+':
         pdpvt->buf[pdpvt->bufCount++] = '\033';
         break;
@@ -153,7 +158,14 @@ prologixReport(void *drvPvt, FILE *fd, int details)
 {
     dPvt *pdpvt = (dPvt *)drvPvt;
 
-    fprintf(fd, "   Version: %s\n", pdpvt->versionString);
+    fprintf(fd, "   Version:           %s\n", pdpvt->versionString);
+    fprintf(fd, "   portName:          %s\n", pdpvt->portName);
+    fprintf(fd, "   hostTCP:           %s\n", pdpvt->hostTCP);
+    fprintf(fd, "   autoConnect:       %d\n", pdpvt->autoConnect);
+    fprintf(fd, "   timeout_ms:        %d\n", pdpvt->timeout);
+    fprintf(fd, "   eos:               %d\n", pdpvt->eos);
+    fprintf(fd, "   send_eoi:          %d\n", pdpvt->send_eoi);
+    fprintf(fd, "   reconnectCount:    %d\n", pdpvt->reconnectCount);
 }
 
 static asynStatus
@@ -182,12 +194,14 @@ prologixConnect(void *drvPvt, asynUser *pasynUser)
                     "++mode 1\n"             /* We are controller            */
                     "++ifc\n"                /* Clear the bus                */
                     "++eos 3\n"              /* Handle EOS ourselves         */
-                    "++eoi 1\n"              /* Generate EOI on output       */
+                    "++eoi %d\n"             /* Generate EOI on output       */
                     "++eot_char %d\n"        /* Mark EOT on input            */
-                    "++eot_enable 1\n"
+                    "++eot_enable %d\n"
                     "++ver\n"                /* Request version information  */
                     , pdpvt->timeout
+                    , pdpvt->send_eoi
                     , EOT_MARKER
+                    , (pdpvt->eos < 0 ? 1 : 0)
                     );
         status = pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf,
                                                                 n, 1.0, &nt);
@@ -216,6 +230,7 @@ prologixConnect(void *drvPvt, asynUser *pasynUser)
             }
         }
         pdpvt->isConnected = 1;
+        ++(pdpvt->reconnectCount);
     }
     pasynManager->exceptionConnect(pasynUser);
     return asynSuccess;
@@ -355,9 +370,9 @@ prologixRead(void *drvPvt, asynUser *pasynUser,
         eom |= ASYN_EOM_CNT;
     }
     memcpy(data, pdpvt->buf + pdpvt->bufIndex, n);
-     pdpvt->bufIndex += n;
+    pdpvt->bufIndex += n;
     if (eomReason) *eomReason = eom;
-    *nbytesTransfered = n;
+    *nbytesTransfered = (int)n;
     asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, data, n,
                                 "%s %d prologixRead %d EOM:%#x\n",
                                 pdpvt->portName, pdpvt->lastAddress, (int)n, eom);
@@ -409,6 +424,8 @@ prologixWrite(void *drvPvt, asynUser *pasynUser,
         }
     }
     pdpvt->buf[pdpvt->bufCount++] = '\n';
+    asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, pdpvt->buf, pdpvt->bufCount,
+                 "%s %d prologixWriteRaw\n", pdpvt->portName, pdpvt->lastAddress);
 
     /*
      * Send the command
@@ -468,8 +485,9 @@ prologixSetEos(void *drvPvt, asynUser *pasynUser, const char *eos, int eoslen)
     }
     if (pdpvt->eos == newEos)
         return asynSuccess;
+    pdpvt->eos = newEos;
     n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity, "++eot_enable %d\n",
-                                                                (pdpvt->eos < 0));
+                                                                (pdpvt->eos < 0 ? 1 : 0));
     return pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf, n, 1.0, &nt);
 }
 
@@ -489,7 +507,7 @@ prologixAddressedCmd(void *drvPvt, asynUser *pasynUser,
         "%s prologixAddressedCmd %2.2x\n",pdpvt->portName,cmd);
     status = pasynManager->getAddr(pasynUser,&addr);
     if(status!=asynSuccess) return status;
-    /* sort out addressing if needed, data[2] = pasynRec->addr + LADBASE if from asyn record 
+    /* sort out addressing if needed, data[2] = pasynRec->addr + LADBASE if from asyn record
        we may need to swap current address of gpib device */
     if (cmd == IBGTL[0]) {
         n = epicsSnprintf(pdpvt->buf, pdpvt->bufCapacity, "++loc\n");
@@ -527,7 +545,7 @@ prologixUniversalCmd(void *drvPvt, asynUser *pasynUser, int cmd)
         status = pasynOctetSyncIO->write(pdpvt->pasynUserTCPoctet, pdpvt->buf, n, 1.0, &nt);
     }
     return status;
-}    
+}
 
 static asynStatus
 prologixIfc(void *drvPvt, asynUser *pasynUser)
@@ -606,7 +624,7 @@ static asynGpibPort prologixMethods = {
 };
 
 static void
-prologixGPIBConfigure(const char *portName, const char *host, int priority, int noAutoConnect, int timeout)
+prologixGPIBConfigure(const char *portName, const char *host, int priority, int noAutoConnect)
 {
     dPvt *pdpvt;
     asynStatus status;
@@ -619,7 +637,9 @@ prologixGPIBConfigure(const char *portName, const char *host, int priority, int 
     pdpvt->bufCapacity = 4096;
     pdpvt->buf = callocMustSucceed(1, pdpvt->bufCapacity, portName);
     pdpvt->eos = -1;
-    pdpvt->timeout = (timeout != 0 ? timeout : DEFAULT_PROLOGIX_READ_TIMEOUT);
+    pdpvt->timeout = DEFAULT_PROLOGIX_READ_TIMEOUT;
+    pdpvt->send_eoi = 1;
+    pdpvt->reconnectCount = 0;
 
     /*
      * Create the port that we'll use for I/O.
@@ -662,6 +682,37 @@ prologixGPIBConfigure(const char *portName, const char *host, int priority, int 
         printf("registerPort failed\n");
         return;
     }
+    g_pdpvt = pdpvt;
+}
+
+static void
+prologixGPIBSetOption(const char *portName, const char *option, const char* value)
+{
+    size_t n = 0, nt;
+    if (portName == NULL) {
+        printf("prologixGPIBSetOption: portName NULL\n");
+        return;
+    } else if (option == NULL) {
+        printf("prologixGPIBSetOption: option NULL\n");
+        return;
+    } else if (value == NULL) {
+        printf("prologixGPIBSetOption: value NULL\n");
+        return;
+    }
+    if (!strcmp("timeout_ms", option)) {
+        int timeout = atoi(value);
+        /* timeout must be between 1 and 3000ms according to prologix manual */
+        g_pdpvt->timeout = (timeout > 0 ? (timeout < 3000 ? timeout : 3000) : DEFAULT_PROLOGIX_READ_TIMEOUT);
+        n = epicsSnprintf(g_pdpvt->buf, g_pdpvt->bufCapacity, "++read_tmo_ms %d\n", g_pdpvt->timeout );
+    } else if (!strcmp("send_eoi", option)) {
+        g_pdpvt->send_eoi = (atoi(value) != 0 ? 1 : 0);
+        n = epicsSnprintf(g_pdpvt->buf, g_pdpvt->bufCapacity, "++eoi %d\n", g_pdpvt->send_eoi);
+    } else {
+        printf("prologixGPIBSetOption: unknown option \"%s\"\n", option);
+    }
+    if (n > 0) {
+        pasynOctetSyncIO->write(g_pdpvt->pasynUserTCPoctet, g_pdpvt->buf, n, 1.0, &nt);
+    }
 }
 
 /*
@@ -671,23 +722,39 @@ static const iocshArg prologixGPIBConfigureArg0 = { "port",iocshArgString};
 static const iocshArg prologixGPIBConfigureArg1 = { "host",iocshArgString};
 static const iocshArg prologixGPIBConfigureArg2 = { "priority",iocshArgInt};
 static const iocshArg prologixGPIBConfigureArg3 = { "noAutoConnect",iocshArgInt};
-static const iocshArg prologixGPIBConfigureArg4 = { "timeout_ms",iocshArgInt};
 static const iocshArg *prologixGPIBConfigureArgs[] = {
                     &prologixGPIBConfigureArg0, &prologixGPIBConfigureArg1,
                     &prologixGPIBConfigureArg2, &prologixGPIBConfigureArg3,
-                    &prologixGPIBConfigureArg4};
+     };
 static const iocshFuncDef prologixGPIBConfigureFuncDef =
-      {"prologixGPIBConfigure", 5, prologixGPIBConfigureArgs};
+      {"prologixGPIBConfigure", 4, prologixGPIBConfigureArgs};
+
+
+static const iocshArg prologixGPIBSetOptionArg0 = { "port",iocshArgString};
+static const iocshArg prologixGPIBSetOptionArg1 = { "option",iocshArgString};
+static const iocshArg prologixGPIBSetOptionArg2 = { "value",iocshArgString};
+static const iocshArg *prologixGPIBSetOptionArgs[] = {
+                    &prologixGPIBSetOptionArg0, &prologixGPIBSetOptionArg1,
+                    &prologixGPIBSetOptionArg2};
+static const iocshFuncDef prologixGPIBSetOptionFuncDef =
+      {"prologixGPIBSetOption", 3, prologixGPIBSetOptionArgs};
+
 static void prologixGPIBConfigureCallFunc(const iocshArgBuf *args)
 {
     prologixGPIBConfigure(args[0].sval, args[1].sval,
-                          args[2].ival, args[3].ival,
-                          args[4].ival);
+                          args[2].ival, args[3].ival);
+}
+
+static void prologixGPIBSetOptionCallFunc(const iocshArgBuf *args)
+{
+    prologixGPIBSetOption(args[0].sval, args[1].sval,
+                          args[2].sval);
 }
 
 static void
 drvPrologixGPIB_RegisterCommands(void)
 {
     iocshRegister(&prologixGPIBConfigureFuncDef,prologixGPIBConfigureCallFunc);
+    iocshRegister(&prologixGPIBSetOptionFuncDef,prologixGPIBSetOptionCallFunc);
 }
 epicsExportRegistrar(drvPrologixGPIB_RegisterCommands);
