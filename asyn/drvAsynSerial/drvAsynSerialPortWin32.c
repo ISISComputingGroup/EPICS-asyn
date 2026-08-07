@@ -207,10 +207,16 @@ static void monitorComEvents(void* arg)
 	printf("%s started monitorComEvents thread.\n", tty->serialDeviceName);
 	while(1)
 	{
-		if (GetCommMask(tty->commHandle, &evtMask) == 0 || evtMask == 0)
+		if (GetCommMask(tty->commHandle, &evtMask) == 0)
 		{
-			break; /* nothing to monitor, also used to indicate connection close as by default we monitor EV_ERR */
+			error = GetLastError();
+            printf("%s Error 0x%x from GetCommMask().\n", tty->serialDeviceName, error);
+			break;
 		}
+		if (evtMask == 0) {
+            printf("%s No event mask defined - this may have been purposely cleared to close a conenction.\n", tty->serialDeviceName);
+			break;
+        }
 	    memset(&tty->commEventOverlapped, 0, sizeof(OVERLAPPED));
 	    tty->commEventOverlapped.hEvent = tty->commEventMaskHandle;
 	    if (WaitCommEvent(tty->commHandle, &evtMask, &tty->commEventOverlapped) == 0)
@@ -218,10 +224,13 @@ static void monitorComEvents(void* arg)
 			error = GetLastError();
 			if (error != ERROR_IO_PENDING)
 			{
+                printf("%s Error 0x%x from WaitCommEvent().\n", tty->serialDeviceName, error);
 				break; /* terminates thread */
 			}
 			if (GetOverlappedResult(tty->commHandle, &tty->commEventOverlapped, &readTotal, TRUE) == 0)
 			{
+                error = GetLastError();
+                printf("%s Error 0x%x retuned from GetOverlappedResult().\n", tty->serialDeviceName, error);
 				break; /* terminates thread */
 			}
 		}
@@ -1374,11 +1383,11 @@ drvAsynSerialPortConfigure(const char *portName,
      * Check arguments
      */
     if (portName == NULL) {
-        printf("Port name missing.\n");
+        printf("drvAsynSerialPortConfigure: Port name missing.\n");
         return -1;
     }
     if (ttyName == NULL) {
-        printf("TTY name missing.\n");
+        printf("drvAsynSerialPortConfigure: TTY name missing.\n");
         return -1;
     }
 
