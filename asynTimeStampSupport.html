@@ -170,7 +170,7 @@ These commands can be called from the vxWorks or iocsh shells.</p>
 <p>The “functionName” argument is the name of a user timestamp source function.
 It is defined the same way one would define a function for the EPICS sub or asub records.</p>
 <p>This is from asyn/iocBoot/ioctestErrors/st.cmd</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynRegisterTimeStampSource</span><span class="p">(</span><span class="s2">&quot;PORT1&quot;</span><span class="p">,</span> <span class="s2">&quot;myTimeStampSource&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynRegisterTimeStampSource</span><span class="p">(</span><span class="s2">"PORT1"</span><span class="p">,</span> <span class="s2">"myTimeStampSource"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is asyn/testErrorsApp/src/myTimeStampSource.cpp</p>
@@ -188,13 +188,13 @@ It is defined the same way one would define a function for the EPICS sub or asub
     <span class="n">pTimeStamp</span><span class="o">-&gt;</span><span class="n">nsec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">extern</span> <span class="s2">&quot;C&quot;</span> <span class="p">{</span>
+<span class="n">extern</span> <span class="s2">"C"</span> <span class="p">{</span>
 <span class="n">epicsRegisterFunction</span><span class="p">(</span><span class="n">myTimeStampSource</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>This is the line from the dbd file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span><span class="p">(</span><span class="s2">&quot;myTimeStampSource&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span><span class="p">(</span><span class="s2">"myTimeStampSource"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -627,7 +627,7 @@ This shows that timestamp source can be changed dynamically at run-time.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Mark Rivers.
-      <span class="lastupdated">Last updated on 2026-August-07.
+      <span class="lastupdated">Last updated on 2026-August-17.
       </span></p>
   </div>
 

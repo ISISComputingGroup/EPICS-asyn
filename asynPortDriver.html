@@ -159,7 +159,7 @@ This could be done using the asyn serial or IP drivers via the asynOctetSyncIO i
 or any other I/O mechanism.</p>
 <p>This is the medm screen for controlling this example application. It is started
 in the testAsynPortDriverApp/adl directory with the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">&quot;P=testAPD:, R=scope1:&quot;</span> <span class="n">testAsynPortDriver</span><span class="o">.</span><span class="n">adl</span> <span class="o">&amp;</span><span class="p">;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">"P=testAPD:, R=scope1:"</span> <span class="n">testAsynPortDriver</span><span class="o">.</span><span class="n">adl</span> <span class="o">&amp;</span><span class="p">;</span>
 </pre></div>
 </div>
 <section id="testasynportdriver-adl">
@@ -190,8 +190,8 @@ asyn EPICS record device support provided as part of asyn. Yet the driver is onl
 about 340 lines of well-commented C++ code, because so much of the infrastructure
 is handled by the asynPortDriver base class.</p>
 <p>Here are the important lines from the startup script to start this IOC:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">testAsynPortDriverConfigure</span><span class="p">(</span><span class="s2">&quot;testAPD&quot;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">&quot;../../db/testAsynPortDriver.db&quot;</span><span class="p">,</span><span class="s2">&quot;P=testAPD:,R=scope1:,PORT=testAPD,ADDR=0,TIMEOUT=1,NPOINTS=1000&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">testAsynPortDriverConfigure</span><span class="p">(</span><span class="s2">"testAPD"</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">"../../db/testAsynPortDriver.db"</span><span class="p">,</span><span class="s2">"P=testAPD:,R=scope1:,PORT=testAPD,ADDR=0,TIMEOUT=1,NPOINTS=1000"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The first line starts the asyn port driver with a 1000 point waveform. The second
@@ -205,21 +205,21 @@ the value provided in the configure command above.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">###################################################################</span>
 <span class="c1">#  These records are the time per division                        #</span>
 <span class="c1">###################################################################</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)TimePerDiv&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)TimePerDiv"</span><span class="p">)</span>
 <span class="p">{</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;asynFloat64&quot;</span><span class="p">)</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@asyn($(PORT),$(ADDR),$(TIMEOUT))SCOPE_TIME_PER_DIV&quot;</span><span class="p">)</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"asynFloat64"</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@asyn($(PORT),$(ADDR),$(TIMEOUT))SCOPE_TIME_PER_DIV"</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span> <span class="s2">"5"</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)TimePerDiv_RBV&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="s2">"$(P)$(R)TimePerDiv_RBV"</span><span class="p">)</span>
 <span class="p">{</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;asynFloat64&quot;</span><span class="p">)</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span>  <span class="s2">&quot;@asyn($(PORT),$(ADDR),$(TIMEOUT))SCOPE_TIME_PER_DIV&quot;</span><span class="p">)</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">)</span>
-   <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span> <span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"asynFloat64"</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span>  <span class="s2">"@asyn($(PORT),$(ADDR),$(TIMEOUT))SCOPE_TIME_PER_DIV"</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span> <span class="s2">"5"</span><span class="p">)</span>
+   <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span> <span class="s2">"I/O Intr"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -301,19 +301,19 @@ which runs a separate thread to compute the waveform at the specified update tim
 <p>This is the how the parameters are defined in the driver, testAsynPortDriver.cpp</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span> <span class="n">These</span> <span class="n">are</span> <span class="n">the</span> <span class="n">drvInfo</span> <span class="n">strings</span> <span class="n">that</span> <span class="n">are</span> <span class="n">used</span> <span class="n">to</span> <span class="n">identify</span> <span class="n">the</span> <span class="n">parameters</span><span class="o">.</span>
  <span class="o">*</span> <span class="n">They</span> <span class="n">are</span> <span class="n">used</span> <span class="n">by</span> <span class="n">asyn</span> <span class="n">clients</span><span class="p">,</span> <span class="n">including</span> <span class="n">standard</span> <span class="n">asyn</span> <span class="n">device</span> <span class="n">support</span> <span class="o">*/</span>
-<span class="c1">#define P_RunString                &quot;SCOPE_RUN&quot;             /* asynInt32,    r/w */</span>
-<span class="c1">#define P_MaxPointsString          &quot;SCOPE_MAX_POINTS&quot;      /* asynInt32,    r/o */</span>
-<span class="c1">#define P_TimePerDivisionString    &quot;SCOPE_TIME_PER_DIV&quot;    /* asynFloat64,  r/w */</span>
-<span class="c1">#define P_VoltsPerDivisionString   &quot;SCOPE_VOLTS_PER_DIV&quot;   /* asynFloat64,  r/w */</span>
-<span class="c1">#define P_VoltOffsetString         &quot;SCOPE_VOLT_OFFSET&quot;     /* asynFloat64,  r/w */</span>
-<span class="c1">#define P_TriggerDelayString       &quot;SCOPE_TRIGGER_DELAY&quot;   /* asynFloat64,  r/w */</span>
-<span class="c1">#define P_NoiseAmplitudeString     &quot;SCOPE_NOISE_AMPLITUDE&quot; /* asynFloat64,  r/w */</span>
-<span class="c1">#define P_UpdateTimeString         &quot;SCOPE_UPDATE_TIME&quot;     /* asynFloat64,  r/w */</span>
-<span class="c1">#define P_WaveformString           &quot;SCOPE_WAVEFORM&quot;        /* asynFloat64Array,  r/o */</span>
-<span class="c1">#define P_TimeBaseString           &quot;SCOPE_TIME_BASE&quot;       /* asynFloat64Array,  r/o */</span>
-<span class="c1">#define P_MinValueString           &quot;SCOPE_MIN_VALUE&quot;       /* asynFloat64,  r/o */</span>
-<span class="c1">#define P_MaxValueString           &quot;SCOPE_MAX_VALUE&quot;       /* asynFloat64,  r/o */</span>
-<span class="c1">#define P_MeanValueString          &quot;SCOPE_MEAN_VALUE&quot;      /* asynFloat64,  r/o */</span>
+<span class="c1">#define P_RunString                "SCOPE_RUN"             /* asynInt32,    r/w */</span>
+<span class="c1">#define P_MaxPointsString          "SCOPE_MAX_POINTS"      /* asynInt32,    r/o */</span>
+<span class="c1">#define P_TimePerDivisionString    "SCOPE_TIME_PER_DIV"    /* asynFloat64,  r/w */</span>
+<span class="c1">#define P_VoltsPerDivisionString   "SCOPE_VOLTS_PER_DIV"   /* asynFloat64,  r/w */</span>
+<span class="c1">#define P_VoltOffsetString         "SCOPE_VOLT_OFFSET"     /* asynFloat64,  r/w */</span>
+<span class="c1">#define P_TriggerDelayString       "SCOPE_TRIGGER_DELAY"   /* asynFloat64,  r/w */</span>
+<span class="c1">#define P_NoiseAmplitudeString     "SCOPE_NOISE_AMPLITUDE" /* asynFloat64,  r/w */</span>
+<span class="c1">#define P_UpdateTimeString         "SCOPE_UPDATE_TIME"     /* asynFloat64,  r/w */</span>
+<span class="c1">#define P_WaveformString           "SCOPE_WAVEFORM"        /* asynFloat64Array,  r/o */</span>
+<span class="c1">#define P_TimeBaseString           "SCOPE_TIME_BASE"       /* asynFloat64Array,  r/o */</span>
+<span class="c1">#define P_MinValueString           "SCOPE_MIN_VALUE"       /* asynFloat64,  r/o */</span>
+<span class="c1">#define P_MaxValueString           "SCOPE_MAX_VALUE"       /* asynFloat64,  r/o */</span>
+<span class="c1">#define P_MeanValueString          "SCOPE_MEAN_VALUE"      /* asynFloat64,  r/o */</span>
 </pre></div>
 </div>
 <p>Note that each parameter has an integer value that identifies it. It is also associated
@@ -364,7 +364,7 @@ creates the simTask thread.</p>
     <span class="n">asynStatus</span> <span class="n">status</span> <span class="o">=</span> <span class="n">asynSuccess</span><span class="p">;</span>
     <span class="n">epicsInt32</span> <span class="n">run</span><span class="p">;</span>
     <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">paramName</span><span class="p">;</span>
-    <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">functionName</span> <span class="o">=</span> <span class="s2">&quot;writeFloat64&quot;</span><span class="p">;</span>
+    <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">functionName</span> <span class="o">=</span> <span class="s2">"writeFloat64"</span><span class="p">;</span>
 
     <span class="o">/*</span> <span class="n">Set</span> <span class="n">the</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">parameter</span> <span class="n">library</span><span class="o">.</span> <span class="o">*/</span>
     <span class="n">status</span> <span class="o">=</span> <span class="p">(</span><span class="n">asynStatus</span><span class="p">)</span> <span class="n">setDoubleParam</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
@@ -376,7 +376,7 @@ creates the simTask thread.</p>
         <span class="o">/*</span> <span class="n">Make</span> <span class="n">sure</span> <span class="n">the</span> <span class="n">update</span> <span class="n">time</span> <span class="ow">is</span> <span class="n">valid</span><span class="o">.</span> <span class="n">If</span> <span class="ow">not</span> <span class="n">change</span> <span class="n">it</span> <span class="ow">and</span> <span class="n">put</span> <span class="n">back</span> <span class="ow">in</span> <span class="n">parameter</span> <span class="n">library</span> <span class="o">*/</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">MIN_UPDATE_TIME</span><span class="p">)</span> <span class="p">{</span>
             <span class="n">asynPrint</span><span class="p">(</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">ASYN_TRACE_WARNING</span><span class="p">,</span>
-                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">: warning, update time too small, changed from </span><span class="si">%f</span><span class="s2"> to </span><span class="si">%f</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">: warning, update time too small, changed from </span><span class="si">%f</span><span class="s2"> to </span><span class="si">%f</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
                 <span class="n">driverName</span><span class="p">,</span> <span class="n">functionName</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">MIN_UPDATE_TIME</span><span class="p">);</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">MIN_UPDATE_TIME</span><span class="p">;</span>
             <span class="n">setDoubleParam</span><span class="p">(</span><span class="n">P_UpdateTime</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
@@ -394,11 +394,11 @@ creates the simTask thread.</p>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">status</span><span class="p">)</span>
         <span class="n">epicsSnprintf</span><span class="p">(</span><span class="n">pasynUser</span><span class="o">-&gt;</span><span class="n">errorMessage</span><span class="p">,</span> <span class="n">pasynUser</span><span class="o">-&gt;</span><span class="n">errorMessageSize</span><span class="p">,</span>
-                  <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">: status=</span><span class="si">%d</span><span class="s2">, function=</span><span class="si">%d</span><span class="s2">, name=</span><span class="si">%s</span><span class="s2">, value=</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>
+                  <span class="s2">"</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">: status=</span><span class="si">%d</span><span class="s2">, function=</span><span class="si">%d</span><span class="s2">, name=</span><span class="si">%s</span><span class="s2">, value=</span><span class="si">%f</span><span class="s2">"</span><span class="p">,</span>
                   <span class="n">driverName</span><span class="p">,</span> <span class="n">functionName</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">paramName</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
     <span class="k">else</span>
         <span class="n">asynPrint</span><span class="p">(</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">ASYN_TRACEIO_DRIVER</span><span class="p">,</span>
-              <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">: function=</span><span class="si">%d</span><span class="s2">, name=</span><span class="si">%s</span><span class="s2">, value=</span><span class="si">%f</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+              <span class="s2">"</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">: function=</span><span class="si">%d</span><span class="s2">, name=</span><span class="si">%s</span><span class="s2">, value=</span><span class="si">%f</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
               <span class="n">driverName</span><span class="p">,</span> <span class="n">functionName</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">paramName</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
     <span class="k">return</span> <span class="n">status</span><span class="p">;</span>
 <span class="p">}</span>
@@ -532,7 +532,7 @@ writeOctet()` functions, in addition to <cite>drvUserCreate()</cite>.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Mark Rivers.
-      <span class="lastupdated">Last updated on 2026-August-07.
+      <span class="lastupdated">Last updated on 2026-August-17.
       </span></p>
   </div>
 

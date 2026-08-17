@@ -1435,7 +1435,7 @@ asynManager:duplicateAsynUser) and asynManager:freeAsynUser.</p>
 <tr class="row-odd"><td><p>errorMessage</p></td>
 <td><p>When a method returns asynError it should put an error message into errorMessage
 via a call to</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epicsSnprintf</span><span class="p">(</span><span class="n">pasynUser</span><span class="o">-&gt;</span><span class="n">errorMessage</span><span class="p">,</span><span class="n">pasynUser</span><span class="o">-&gt;</span><span class="n">errorMessageSize</span><span class="p">,</span> <span class="s2">&quot;&lt;format&gt;&quot;</span><span class="p">,</span><span class="o">...</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epicsSnprintf</span><span class="p">(</span><span class="n">pasynUser</span><span class="o">-&gt;</span><span class="n">errorMessage</span><span class="p">,</span><span class="n">pasynUser</span><span class="o">-&gt;</span><span class="n">errorMessageSize</span><span class="p">,</span> <span class="s2">"&lt;format&gt;"</span><span class="p">,</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The error message should <em>not</em> end with (nor contain) a newline character
@@ -1935,7 +1935,7 @@ to this function.</p></td>
 <h3><a class="toc-backref" href="#id100" role="doc-backlink">asynCommon</a><a class="headerlink" href="#asyncommon" title="Link to this heading"></a></h3>
 <p>asynCommon describes the methods that must be implemented by drivers.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span> <span class="n">Device</span> <span class="n">Interface</span> <span class="n">supported</span> <span class="n">by</span> <span class="n">ALL</span> <span class="n">asyn</span> <span class="n">drivers</span><span class="o">*/</span>
-<span class="c1">#define asynCommonType &quot;asynCommon&quot;</span>
+<span class="c1">#define asynCommonType "asynCommon"</span>
 <span class="n">typedef</span> <span class="n">struct</span>  <span class="n">asynCommon</span> <span class="p">{</span>
     <span class="n">void</span>       <span class="p">(</span><span class="o">*</span><span class="n">report</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span><span class="n">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span><span class="nb">int</span> <span class="n">details</span><span class="p">);</span>
     <span class="o">/*</span><span class="n">following</span> <span class="n">are</span> <span class="n">to</span> <span class="n">connect</span><span class="o">/</span><span class="n">disconnect</span> <span class="n">to</span><span class="o">/</span><span class="kn">from</span><span class="w"> </span><span class="nn">hardware</span><span class="o">*/</span>
@@ -1993,7 +1993,7 @@ connectDevice calls asynCommon-&gt;connect, and disconnectDevice calls asynCommo
 <h3><a class="toc-backref" href="#id102" role="doc-backlink">asynDrvUser</a><a class="headerlink" href="#asyndrvuser" title="Link to this heading"></a></h3>
 <p>asynDrvUser provides methods that allow an asynUser to communicate user specific
 information to/from a port driver</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynDrvUserType &quot;asynDrvUser&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynDrvUserType "asynDrvUser"</span>
 <span class="n">typedef</span> <span class="n">struct</span>  <span class="n">asynDrvUser</span> <span class="p">{</span>
     <span class="o">/*</span><span class="n">The</span> <span class="n">following</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">have</span> <span class="n">to</span> <span class="n">be</span> <span class="n">called</span> <span class="n">via</span> <span class="n">queueRequest</span> <span class="n">callback</span><span class="o">*/</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">create</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span><span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span>
@@ -2045,7 +2045,7 @@ locked.</p>
 <p>asynLockPortNotify is used only by asynManager itself. It is not put in the list
 of interfaces for the port.</p>
 <p>asynLockPortNotify is</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynLockPortNotifyType &quot;asynLockPortNotify&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynLockPortNotifyType "asynLockPortNotify"</span>
 <span class="n">typedef</span> <span class="n">struct</span>  <span class="n">asynLockPortNotify</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">lock</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span><span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">);</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">unlock</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span><span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">);</span>
@@ -2074,7 +2074,7 @@ for the port to which it is connected.</p></td>
 <h3><a class="toc-backref" href="#id104" role="doc-backlink">asynOption</a><a class="headerlink" href="#asynoption" title="Link to this heading"></a></h3>
 <p>asynOption provides a generic way of setting driver specific options. For example
 the serial port driver uses this to specify baud rate, stop bits, etc.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynOptionType &quot;asynOption&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynOptionType "asynOption"</span>
 <span class="o">/*</span><span class="n">The</span> <span class="n">following</span> <span class="n">are</span> <span class="n">generic</span> <span class="n">methods</span> <span class="n">to</span> <span class="nb">set</span><span class="o">/</span><span class="n">get</span> <span class="n">device</span> <span class="n">options</span><span class="o">*/</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynOption</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">setOption</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span>
@@ -2157,12 +2157,12 @@ where the asynPrint or asynPrintIO statement occurs.</p></li>
 must use the trace facility. Device and driver support can directly call the asynTrace
 methods. The asynPrint and asynPrintIO macros are provided so that it is easier
 for device/driver support. Support can have calls like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynPrint</span><span class="p">(</span><span class="n">pasynUser</span><span class="p">,</span><span class="n">ASYN_TRACE_FLOW</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> Calling queueRequest</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">someName</span><span class="p">);</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynPrint</span><span class="p">(</span><span class="n">pasynUser</span><span class="p">,</span><span class="n">ASYN_TRACE_FLOW</span><span class="p">,</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> Calling queueRequest</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">someName</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The asynPrintIO call is designed for device support or drivers that issue read or
 write requests. They make calls like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynPrintIO</span><span class="p">(</span><span class="n">pasynUser</span><span class="p">,</span><span class="n">ASYN_TRACEIO_DRIVER</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">nchars</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> nchars </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">someName</span><span class="p">,</span><span class="n">nchars</span><span class="p">);</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynPrintIO</span><span class="p">(</span><span class="n">pasynUser</span><span class="p">,</span><span class="n">ASYN_TRACEIO_DRIVER</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">nchars</span><span class="p">,</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> nchars </span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span><span class="n">someName</span><span class="p">,</span><span class="n">nchars</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The asynTrace methods are implemented by asynManager. These methods can be used
@@ -2391,7 +2391,7 @@ is done via 8-bit bytes.</p>
 <span class="p">}</span><span class="n">asynOctetInterrupt</span><span class="p">;</span>
 
 
-<span class="c1">#define asynOctetType &quot;asynOctet&quot;</span>
+<span class="c1">#define asynOctetType "asynOctet"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynOctet</span><span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span><span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span>
                     <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="n">size_t</span> <span class="n">numchars</span><span class="p">,</span><span class="n">size_t</span> <span class="o">*</span><span class="n">nbytesTransfered</span><span class="p">);</span>
@@ -2421,7 +2421,7 @@ is done via 8-bit bytes.</p>
    <span class="n">directly</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">via</span> <span class="n">queueRequest</span><span class="o">.</span>
 <span class="o">*/</span>
 
-<span class="c1">#define asynOctetBaseType &quot;asynOctetBase&quot;</span>
+<span class="c1">#define asynOctetBaseType "asynOctetBase"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynOctetBase</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">initialize</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">portName</span><span class="p">,</span>
         <span class="n">asynDriverasynInterface</span> <span class="o">*</span><span class="n">pasynOctetInterface</span><span class="p">,</span>
@@ -2742,7 +2742,7 @@ with a device.</p>
     <span class="n">interruptCallbackIntXX</span> <span class="n">callback</span><span class="p">;</span>
     <span class="n">void</span> <span class="o">*</span><span class="n">userPvt</span><span class="p">;</span>
 <span class="p">}</span> <span class="n">asynIntXXInterrupt</span><span class="p">;</span>
-<span class="c1">#define asynIntXXType &quot;asynIntXX&quot;</span>
+<span class="c1">#define asynIntXXType "asynIntXX"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynIntXX</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">epicsIntXX</span> <span class="n">value</span><span class="p">);</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">read</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">epicsIntXX</span> <span class="o">*</span><span class="n">value</span><span class="p">);</span>
@@ -2763,7 +2763,7 @@ with a device.</p>
    <span class="n">directly</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">via</span> <span class="n">queueRequest</span><span class="o">.</span>
 <span class="o">*/</span>
 
-<span class="c1">#define asynIntXXBaseType &quot;asynIntXXBase&quot;</span>
+<span class="c1">#define asynIntXXBaseType "asynIntXXBase"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynIntXXBase</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">initialize</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">portName</span><span class="p">,</span>
                             <span class="n">asynInterface</span> <span class="o">*</span><span class="n">pintXXInterface</span><span class="p">);</span>
@@ -2848,7 +2848,7 @@ and asynManager:interruptEnd.</p>
 <h3><a class="toc-backref" href="#id114" role="doc-backlink">asynIntXXSyncIO (XX=32 or 64)</a><a class="headerlink" href="#asynintxxsyncio-xx-32-or-64" title="Link to this heading"></a></h3>
 <p>asynIntXXSyncIO describes a synchronous interface to asynIntXX. The code that calls
 it must be willing to block.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynIntXXSyncIOType &quot;asynIntXXSyncIO&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynIntXXSyncIOType "asynIntXXSyncIO"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynIntXXSyncIO</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span> <span class="n">addr</span><span class="p">,</span>
                           <span class="n">asynUser</span> <span class="o">**</span><span class="n">ppasynUser</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">drvInfo</span><span class="p">);</span>
@@ -2917,7 +2917,7 @@ it must be willing to block.</p>
     <span class="n">interruptCallbackUInt32Digital</span> <span class="n">callback</span><span class="p">;</span>
     <span class="n">void</span> <span class="o">*</span><span class="n">userPvt</span><span class="p">;</span>
 <span class="p">}</span> <span class="n">asynUInt32DigitalInterrupt</span><span class="p">;</span>
-<span class="c1">#define asynUInt32DigitalType &quot;asynUInt32Digital&quot;</span>
+<span class="c1">#define asynUInt32DigitalType "asynUInt32Digital"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynUInt32Digital</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span>
          <span class="n">epicsUInt32</span> <span class="n">value</span><span class="p">,</span> <span class="n">epicsUInt32</span> <span class="n">mask</span><span class="p">);</span>
@@ -2944,7 +2944,7 @@ it must be willing to block.</p>
    <span class="n">directly</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">via</span> <span class="n">queueRequest</span><span class="o">.</span>
 <span class="o">*/</span>
 
-<span class="c1">#define asynUInt32DigitalBaseType &quot;asynUInt32DigitalBase&quot;</span>
+<span class="c1">#define asynUInt32DigitalBaseType "asynUInt32DigitalBase"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynUInt32DigitalBase</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">initialize</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">portName</span><span class="p">,</span>
                             <span class="n">asynInterface</span> <span class="o">*</span><span class="n">pasynUInt32DigitalInterface</span><span class="p">);</span>
@@ -3043,7 +3043,7 @@ via calls to asynManager:interruptStart and asynManager:interruptEnd.</p></td>
 <h3><a class="toc-backref" href="#id116" role="doc-backlink">asynUInt32DigitalSyncIO</a><a class="headerlink" href="#asynuint32digitalsyncio" title="Link to this heading"></a></h3>
 <p>asynUInt32DigitalSyncIO describes a synchronous interface to asynUInt32Digital.
 The code that calls it must be willing to block.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynUInt32DigitalSyncIOType &quot;asynUInt32DigitalSyncIO&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynUInt32DigitalSyncIOType "asynUInt32DigitalSyncIO"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynUInt32DigitalSyncIO</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span> <span class="n">addr</span><span class="p">,</span>
                        <span class="n">asynUser</span> <span class="o">**</span><span class="n">ppasynUser</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">drvInfo</span><span class="p">);</span>
@@ -3122,7 +3122,7 @@ values.</p>
     <span class="n">interruptCallbackFloat64</span> <span class="n">callback</span><span class="p">;</span>
     <span class="n">void</span> <span class="o">*</span><span class="n">userPvt</span><span class="p">;</span>
 <span class="p">}</span> <span class="n">asynFloat64Interrupt</span><span class="p">;</span>
-<span class="c1">#define asynFloat64Type &quot;asynFloat64&quot;</span>
+<span class="c1">#define asynFloat64Type "asynFloat64"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynFloat64</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">epicsFloat64</span> <span class="n">value</span><span class="p">);</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">read</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">epicsFloat64</span> <span class="o">*</span><span class="n">value</span><span class="p">);</span>
@@ -3140,7 +3140,7 @@ values.</p>
    <span class="n">directly</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">via</span> <span class="n">queueRequest</span><span class="o">.</span>
 <span class="o">*/</span>
 
-<span class="c1">#define asynFloat64BaseType &quot;asynFloat64Base&quot;</span>
+<span class="c1">#define asynFloat64BaseType "asynFloat64Base"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynFloat64Base</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">initialize</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">portName</span><span class="p">,</span>
                             <span class="n">asynInterface</span> <span class="o">*</span><span class="n">pasynFloat64Interface</span><span class="p">);</span>
@@ -3216,7 +3216,7 @@ via calls to asynManager:interruptStart and asynManager:interruptEnd.</p></td>
 <h3><a class="toc-backref" href="#id118" role="doc-backlink">asynFloat64SyncIO</a><a class="headerlink" href="#asynfloat64syncio" title="Link to this heading"></a></h3>
 <p>asynFloat64SyncIO describes a synchronous interrace to asynFloat64. The code that
 calls it must be willing to block.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynFloat64SyncIOType &quot;asynFloat64SyncIO&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynFloat64SyncIOType "asynFloat64SyncIO"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynFloat64SyncIO</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span> <span class="n">addr</span><span class="p">,</span>
                        <span class="n">asynUser</span> <span class="o">**</span><span class="n">ppasynUser</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">drvInfo</span><span class="p">);</span>
@@ -3272,7 +3272,7 @@ or 32 or 64-bit IEEE float values.</p>
     <span class="n">interruptCallbackXXXArray</span> <span class="n">callback</span><span class="p">;</span>
     <span class="n">void</span> <span class="o">*</span><span class="n">userPvt</span><span class="p">;</span>
 <span class="p">}</span> <span class="n">asynXXXArrayInterrupt</span><span class="p">;</span>
-<span class="c1">#define asynXXXArrayType &quot;asynXXXArray&quot;</span>
+<span class="c1">#define asynXXXArrayType "asynXXXArray"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynXXXArray</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span>
                        <span class="n">epicsXXX</span> <span class="o">*</span><span class="n">value</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nelements</span><span class="p">);</span>
@@ -3293,7 +3293,7 @@ or 32 or 64-bit IEEE float values.</p>
    <span class="n">directly</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">via</span> <span class="n">queueRequest</span><span class="o">.</span>
 <span class="o">*/</span>
 
-<span class="c1">#define asynXXXArrayBaseType &quot;asynXXXArrayBase&quot;</span>
+<span class="c1">#define asynXXXArrayBaseType "asynXXXArrayBase"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynXXXArrayBase</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">initialize</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">portName</span><span class="p">,</span>
                             <span class="n">asynInterface</span> <span class="o">*</span><span class="n">pXXXArrayInterface</span><span class="p">);</span>
@@ -3366,7 +3366,7 @@ or 32 or 64-bit IEEE float values.</p>
 <h3><a class="toc-backref" href="#id120" role="doc-backlink">asynXXXArraySyncIO</a><a class="headerlink" href="#asynxxxarraysyncio" title="Link to this heading"></a></h3>
 <p>asynXXXArraySyncIO describes a synchronous interface to asynXXXArray. The code that
 calls it must be willing to block.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynXXXArraySyncIOType &quot;asynXXXArraySyncIO&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynXXXArraySyncIOType "asynXXXArraySyncIO"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynXXXArraySyncIO</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span> <span class="n">addr</span><span class="p">,</span>
                           <span class="n">asynUser</span> <span class="o">**</span><span class="n">ppasynUser</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">drvInfo</span><span class="p">);</span>
@@ -3444,7 +3444,7 @@ values to them.</p>
     <span class="n">interruptCallbackEnum</span> <span class="n">callback</span><span class="p">;</span>
     <span class="n">void</span> <span class="o">*</span><span class="n">userPvt</span><span class="p">;</span>
 <span class="p">}</span> <span class="n">asynEnumInterrupt</span><span class="p">;</span>
-<span class="c1">#define asynEnumType &quot;asynEnum&quot;</span>
+<span class="c1">#define asynEnumType "asynEnum"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynEnum</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span>
                        <span class="n">char</span> <span class="o">*</span><span class="n">strings</span><span class="p">[],</span> <span class="nb">int</span> <span class="n">values</span><span class="p">[],</span> <span class="nb">int</span> <span class="n">severities</span><span class="p">[],</span> <span class="n">size_t</span> <span class="n">nelements</span><span class="p">);</span>
@@ -3465,7 +3465,7 @@ values to them.</p>
    <span class="n">directly</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">via</span> <span class="n">queueRequest</span><span class="o">.</span>
 <span class="o">*/</span>
 
-<span class="c1">#define asynEnumBaseType &quot;asynEnumBase&quot;</span>
+<span class="c1">#define asynEnumBaseType "asynEnumBase"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynEnumBase</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">initialize</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">portName</span><span class="p">,</span>
                             <span class="n">asynInterface</span> <span class="o">*</span><span class="n">pEnumInterface</span><span class="p">);</span>
@@ -3545,7 +3545,7 @@ and asynManager:interruptEnd.</p>
 <h3><a class="toc-backref" href="#id122" role="doc-backlink">asynEnumSyncIO</a><a class="headerlink" href="#asynenumsyncio" title="Link to this heading"></a></h3>
 <p>asynEnumSyncIO describes a synchronous interface to asynEnum. The code that calls
 it must be willing to block.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynEnumSyncIOType &quot;asynEnumSyncIO&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynEnumSyncIOType "asynEnumSyncIO"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynEnumSyncIO</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span> <span class="n">addr</span><span class="p">,</span>
                           <span class="n">asynUser</span> <span class="o">**</span><span class="n">ppasynUser</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">drvInfo</span><span class="p">);</span>
@@ -3602,7 +3602,7 @@ clients and port drivers must agree on the type of object that is being pointed 
     <span class="n">interruptCallbackGenericPointer</span> <span class="n">callback</span><span class="p">;</span>
     <span class="n">void</span> <span class="o">*</span><span class="n">userPvt</span><span class="p">;</span>
 <span class="p">}</span> <span class="n">asynGenericPointerInterrupt</span><span class="p">;</span>
-<span class="c1">#define asynGenericPointerType &quot;asynGenericPointer&quot;</span>
+<span class="c1">#define asynGenericPointerType "asynGenericPointer"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynGenericPointer</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">pvalue</span><span class="p">);</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">read</span><span class="p">)(</span><span class="n">void</span> <span class="o">*</span><span class="n">drvPvt</span><span class="p">,</span> <span class="n">asynUser</span> <span class="o">*</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">pvalue</span><span class="p">);</span>
@@ -3620,7 +3620,7 @@ clients and port drivers must agree on the type of object that is being pointed 
    <span class="n">directly</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">via</span> <span class="n">queueRequest</span><span class="o">.</span>
 <span class="o">*/</span>
 
-<span class="c1">#define asynGenericPointerBaseType &quot;asynGenericPointerBase&quot;</span>
+<span class="c1">#define asynGenericPointerBaseType "asynGenericPointerBase"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynGenericPointerBase</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">initialize</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">portName</span><span class="p">,</span>
                             <span class="n">asynInterface</span> <span class="o">*</span><span class="n">pasynGenericPointerInterface</span><span class="p">);</span>
@@ -3696,7 +3696,7 @@ via calls to asynManager:interruptStart and asynManager:interruptEnd.</p></td>
 <h3><a class="toc-backref" href="#id124" role="doc-backlink">asynGenericPointerSyncIO</a><a class="headerlink" href="#asyngenericpointersyncio" title="Link to this heading"></a></h3>
 <p>asynGenericPointerSyncIO describes a synchronous interrace to asynGenericPointer.
 The code that calls it must be willing to block.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynGenericPointerSyncIOType &quot;asynGenericPointerSyncIO&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define asynGenericPointerSyncIOType "asynGenericPointerSyncIO"</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynGenericPointerSyncIO</span> <span class="p">{</span>
     <span class="n">asynStatus</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span> <span class="n">addr</span><span class="p">,</span>
                        <span class="n">asynUser</span> <span class="o">**</span><span class="n">ppasynUser</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">drvInfo</span><span class="p">);</span>
@@ -3918,7 +3918,7 @@ asynStandardInterfacesBase interface.</p>
 <span class="p">{</span>
     <span class="n">drvADPvt</span> <span class="o">*</span><span class="n">pPvt</span><span class="p">;</span>
     <span class="nb">int</span> <span class="n">status</span> <span class="o">=</span> <span class="n">asynSuccess</span><span class="p">;</span>
-    <span class="n">char</span> <span class="o">*</span><span class="n">functionName</span> <span class="o">=</span> <span class="s2">&quot;simDetectorConfig&quot;</span><span class="p">;</span>
+    <span class="n">char</span> <span class="o">*</span><span class="n">functionName</span> <span class="o">=</span> <span class="s2">"simDetectorConfig"</span><span class="p">;</span>
     <span class="n">asynStandardInterfaces</span> <span class="o">*</span><span class="n">pInterfaces</span><span class="p">;</span>
 
     <span class="n">pPvt</span> <span class="o">=</span> <span class="n">callocMustSucceed</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">pPvt</span><span class="p">),</span> <span class="n">functionName</span><span class="p">);</span>
@@ -3930,7 +3930,7 @@ asynStandardInterfacesBase interface.</p>
                                         <span class="mi">0</span><span class="p">,</span>  <span class="o">/*</span> <span class="n">medium</span> <span class="n">priority</span> <span class="o">*/</span>
                                         <span class="mi">0</span><span class="p">);</span> <span class="o">/*</span> <span class="n">default</span> <span class="n">stack</span> <span class="n">size</span> <span class="o">*/</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">!=</span> <span class="n">asynSuccess</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> ERROR: Can&#39;t register port</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">functionName</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> ERROR: Can't register port</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">functionName</span><span class="p">);</span>
         <span class="k">return</span><span class="p">(</span><span class="n">asynError</span><span class="p">);</span>
     <span class="p">}</span>
 
@@ -3958,7 +3958,7 @@ asynStandardInterfacesBase interface.</p>
     <span class="n">status</span> <span class="o">=</span> <span class="n">pasynStandardInterfacesBase</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">(</span><span class="n">portName</span><span class="p">,</span> <span class="n">pInterfaces</span><span class="p">,</span>
                                                      <span class="n">pPvt</span><span class="o">-&gt;</span><span class="n">pasynUser</span><span class="p">,</span> <span class="n">pPvt</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">!=</span> <span class="n">asynSuccess</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> ERROR: Can&#39;t register interfaces: </span><span class="si">%s</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> ERROR: Can't register interfaces: </span><span class="si">%s</span><span class="s2">.</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
                <span class="n">functionName</span><span class="p">,</span> <span class="n">pPvt</span><span class="o">-&gt;</span><span class="n">pasynUser</span><span class="o">-&gt;</span><span class="n">errorMessage</span><span class="p">);</span>
         <span class="k">return</span><span class="p">(</span><span class="n">asynError</span><span class="p">);</span>
     <span class="p">}</span>
@@ -4029,8 +4029,8 @@ shell command:</p>
 <p>This command should appear immediately after the command that initializes a port.
 At run-time the delay can be examined or changed using the asyn option interface
 with the <cite>delay</cite> option which is added by this interpose layer.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynShowOption</span> <span class="n">port</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="s2">&quot;delay&quot;</span>
-<span class="n">asynSetOption</span> <span class="n">port</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="s2">&quot;delay&quot;</span><span class="p">,</span> <span class="n">delay</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynShowOption</span> <span class="n">port</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="s2">"delay"</span>
+<span class="n">asynSetOption</span> <span class="n">port</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="s2">"delay"</span><span class="p">,</span> <span class="n">delay</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -4082,10 +4082,10 @@ alarms.</p></li>
 </ul>
 <p>The support uses the following conventions for DTYP and INP. OUT fields are the
 same as INP.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynXXX&quot;</span><span class="p">)</span>
-<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(portName,addr,timeout)drvParams&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynXXX"</span><span class="p">)</span>
+<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(portName,addr,timeout)drvParams"</span><span class="p">)</span>
  <span class="ow">or</span>
-<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asynMask(portName,addr,mask,timeout)drvParams&quot;</span><span class="p">)</span>
+<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asynMask(portName,addr,mask,timeout)drvParams"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where</p>
@@ -4101,8 +4101,8 @@ is 1.0.</p></li>
 It is optional.</p></li>
 </ul>
 <p>For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(portA,0,.1)thisIsForDriver&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(portA,0,.1)thisIsForDriver"</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="asynmanager-interrupts-and-epics-device-support">
@@ -4150,7 +4150,7 @@ later in iocInit.</p>
 <p>Beginning in R4-30 devAsynOctet was changed to also support the initial readback
 for stringout and waveform output records. The initial readback is only done if
 the record in the database contains the following line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="p">(</span><span class="n">asyn</span><span class="p">:</span><span class="n">INITIAL_READBACK</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="p">(</span><span class="n">asyn</span><span class="p">:</span><span class="n">INITIAL_READBACK</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -4185,7 +4185,7 @@ by another output record, etc.</p>
 However, if the following info tag is added for a record in the database file then
 callbacks will be enabled and the output record will be updated whenever the driver
 does a callback for that value.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="p">(</span><span class="n">asyn</span><span class="p">:</span><span class="n">READBACK</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="p">(</span><span class="n">asyn</span><span class="p">:</span><span class="n">READBACK</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If the value of the info tag is 0 or if the info tag is not present then updates
@@ -4201,7 +4201,7 @@ printf, sCalcout and waveform) records the default buffer size is 10 values. For
 stringin, stringout, and waveform records the default buffer size is 0, i.e. there
 is no buffering. For all record types the size of the buffer can be controlled by
 the following info tag for a record in the database file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="p">(</span><span class="n">asyn</span><span class="p">:</span><span class="n">FIFO</span><span class="p">,</span> <span class="s2">&quot;20&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="p">(</span><span class="n">asyn</span><span class="p">:</span><span class="n">FIFO</span><span class="p">,</span> <span class="s2">"20"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In this example the buffer size was set to 20. Ring buffer support was added in
@@ -4227,24 +4227,24 @@ also added to asynPortDriver for the base-class read functions and callback func
 <section id="asynint32-device-support">
 <h3><a class="toc-backref" href="#id141" role="doc-backlink">asynInt32 device support</a><a class="headerlink" href="#asynint32-device-support" title="Link to this heading"></a></h3>
 <p>The following support is available:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiInt32Average</span><span class="p">,</span><span class="s2">&quot;asynInt32Average&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAoInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBiInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBoInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbbiInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbboInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLiInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLoInt32</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiInt32Average</span><span class="p">,</span><span class="s2">"asynInt32Average"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAoInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBiInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBoInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbbiInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbboInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLiInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLoInt32</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>devAsynInt32.c provides EPICS device support for drivers that implement interface
 asynInt32.</p>
 <p>For ai and ao records either of the following specifications for the INP and OUT
 fields can be used:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(portName,addr,timeout) drvParams&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(portName,addr,timeout) drvParams"</span><span class="p">)</span>
   <span class="ow">or</span>
-<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asynMask(portName,addr,nbits,timeout) drvParams&quot;</span><span class="p">)</span>
+<span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asynMask(portName,addr,nbits,timeout) drvParams"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The asynMask format allows device support to work with drivers that cannot return
@@ -4314,83 +4314,83 @@ is processed a new value is read. SCAN “I/O Intr” is supported similar to ai
 </li>
 </ul>
 <p>Analog Input Example Records</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="s2">&quot;aiInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">&quot;10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">&quot;-10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="s2">"aiInt32"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">"10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">"-10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">"3"</span><span class="p">)</span>
 <span class="p">}</span>
 <span class="c1"># This record is for a 12-bit bipolar ADC for a driver that does not</span>
 <span class="c1"># support getBounds()</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="s2">&quot;aiInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asynMask($(port),$(addr),-12)&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">&quot;10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">&quot;-10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="s2">"aiInt32"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asynMask($(port),$(addr),-12)"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">"10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">"-10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">"3"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="s2">&quot;aiInt32Average&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;10 second&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32Average&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">&quot;10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">&quot;-10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="s2">"aiInt32Average"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"10 second"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32Average"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">"10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">"-10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">"3"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Analog Output Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="s2">&quot;aoInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">&quot;10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">&quot;-10.0&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="s2">"aoInt32"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span><span class="s2">"10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span><span class="s2">"-10.0"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">PREC</span><span class="p">,</span><span class="s2">"3"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Long Input Example Records</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="s2">&quot;liInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="s2">"liInt32"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Long Output Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="s2">&quot;loInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="s2">"loInt32"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Multibit Binary Input Example Records</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="s2">&quot;mbbiInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">NOBT</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SHFT</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">&quot;zeroVal&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">&quot;oneVal&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">&quot;twoVal&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">&quot;threeVal&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="s2">"mbbiInt32"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">NOBT</span><span class="p">,</span><span class="s2">"2"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SHFT</span><span class="p">,</span><span class="s2">"2"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">"zeroVal"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">"oneVal"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">"twoVal"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">"threeVal"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Multibit Binary Output Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="s2">&quot;mbboInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt32&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">NOBT</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SHFT</span><span class="p">,</span><span class="s2">&quot;16&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">&quot;zeroVal&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">&quot;oneVal&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">&quot;twoVal&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">&quot;threeVal&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="s2">"mbboInt32"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt32"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">NOBT</span><span class="p">,</span><span class="s2">"2"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SHFT</span><span class="p">,</span><span class="s2">"16"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">"zeroVal"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">"oneVal"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">"twoVal"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">"threeVal"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -4399,18 +4399,18 @@ is processed a new value is read. SCAN “I/O Intr” is supported similar to ai
 <h3><a class="toc-backref" href="#id142" role="doc-backlink">asynInt64 device support</a><a class="headerlink" href="#asynint64-device-support" title="Link to this heading"></a></h3>
 <p>asynInt64 device support is available for the ao, ai, longout, and longin records
 on all versions of EPICS base. The following support is available in devAsynInt64Misc.dbd.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLiInt64</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLoInt64</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiInt64</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAoInt64</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLiInt64</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLoInt64</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiInt64</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAoInt64</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Support for the int64in, int64out, and waveform records is available in EPICS base
 3.16.1 and later. That is when the int64in, int64out records were added, and when
 the waveform record added support for FTVL=Int64. The following support is available
 in devAsynInt64.dbd:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">int64in</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">Int64Out</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">int64out</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">Int64Out</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">int64in</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">Int64Out</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">int64out</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">Int64Out</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>devAsynInt64.c provides EPICS device support for drivers that implement interface
@@ -4445,18 +4445,18 @@ SCAN “I/O Intr” is supported similar to aiRecord.</p>
 </ul>
 <p>Int64 Input Example Records. The longin and ai records are the same except for the
 record type.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">int64in</span><span class="p">,</span><span class="s2">&quot;Int64In&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">int64in</span><span class="p">,</span><span class="s2">"Int64In"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Int64 Output Example Record. The longout and ao records are the same except for
 the record type</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">int64out</span><span class="p">,</span><span class="s2">&quot;Int64Out&quot;</span><span class="p">)</span> <span class="p">{</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynInt64&quot;</span><span class="p">)</span>
-     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">&quot;@asyn($(port),$(addr))&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">int64out</span><span class="p">,</span><span class="s2">"Int64Out"</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynInt64"</span><span class="p">)</span>
+     <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">"@asyn($(port),$(addr))"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -4464,8 +4464,8 @@ the record type</p>
 <section id="asynintxxxarray-device-support-xxx-8-16-32-or-64">
 <h3><a class="toc-backref" href="#id143" role="doc-backlink">asynIntXXXArray device support (XXX=8, 16, 32, or 64)</a><a class="headerlink" href="#asynintxxxarray-device-support-xxx-8-16-32-or-64" title="Link to this heading"></a></h3>
 <p>The following support is available:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynIntXXXArrayWfIn</span><span class="p">,</span><span class="s2">&quot;asynIntXXXArrayIn&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynIntXXXArrayWfOut</span><span class="p">,</span><span class="s2">&quot;asynIntXXXArrayOut&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynIntXXXArrayWfIn</span><span class="p">,</span><span class="s2">"asynIntXXXArrayIn"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynIntXXXArrayWfOut</span><span class="p">,</span><span class="s2">"asynIntXXXArrayOut"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>devAsynIntXXXArray.c provides EPICS device support for drivers that implement interface
@@ -4475,9 +4475,9 @@ Intr” is supported similar to the aiRecord in devAsynInt32 device support.</p>
 <section id="asynxxxtimeseries-device-support-xxx-int32-int64-or-float64">
 <h3><a class="toc-backref" href="#id144" role="doc-backlink">asynXXXTimeSeries device support (XXX=Int32, Int64, or Float64)</a><a class="headerlink" href="#asynxxxtimeseries-device-support-xxx-int32-int64-or-float64" title="Link to this heading"></a></h3>
 <p>The following support is available:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynInt32TimeSeries</span><span class="p">,</span><span class="s2">&quot;asynInt32TimeSeries&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynInt64TimeSeries</span><span class="p">,</span><span class="s2">&quot;asynInt64TimeSeries&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynFloat64TimeSeries</span><span class="p">,</span><span class="s2">&quot;asynFloat64TimeSeries&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynInt32TimeSeries</span><span class="p">,</span><span class="s2">"asynInt32TimeSeries"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynInt64TimeSeries</span><span class="p">,</span><span class="s2">"asynInt64TimeSeries"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynFloat64TimeSeries</span><span class="p">,</span><span class="s2">"asynFloat64TimeSeries"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>devAsynXXXTimeSeries.c provides EPICS device support to collect a time series of
@@ -4497,14 +4497,14 @@ NORD=0.</p></li>
 <section id="asynuint32digital-device-support">
 <h3><a class="toc-backref" href="#id145" role="doc-backlink">asynUInt32Digital device support</a><a class="headerlink" href="#asynuint32digital-device-support" title="Link to this heading"></a></h3>
 <p>The following support is available:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBiUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBoUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLiUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLoUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbbiUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbboUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">mbbiDirect</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbbiDirectUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">mbboDirect</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbboDirectUInt32Digital</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBiUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynBoUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLiUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLoUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbbiUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbboUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">mbbiDirect</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbbiDirectUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">mbboDirect</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynMbboDirectUInt32Digital</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>devAsynUInt32Digital.c provides EPICS device support for drivers that implement
@@ -4548,75 +4548,75 @@ SCAN “I/O Intr” is supported similar to aiRecord.</p>
 </li>
 </ul>
 <p>Binary Input Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span><span class="s2">&quot;biUInt32Bit0&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asynMask( $(port) , 0, 0x1 , 1.0) &quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span><span class="s2">&quot;zero&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span><span class="s2">&quot;one&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span><span class="s2">"biUInt32Bit0"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asynMask( $(port) , 0, 0x1 , 1.0) "</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span><span class="s2">"zero"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span><span class="s2">"one"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Binary Output Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span><span class="s2">&quot;boUInt32Bit2&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">&quot;@asynMask( $(port) , 0, 0x4 , 1.0) &quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span><span class="s2">&quot;zero&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span><span class="s2">&quot;one&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span><span class="s2">"boUInt32Bit2"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">"@asynMask( $(port) , 0, 0x4 , 1.0) "</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span><span class="s2">"zero"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span><span class="s2">"one"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Long Input Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="s2">&quot;liUInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asynMask( $(port) , 0, 0xffffffff , 1.0) &quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longin</span><span class="p">,</span><span class="s2">"liUInt32"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asynMask( $(port) , 0, 0xffffffff , 1.0) "</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Long Output Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="s2">&quot;loUInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">&quot;@asynMask( $(port) , 0, 0xffffffff , 1.0) &quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">longout</span><span class="p">,</span><span class="s2">"loUInt32"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">"@asynMask( $(port) , 0, 0xffffffff , 1.0) "</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Multibit Input Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="s2">&quot;mbbiUInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">&quot;I/O Intr&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asynMask( digital , 0, 0x3 , 1.0) &quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">&quot;zero&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">&quot;one&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">&quot;two&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">&quot;three&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZRVL</span><span class="p">,</span><span class="s2">&quot;0x0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONVL</span><span class="p">,</span><span class="s2">&quot;0x1&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">TWVL</span><span class="p">,</span><span class="s2">&quot;0x2&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">THVL</span><span class="p">,</span><span class="s2">&quot;0x3&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbi</span><span class="p">,</span><span class="s2">"mbbiUInt32"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">SCAN</span><span class="p">,</span><span class="s2">"I/O Intr"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asynMask( digital , 0, 0x3 , 1.0) "</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">"zero"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">"one"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">"two"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">"three"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZRVL</span><span class="p">,</span><span class="s2">"0x0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONVL</span><span class="p">,</span><span class="s2">"0x1"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">TWVL</span><span class="p">,</span><span class="s2">"0x2"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">THVL</span><span class="p">,</span><span class="s2">"0x3"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Multibit Output Example Record</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="s2">&quot;mbboUInt32&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">&quot;asynUInt32Digital&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">&quot;@asynMask( digital , 0, 0x7 , 1.0) &quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">&quot;zero&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">&quot;one&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">&quot;two&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">&quot;three&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">FRST</span><span class="p">,</span><span class="s2">&quot;four&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">FVST</span><span class="p">,</span><span class="s2">&quot;five&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">SXST</span><span class="p">,</span><span class="s2">&quot;six&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">SVST</span><span class="p">,</span><span class="s2">&quot;seven&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZRVL</span><span class="p">,</span><span class="s2">&quot;0x0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONVL</span><span class="p">,</span><span class="s2">&quot;0x1&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">TWVL</span><span class="p">,</span><span class="s2">&quot;0x2&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">THVL</span><span class="p">,</span><span class="s2">&quot;0x3&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">FRVL</span><span class="p">,</span><span class="s2">&quot;0x4&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">FVVL</span><span class="p">,</span><span class="s2">&quot;0x5&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">SXVL</span><span class="p">,</span><span class="s2">&quot;0x6&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">SVVL</span><span class="p">,</span><span class="s2">&quot;0x7&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">mbbo</span><span class="p">,</span><span class="s2">"mbboUInt32"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span><span class="s2">"asynUInt32Digital"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="s2">"@asynMask( digital , 0, 0x7 , 1.0) "</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZRST</span><span class="p">,</span><span class="s2">"zero"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONST</span><span class="p">,</span><span class="s2">"one"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">TWST</span><span class="p">,</span><span class="s2">"two"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">THST</span><span class="p">,</span><span class="s2">"three"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">FRST</span><span class="p">,</span><span class="s2">"four"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">FVST</span><span class="p">,</span><span class="s2">"five"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">SXST</span><span class="p">,</span><span class="s2">"six"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">SVST</span><span class="p">,</span><span class="s2">"seven"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZRVL</span><span class="p">,</span><span class="s2">"0x0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONVL</span><span class="p">,</span><span class="s2">"0x1"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">TWVL</span><span class="p">,</span><span class="s2">"0x2"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">THVL</span><span class="p">,</span><span class="s2">"0x3"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">FRVL</span><span class="p">,</span><span class="s2">"0x4"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">FVVL</span><span class="p">,</span><span class="s2">"0x5"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">SXVL</span><span class="p">,</span><span class="s2">"0x6"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">SVVL</span><span class="p">,</span><span class="s2">"0x7"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -4624,9 +4624,9 @@ SCAN “I/O Intr” is supported similar to aiRecord.</p>
 <section id="asynfloat64-device-support">
 <h3><a class="toc-backref" href="#id146" role="doc-backlink">asynFloat64 device support</a><a class="headerlink" href="#asynfloat64-device-support" title="Link to this heading"></a></h3>
 <p>The following support is available:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiFloat64</span><span class="p">,</span><span class="s2">&quot;asynFloat64&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiFloat64Average</span><span class="p">,</span><span class="s2">&quot;asynFloat64Average&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAoFloat64</span><span class="p">,</span><span class="s2">&quot;asynFloat64&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiFloat64</span><span class="p">,</span><span class="s2">"asynFloat64"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAiFloat64Average</span><span class="p">,</span><span class="s2">"asynFloat64Average"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynAoFloat64</span><span class="p">,</span><span class="s2">"asynFloat64"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>devAsynFloat64.c provides EPICS device support for drivers that implement interface
@@ -4671,8 +4671,8 @@ supported.</p>
 <section id="asynfloatxxxarray-device-support-xxx-32-or-64">
 <h3><a class="toc-backref" href="#id147" role="doc-backlink">asynFloatXXXArray device support (XXX=32 or 64)</a><a class="headerlink" href="#asynfloatxxxarray-device-support-xxx-32-or-64" title="Link to this heading"></a></h3>
 <p>The following support is available:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynFloatXXXArrayWfIn</span><span class="p">,</span><span class="s2">&quot;asynFloatXXXArrayIn&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynFloatXXXArrayWfOut</span><span class="p">,</span><span class="s2">&quot;asynFloatXXXArrayOut&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynFloatXXXArrayWfIn</span><span class="p">,</span><span class="s2">"asynFloatXXXArrayIn"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynFloatXXXArrayWfOut</span><span class="p">,</span><span class="s2">"asynFloatXXXArrayOut"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>devAsynFloatXXXArray.c provides EPICS device support for drivers that implement
@@ -4682,21 +4682,21 @@ SCAN “I/O Intr” is supported similar to the aiRecord in devAsynInt32 device 
 <section id="asynoctet-device-support">
 <h3><a class="toc-backref" href="#id148" role="doc-backlink">asynOctet device support</a><a class="headerlink" href="#asynoctet-device-support" title="Link to this heading"></a></h3>
 <p>The following support is available:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">stringin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSiOctetCmdResponse</span><span class="p">,</span><span class="s2">&quot;asynOctetCmdResponse&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">stringin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSiOctetWriteRead</span><span class="p">,</span><span class="s2">&quot;asynOctetWriteRead&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">stringin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSiOctetRead</span><span class="p">,</span><span class="s2">&quot;asynOctetRead&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">stringout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSoOctetWrite</span><span class="p">,</span><span class="s2">&quot;asynOctetWrite&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetCmdResponse</span><span class="p">,</span><span class="s2">&quot;asynOctetCmdResponse&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetWriteRead</span><span class="p">,</span><span class="s2">&quot;asynOctetWriteRead&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetRead</span><span class="p">,</span><span class="s2">&quot;asynOctetRead&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetWrite</span><span class="p">,</span><span class="s2">&quot;asynOctetWrite&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetWriteBinary</span><span class="p">,</span><span class="s2">&quot;asynOctetWriteBinary&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">lsi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsiOctetCmdResponse</span><span class="p">,</span><span class="s2">&quot;asynOctetCmdResponse&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">lsi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsiOctetWriteRead</span><span class="p">,</span><span class="s2">&quot;asynOctetWriteRead&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">lsi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsiOctetRead</span><span class="p">,</span><span class="s2">&quot;asynOctetRead&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">lso</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsoOctetWrite</span><span class="p">,</span><span class="s2">&quot;asynOctetWrite&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">printf</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynPfOctetWrite</span><span class="p">,</span><span class="s2">&quot;asynOctetWrite&quot;</span><span class="p">)</span>
-<span class="n">device</span><span class="p">(</span><span class="n">scalcout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynScalcoutOctetWrite</span><span class="p">,</span><span class="s2">&quot;asynOctetWrite&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span><span class="n">stringin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSiOctetCmdResponse</span><span class="p">,</span><span class="s2">"asynOctetCmdResponse"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">stringin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSiOctetWriteRead</span><span class="p">,</span><span class="s2">"asynOctetWriteRead"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">stringin</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSiOctetRead</span><span class="p">,</span><span class="s2">"asynOctetRead"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">stringout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynSoOctetWrite</span><span class="p">,</span><span class="s2">"asynOctetWrite"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetCmdResponse</span><span class="p">,</span><span class="s2">"asynOctetCmdResponse"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetWriteRead</span><span class="p">,</span><span class="s2">"asynOctetWriteRead"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetRead</span><span class="p">,</span><span class="s2">"asynOctetRead"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetWrite</span><span class="p">,</span><span class="s2">"asynOctetWrite"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynWfOctetWriteBinary</span><span class="p">,</span><span class="s2">"asynOctetWriteBinary"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">lsi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsiOctetCmdResponse</span><span class="p">,</span><span class="s2">"asynOctetCmdResponse"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">lsi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsiOctetWriteRead</span><span class="p">,</span><span class="s2">"asynOctetWriteRead"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">lsi</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsiOctetRead</span><span class="p">,</span><span class="s2">"asynOctetRead"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">lso</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynLsoOctetWrite</span><span class="p">,</span><span class="s2">"asynOctetWrite"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">printf</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynPfOctetWrite</span><span class="p">,</span><span class="s2">"asynOctetWrite"</span><span class="p">)</span>
+<span class="n">device</span><span class="p">(</span><span class="n">scalcout</span><span class="p">,</span><span class="n">INST_IO</span><span class="p">,</span><span class="n">asynScalcoutOctetWrite</span><span class="p">,</span><span class="s2">"asynOctetWrite"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Support for drivers that implement interface asynOctet. The support is for stringin/stringout
@@ -4717,7 +4717,7 @@ uses NORD as the length that it passes to the driver, and does not call strnlen(
 <p>Four types of support are provided:</p>
 <ul>
 <li><p>CmdResponse The INP field is of the form:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(portName,addr,timeout) cmd&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(portName,addr,timeout) cmd"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>During record initialization, cmd is converted by dbTranslateEscape. The resultant
@@ -4725,7 +4725,7 @@ string is the command to send to the device. When the record is processed the co
 is sent to the device and the response read into the record.</p>
 </li>
 <li><p>WriteRead The INP field is of the form:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(portName,addr,timeout) pvname&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(portName,addr,timeout) pvname"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>pvname must refer to a field in a record in the same IOC. During record initialization
@@ -4736,7 +4736,7 @@ from pvname is passed through dbTranslateEscape before sending it. For asynWfOct
 it is not passed through dbTranslateEscape.</p>
 </li>
 <li><p>Write The INP(OUT) field is of the form:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(portName,addr,timeout) drvUser&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(portName,addr,timeout) drvUser"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>drvUser is information that is passed to the portDriver if it implements interface
@@ -4744,7 +4744,7 @@ asynDrvUser. When the record is processed the value stored in the record is sent
 to the device.</p>
 </li>
 <li><p>Read The INP field is of the form:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(portName,addr,timeout) drvUser&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(portName,addr,timeout) drvUser"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>drvUser is information that is passed to the portDriver if it implements interface
@@ -4793,7 +4793,7 @@ set the record STAT and SEVR fields, regardless of the value of asynUser.auxStat
 <p>A special record type asynRecord is provided. Details are described in <a class="reference external" href="asynRecord.html">asynRecord.html</a>.
 This section provides a brief description of how to use it.</p>
 <p>Each IOC can load one or more instances of asynRecord. An example is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">&quot;$(ASYN)/db/asynRecord.db&quot;</span><span class="p">,</span><span class="s2">&quot;P=asyn,R=Test,PORT=L0,ADDR=15,IMAX=0,OMAX=0&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">"$(ASYN)/db/asynRecord.db"</span><span class="p">,</span><span class="s2">"P=asyn,R=Test,PORT=L0,ADDR=15,IMAX=0,OMAX=0"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The example creates a record with name “asynTest” (formed from the concatenation
@@ -4803,7 +4803,7 @@ be used to access all asyn devices connected to the IOC. Multiple records are on
 needed if one or more devices need a dedicated record.</p>
 <p>An medm display is available for accessing an asynRecord. It is started as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">asyn</span><span class="o">&gt;/</span><span class="n">medm</span>
-<span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">&quot;P=asyn,R=Test&quot;</span> <span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span>
+<span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">"P=asyn,R=Test"</span> <span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span>
 </pre></div>
 </div>
 <p>The following medm display appears.</p>
@@ -4834,10 +4834,10 @@ asynGpib defines two interfaces.</p>
 <h3><a class="toc-backref" href="#id152" role="doc-backlink">asynGpibDriver.h</a><a class="headerlink" href="#asyngpibdriver-h" title="Link to this heading"></a></h3>
 <p>asynGpibDriver.h contains the following definitions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span> <span class="n">GPIB</span> <span class="n">Addressed</span> <span class="n">Commands</span><span class="o">*/</span>
-<span class="c1">#define IBGTL &quot;\x01&quot;    /* Go to local */</span>
-<span class="c1">#define IBSDC &quot;\x04&quot;    /* Selective Device Clear */</span>
-<span class="c1">#define IBGET &quot;\x08&quot;    /* Group Execute Trigger */</span>
-<span class="c1">#define IBTCT &quot;\x09&quot;    /* Take Control */</span>
+<span class="c1">#define IBGTL "\x01"    /* Go to local */</span>
+<span class="c1">#define IBSDC "\x04"    /* Selective Device Clear */</span>
+<span class="c1">#define IBGET "\x08"    /* Group Execute Trigger */</span>
+<span class="c1">#define IBTCT "\x09"    /* Take Control */</span>
 
 <span class="o">/*</span> <span class="n">GPIB</span> <span class="n">Universal</span> <span class="n">Commands</span><span class="o">*/</span>
 <span class="c1">#define IBDCL 0x14      /* Device Clear */</span>
@@ -4853,9 +4853,9 @@ asynGpib defines two interfaces.</p>
 <span class="c1">#define SADBASE    0x60   /* offset to GPIB secondary address 0 */</span>
 
 <span class="c1">#define NUM_GPIB_ADDRESSES    32</span>
-<span class="c1">#include &quot;asynDriver.h&quot;</span>
-<span class="c1">#include &quot;asynInt32.h&quot;</span>
-<span class="c1">#define asynGpibType &quot;asynGpib&quot;</span>
+<span class="c1">#include "asynDriver.h"</span>
+<span class="c1">#include "asynInt32.h"</span>
+<span class="c1">#define asynGpibType "asynGpib"</span>
 <span class="o">/*</span> <span class="n">GPIB</span> <span class="n">drivers</span> <span class="o">*/</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynGpib</span> <span class="n">asynGpib</span><span class="p">;</span>
 <span class="n">typedef</span> <span class="n">struct</span> <span class="n">asynGpibPort</span> <span class="n">asynGpibPort</span><span class="p">;</span>
@@ -5012,8 +5012,8 @@ by asynGpib.</p></td>
 <h3><a class="toc-backref" href="#id156" role="doc-backlink">Local Serial Port</a><a class="headerlink" href="#local-serial-port" title="Link to this heading"></a></h3>
 <p>The drvAsynSerialPort driver supports devices connected to serial ports on the IOC.</p>
 <p>Serial ports are configured with the <code class="docutils literal notranslate"><span class="pre">drvAsynSerialPortConfigure</span></code> and <code class="docutils literal notranslate"><span class="pre">asynSetOption</span></code> commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">&quot;portName&quot;</span><span class="p">,</span><span class="s2">&quot;ttyName&quot;</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">,</span><span class="n">noProcessEosIn</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;portName&quot;</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="s2">&quot;key&quot;</span><span class="p">,</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">"portName"</span><span class="p">,</span><span class="s2">"ttyName"</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">,</span><span class="n">noProcessEosIn</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"portName"</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="s2">"key"</span><span class="p">,</span><span class="s2">"value"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where the arguments are:</p>
@@ -5145,22 +5145,22 @@ Once this is done, the standard drvAsynSerialPortConfigure and asynSetOption com
 can be issued. For example, the following example shows the configuration procedure
 for a port on a GreenSprings octal UART Industry-Pack module on a GreenSprings VIP616-01
 carrier.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ipacAddVIPC616_01</span><span class="p">(</span><span class="s2">&quot;0x6000,B0000000&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ipacAddVIPC616_01</span><span class="p">(</span><span class="s2">"0x6000,B0000000"</span><span class="p">)</span>
 <span class="n">tyGSOctalDrv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">tyGSOctalModuleInit</span><span class="p">(</span><span class="s2">&quot;Mod0&quot;</span><span class="p">,</span><span class="s2">&quot;232&quot;</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">tyGSOctalDevCreate</span><span class="p">(</span><span class="s2">&quot;/tyGS/0/0&quot;</span><span class="p">,</span><span class="s2">&quot;Mod0&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
-<span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">&quot;/tyGS/0/0&quot;</span><span class="p">,</span><span class="s2">&quot;/tyGS/0/0&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;/tyGS/0/0&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;baud&quot;</span><span class="p">,</span><span class="s2">&quot;9600&quot;</span><span class="p">)</span>
+<span class="n">tyGSOctalModuleInit</span><span class="p">(</span><span class="s2">"Mod0"</span><span class="p">,</span><span class="s2">"232"</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">tyGSOctalDevCreate</span><span class="p">(</span><span class="s2">"/tyGS/0/0"</span><span class="p">,</span><span class="s2">"Mod0"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">"/tyGS/0/0"</span><span class="p">,</span><span class="s2">"/tyGS/0/0"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"/tyGS/0/0"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">"baud"</span><span class="p">,</span><span class="s2">"9600"</span><span class="p">)</span>
 
 <span class="n">For</span> <span class="n">the</span> <span class="n">IP520</span><span class="p">:</span>
 
 <span class="n">IP520Drv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">IP520ModuleInit</span><span class="p">(</span><span class="s2">&quot;UART_0&quot;</span><span class="p">,</span> <span class="s2">&quot;232&quot;</span><span class="p">,</span> <span class="mh">0xC2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">IP520DevCreate</span><span class="p">(</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span> <span class="s2">&quot;UART_0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;baud&quot;</span><span class="p">,</span><span class="mi">9600</span><span class="p">)</span>
-<span class="n">asynOctetSetInputEos</span><span class="p">(</span> <span class="s2">&quot;A1&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">asynOctetSetOutputEos</span><span class="p">(</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">IP520ModuleInit</span><span class="p">(</span><span class="s2">"UART_0"</span><span class="p">,</span> <span class="s2">"232"</span><span class="p">,</span> <span class="mh">0xC2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">IP520DevCreate</span><span class="p">(</span><span class="s2">"A1"</span><span class="p">,</span> <span class="s2">"UART_0"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">"A1"</span><span class="p">,</span><span class="s2">"A1"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"A1"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">"baud"</span><span class="p">,</span><span class="mi">9600</span><span class="p">)</span>
+<span class="n">asynOctetSetInputEos</span><span class="p">(</span> <span class="s2">"A1"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">"</span><span class="se">\r</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">asynOctetSetOutputEos</span><span class="p">(</span><span class="s2">"A1"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">"</span><span class="se">\r</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -5171,7 +5171,7 @@ connection. A typical example is a device connected through an Ethernet/Serial c
 box.</p>
 <p>TCP/IP or UDP/IP connections are configured with the <code class="docutils literal notranslate"><span class="pre">drvAsynIPPortConfigure</span></code>
 command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPPortConfigure</span><span class="p">(</span><span class="s2">&quot;portName&quot;</span><span class="p">,</span><span class="s2">&quot;hostInfo&quot;</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">,</span><span class="n">noProcessEos</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPPortConfigure</span><span class="p">(</span><span class="s2">"portName"</span><span class="p">,</span><span class="s2">"hostInfo"</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">,</span><span class="n">noProcessEos</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where the arguments are:</p>
@@ -5293,7 +5293,7 @@ drivers by calling drvAsynIPPortConfigure at initialization. These ports are nam
 portName:0, portName:1, etc. where portName is the name passed to drvAsynIPServerPortConfigure.</p>
 <p>IP server listeners are configured with the <code class="docutils literal notranslate"><span class="pre">drvAsynIPServerPortConfigure</span></code>
 command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPServerPortConfigure</span><span class="p">(</span><span class="s2">&quot;portName&quot;</span><span class="p">,</span> <span class="s2">&quot;serverInfo&quot;</span><span class="p">,</span> <span class="n">maxClients</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">noAutoConnect</span><span class="p">,</span> <span class="n">noProcessEos</span><span class="p">);</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPServerPortConfigure</span><span class="p">(</span><span class="s2">"portName"</span><span class="p">,</span> <span class="s2">"serverInfo"</span><span class="p">,</span> <span class="n">maxClients</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">noAutoConnect</span><span class="p">,</span> <span class="n">noProcessEos</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>where the arguments are:</p>
@@ -5407,9 +5407,9 @@ not work and can cause infinite set of SRQs</p>
 </pre></div>
 </div>
 <p>The following commands may be specified in the st.cmd file</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E2050Reboot</span><span class="p">(</span><span class="s2">&quot;inet_addr&quot;</span><span class="p">)</span>
-<span class="n">E5810Reboot</span><span class="p">(</span><span class="s2">&quot;inet_addr&quot;</span><span class="p">,</span><span class="s2">&quot;password&quot;</span><span class="p">)</span>
-<span class="n">vxi11Configure</span><span class="p">(</span><span class="s2">&quot;portName&quot;</span><span class="p">,</span><span class="s2">&quot;inet_addr&quot;</span><span class="p">,</span><span class="n">flags</span><span class="p">,</span><span class="s2">&quot;timeout&quot;</span><span class="p">,</span><span class="s2">&quot;vxiName&quot;</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E2050Reboot</span><span class="p">(</span><span class="s2">"inet_addr"</span><span class="p">)</span>
+<span class="n">E5810Reboot</span><span class="p">(</span><span class="s2">"inet_addr"</span><span class="p">,</span><span class="s2">"password"</span><span class="p">)</span>
+<span class="n">vxi11Configure</span><span class="p">(</span><span class="s2">"portName"</span><span class="p">,</span><span class="s2">"inet_addr"</span><span class="p">,</span><span class="n">flags</span><span class="p">,</span><span class="s2">"timeout"</span><span class="p">,</span><span class="s2">"vxiName"</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where</p>
@@ -5499,7 +5499,7 @@ will result in a default value being assigned.</p></li>
 </li>
 </ul>
 <p>An example is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prologixGPIBConfigure</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="s2">&quot;gse-prologix:1234&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prologixGPIBConfigure</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="s2">"gse-prologix:1234"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>NOTES</strong>
@@ -5566,7 +5566,7 @@ will result in a default value being assigned.</p></li>
 </li>
 </ul>
 <p>An example is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GpibBoardDriverConfig</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GpibBoardDriverConfig</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>NOTES:</strong></p>
@@ -5623,8 +5623,8 @@ will result in a defalt value being assigned</p></li>
 </ul>
 <p>An example is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#The following is for the Greensprings IP488 on an MV162</span>
-<span class="n">ipacAddMVME162</span><span class="p">(</span><span class="s2">&quot;A:l=3,3 m=0xe0000000,64&quot;</span><span class="p">)</span>
-<span class="n">gsIP488Configure</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x61</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ipacAddMVME162</span><span class="p">(</span><span class="s2">"A:l=3,3 m=0xe0000000,64"</span><span class="p">)</span>
+<span class="n">gsIP488Configure</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x61</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>WARNING:</strong></p>
@@ -5685,7 +5685,7 @@ connect. Non-zero if explicit connect command must be issued.</p></li>
 </li>
 </ul>
 <p>An example is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ni1014Config</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span><span class="mh">0x5000</span><span class="p">,</span><span class="mh">0x64</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ni1014Config</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="s2">"L1"</span><span class="p">,</span><span class="mh">0x5000</span><span class="p">,</span><span class="mh">0x64</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>NOTES:</strong></p>
@@ -5707,14 +5707,14 @@ priority thread running that consumes lots of cpu cycles.</p>
 <section id="usb-tmc-test-and-measurement-class-driver">
 <h3><a class="toc-backref" href="#id164" role="doc-backlink">USB TMC (Test and Measurement Class) driver</a><a class="headerlink" href="#usb-tmc-test-and-measurement-class-driver" title="Link to this heading"></a></h3>
 <p>Configure each instance of the driver in the application startup script:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usbtmcConfigure</span><span class="p">(</span><span class="s2">&quot;asynPort&quot;</span><span class="p">,</span> <span class="n">vendorId</span><span class="p">,</span> <span class="n">productId</span><span class="p">,</span> <span class="s2">&quot;serialNumber&quot;</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usbtmcConfigure</span><span class="p">(</span><span class="s2">"asynPort"</span><span class="p">,</span> <span class="n">vendorId</span><span class="p">,</span> <span class="n">productId</span><span class="p">,</span> <span class="s2">"serialNumber"</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">asynPort</span></code> and <code class="docutils literal notranslate"><span class="pre">serialNumber</span></code> arguments are strings and the other
 arguments are integers. A missing or 0 <code class="docutils literal notranslate"><span class="pre">vendorId</span></code> or <code class="docutils literal notranslate"><span class="pre">productId</span></code> matches
 any value and a missing or empty <code class="docutils literal notranslate"><span class="pre">serialNumber</span></code> string matches any value.
 Thus the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usbtmcConfigure</span><span class="p">(</span><span class="s2">&quot;usbtmc1&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usbtmcConfigure</span><span class="p">(</span><span class="s2">"usbtmc1"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>will associate ASYN port usbtmc1 with the first USB TMC device discovered. A missing
@@ -5741,7 +5741,7 @@ the record type will be longin or mbbiDirect.</p>
 <section id="device-status-byte-stb">
 <h4><a class="toc-backref" href="#id167" role="doc-backlink">Device Status Byte (STB)</a><a class="headerlink" href="#device-status-byte-stb" title="Link to this heading"></a></h4>
 <p>The USBTMC/USB488 device status byte is read by a record with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INP</span><span class="o">=</span><span class="s2">&quot;@asyn(port, 0, 0) STB&quot;</span><span class="p">)</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INP</span><span class="o">=</span><span class="s2">"@asyn(port, 0, 0) STB"</span><span class="p">)</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>Typically the record type will be longin or mbbiDirect.</p>
@@ -5749,7 +5749,7 @@ the record type will be longin or mbbiDirect.</p>
 <section id="remote-enable-ren">
 <h4><a class="toc-backref" href="#id168" role="doc-backlink">Remote Enable (REN)</a><a class="headerlink" href="#remote-enable-ren" title="Link to this heading"></a></h4>
 <p>The device remote enable is written by a record with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OUT</span><span class="o">=</span><span class="s2">&quot;@asyn(port, 0, 0) REN&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OUT</span><span class="o">=</span><span class="s2">"@asyn(port, 0, 0) REN"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Typically the record type will be bo but writing any non-zero value enables remote
@@ -5758,7 +5758,7 @@ operation.</p>
 <section id="local-lockout-llo">
 <h4><a class="toc-backref" href="#id169" role="doc-backlink">Local Lockout (LLO)</a><a class="headerlink" href="#local-lockout-llo" title="Link to this heading"></a></h4>
 <p>The IEEE-488 local lockout command is sent by processing a record with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OUT</span><span class="o">=</span><span class="s2">&quot;@asyn(port, 0, 0) LLO&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OUT</span><span class="o">=</span><span class="s2">"@asyn(port, 0, 0) LLO"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Typically the record type will be bo. The value written is ignored.</p>
@@ -5766,7 +5766,7 @@ operation.</p>
 <section id="go-to-local-gtl">
 <h4><a class="toc-backref" href="#id170" role="doc-backlink">Go To Local (GTL)</a><a class="headerlink" href="#go-to-local-gtl" title="Link to this heading"></a></h4>
 <p>The IEEE-488 go to local command is sent by processing a record with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OUT</span><span class="o">=</span><span class="s2">&quot;@asyn(port, 0, 0) GTL&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OUT</span><span class="o">=</span><span class="s2">"@asyn(port, 0, 0) GTL"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Typically the record type will be bo. The value written is ignored.</p>
@@ -5779,11 +5779,11 @@ the /etc/udev/rules.d directory create a file, 55-usbtmc.rules for example, with
 a line for each device of interest.</p>
 <p>To allow everyone in the “usbtmc” group access to a device with vendor code 1BFA
 (hexadecimal) and product code 0498 (hexadecimal) the line would look like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SUBSYSTEM</span><span class="o">==</span><span class="s2">&quot;usb&quot;</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idVendor</span><span class="p">}</span><span class="o">==</span><span class="s2">&quot;1BFA&quot;</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idProduct</span><span class="p">}</span><span class="o">==</span><span class="s2">&quot;0498&quot;</span><span class="p">,</span> <span class="n">GROUP</span><span class="o">=</span><span class="s2">&quot;usbtmc&quot;</span><span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s2">&quot;0660&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SUBSYSTEM</span><span class="o">==</span><span class="s2">"usb"</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idVendor</span><span class="p">}</span><span class="o">==</span><span class="s2">"1BFA"</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idProduct</span><span class="p">}</span><span class="o">==</span><span class="s2">"0498"</span><span class="p">,</span> <span class="n">GROUP</span><span class="o">=</span><span class="s2">"usbtmc"</span><span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s2">"0660"</span>
 </pre></div>
 </div>
 <p>To allow everyone access the line would look like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SUBSYSTEM</span><span class="o">==</span><span class="s2">&quot;usb&quot;</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idVendor</span><span class="p">}</span><span class="o">==</span><span class="s2">&quot;1BFA&quot;</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idProduct</span><span class="p">}</span><span class="o">==</span><span class="s2">&quot;0498&quot;</span><span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s2">&quot;0666&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SUBSYSTEM</span><span class="o">==</span><span class="s2">"usb"</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idVendor</span><span class="p">}</span><span class="o">==</span><span class="s2">"1BFA"</span><span class="p">,</span> <span class="n">ATTRS</span><span class="p">{</span><span class="n">idProduct</span><span class="p">}</span><span class="o">==</span><span class="s2">"0498"</span><span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s2">"0666"</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">{idVendor}</span></code> and <code class="docutils literal notranslate"><span class="pre">{idProduct}</span></code> values must match those of the
@@ -5808,8 +5808,8 @@ practice to also specify the following StreamDevice global exception handlers:</
 <p>The drvAsynFTDIPort driver supports devices connected via FTDI adapters.</p>
 <p>FTDI ports are configured with the <code class="docutils literal notranslate"><span class="pre">drvAsynFTDIPortConfigure</span></code> and <code class="docutils literal notranslate"><span class="pre">asynSetOption</span></code>
 commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynFTDIPortConfigure</span><span class="p">(</span><span class="s2">&quot;portName&quot;</span><span class="p">,</span><span class="n">vendor</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">baudrate</span><span class="p">,</span><span class="n">latency</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">,</span><span class="n">noProcessEos</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;portName&quot;</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="s2">&quot;key&quot;</span><span class="p">,</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynFTDIPortConfigure</span><span class="p">(</span><span class="s2">"portName"</span><span class="p">,</span><span class="n">vendor</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">baudrate</span><span class="p">,</span><span class="n">latency</span><span class="p">,</span><span class="n">priority</span><span class="p">,</span><span class="n">noAutoConnect</span><span class="p">,</span><span class="n">noProcessEos</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"portName"</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="s2">"key"</span><span class="p">,</span><span class="s2">"value"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where the arguments are:</p>
@@ -5964,7 +5964,7 @@ codes, pin controls, data lengths are currently hard coded in the stream protoco
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>WRDO {
 # MPSSE_DO_WRITE | MPSSE_WRITE_NEG | MPSSE_DO_READ = 0x31
 # Length = 0x04 bytes after the instruction code and 2 length bytes:
-out 0x31 0x04 0x00 $1 &quot;%.4r&quot;;
+out 0x31 0x04 0x00 $1 "%.4r";
 }
 
 WRPIN {
@@ -5977,7 +5977,7 @@ WRPIN {
 # RESET  = 0x40
 # PINDIR = 0x7B
 # SET_BITS_LOW = 0x80
-out 0x80 &quot;%r&quot; 0x7B;
+out 0x80 "%r" 0x7B;
 }
 
 RDDI {
@@ -5985,7 +5985,7 @@ RDDI {
 # Length = 0x04 bytes after the instruction code and 2 length bytes:
 # Input is clocked in while the 0 bytes are clocked out:
 out 0x31 0x04 0x00 $1 0x00 0x00 0x00 0x00;
-in &quot;%5r&quot;;
+in "%5r";
 }
 </pre></div>
 </div>
@@ -6155,13 +6155,13 @@ counts as four characters.</p></td>
 <p>The commands asynOctetConnect, asynOctetDisconnect, asynOctetRead, asynOctetWrite,
 asynOctetWriteRead, asynOctetFlush allow I/O to a device from the ioc shell. Examples
 are:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynOctetConnect</span><span class="p">(</span><span class="s2">&quot;myid&quot;</span><span class="p">,</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">asynOctetWrite</span><span class="p">(</span><span class="s2">&quot;myid&quot;</span><span class="p">,</span><span class="s2">&quot;testnew&quot;</span><span class="p">)</span>
-<span class="n">asynOctetRead</span><span class="p">(</span><span class="s2">&quot;myid&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asynOctetConnect</span><span class="p">(</span><span class="s2">"myid"</span><span class="p">,</span><span class="s2">"A"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">asynOctetWrite</span><span class="p">(</span><span class="s2">"myid"</span><span class="p">,</span><span class="s2">"testnew"</span><span class="p">)</span>
+<span class="n">asynOctetRead</span><span class="p">(</span><span class="s2">"myid"</span><span class="p">)</span>
 <span class="n">testnew</span>\<span class="n">n</span>
-<span class="n">asynOctetWriteRead</span><span class="p">(</span><span class="s2">&quot;myid&quot;</span><span class="p">,</span><span class="s2">&quot;this is test&quot;</span><span class="p">)</span>
+<span class="n">asynOctetWriteRead</span><span class="p">(</span><span class="s2">"myid"</span><span class="p">,</span><span class="s2">"this is test"</span><span class="p">)</span>
 <span class="n">this</span> <span class="ow">is</span> <span class="n">test</span>\<span class="n">n</span>
-<span class="n">asynOctetDisconnect</span><span class="p">(</span><span class="s2">&quot;myid&quot;</span><span class="p">)</span>
+<span class="n">asynOctetDisconnect</span><span class="p">(</span><span class="s2">"myid"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">asynRegisterTimeStampSource</span></code> calls <code class="docutils literal notranslate"><span class="pre">pasynManager-&gt;registerTimeStampSource</span></code>
@@ -6194,26 +6194,26 @@ static void queueCallback(asynUser *pasynUser) {
     int        writeBytes,readBytes;
     int        eomReason;
 
-    asynPrint(pasynUser,ASYN_TRACE_FLOW,&quot;queueCallback entered\n&quot;);
+    asynPrint(pasynUser,ASYN_TRACE_FLOW,"queueCallback entered\n");
     status = pasynOctet-&gt;write(drvPvt,pasynUser,pmydata-&gt;buffer,
               strlen(pmydata-&gt;buffer),&amp;amp;writeBytes);
     if(status!=asynSuccess) {
         asynPrint(pasynUser,ASYN_TRACE_ERROR,
-            &quot;queueCallback write failed %s\n&quot;,pasynUser-&gt;errorMessage);
+            "queueCallback write failed %s\n",pasynUser-&gt;errorMessage);
     } else {
         asynPrintIO(pasynUser,ASYN_TRACEIO_DEVICE,
             pmydata-&gt;buffer,strlen(pmydata-&gt;buffer),
-            &quot;queueCallback write sent %d bytes\n&quot;,writeBytes);
+            "queueCallback write sent %d bytes\n",writeBytes);
     }
     status = pasynOctet-&gt;read(drvPvt,pasynUser,pmydata-&gt;buffer,
          BUFFER_SIZE,&amp;amp;readBytes,&amp;amp;eomReason);
     if(status!=asynSuccess) {
         asynPrint(pasynUser,ASYN_TRACE_ERROR,
-            &quot;queueCallback read failed %s\n&quot;,pasynUser-&gt;errorMessage);
+            "queueCallback read failed %s\n",pasynUser-&gt;errorMessage);
     } else {
         asynPrintIO(pasynUser,ASYN_TRACEIO_DEVICE,
             pmydata-&gt;buffer,BUFFER_SIZE,
-            &quot;queueCallback read returned: retlen %d eomReason 0x%x data %s\n&quot;,
+            "queueCallback read returned: retlen %d eomReason 0x%x data %s\n",
             readBytes,eomReason,pmydata-&gt;buffer);
     }
     epicsEventSignal(pmydata-&gt;done);
@@ -6233,13 +6233,13 @@ static void asynExample(const char *port,int addr,const char *message)
     pasynUser-&gt;userPvt = pmyData;
     status = pasynManager-&gt;connectDevice(pasynUser,port,addr);
     if(status!=asynSuccess) {
-        printf(&quot;can&#39;t connect to serialPort1 %s\n&quot;,pasynUser-&gt;errorMessage);
+        printf("can't connect to serialPort1 %s\n",pasynUser-&gt;errorMessage);
         exit(1);
     }
     pasynInterface = pasynManager-&gt;findInterface(
         pasynUser,asynOctetType,1);
     if(!pasynInterface) {
-        printf(&quot;%s driver not supported\n&quot;,asynOctetType);
+        printf("%s driver not supported\n",asynOctetType);
         exit(-1);
     }
     pmyData-&gt;pasynOctet = (asynOctet *)pasynInterface-&gt;pinterface;
@@ -6248,13 +6248,13 @@ static void asynExample(const char *port,int addr,const char *message)
     status = pasynManager-&gt;queueRequest(pasynUser,asynQueuePriorityLow, 0.0);
     if(status) {
         asynPrint(pasynUser,ASYN_TRACE_ERROR,
-            &quot;queueRequest failed %s\n&quot;,pasynUser-&gt;errorMessage);
+            "queueRequest failed %s\n",pasynUser-&gt;errorMessage);
     }
     epicsEventWait(pmyData-&gt;done);
     status = pasynManager-&gt;freeAsynUser(pasynUser);
     if(status) {
         asynPrint(pasynUser,ASYN_TRACE_ERROR,
-            &quot;freeAsynUser failed %s\n&quot;,pasynUser-&gt;errorMessage);
+            "freeAsynUser failed %s\n",pasynUser-&gt;errorMessage);
     }
     epicsEventDestroy(pmyData-&gt;done);
     pasynManager-&gt;memFree(pasynUser-&gt;userPvt,sizeof(myData));
@@ -6362,7 +6362,7 @@ serial port.</p>
 </table>
 <p>devTestBlock is device support that tests blockProcessCallback. It has device support
 for stringin records. The INP field has the syntax:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">&quot;@asyn(port,addr,timeout) pvname)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span><span class="s2">"@asyn(port,addr,timeout) pvname)</span>
 </pre></div>
 </div>
 <p>where:
@@ -6673,13 +6673,13 @@ that this can be done:</p>
 <p>If you are building your application database definition file from the application
 Makefile you specify the aditional database definitions there (uncomment the lines
 appropriate to your application):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">include</span> <span class="s2">&quot;asyn.dbd&quot;</span>
-<span class="c1">#include &quot;drvAsynSerialPort.dbd&quot;</span>
-<span class="c1">#include &quot;drvAsynIPPort.dbd&quot;</span>
-<span class="c1">#include &quot;drvVxi11.dbd&quot;</span>
-<span class="c1">#include &quot;drvGsIP488.dbd&quot;</span>
-<span class="c1">#include &quot;drvIpac.dbd&quot;</span>
-<span class="c1">#include &quot;drvUSBTMC.dbd&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">include</span> <span class="s2">"asyn.dbd"</span>
+<span class="c1">#include "drvAsynSerialPort.dbd"</span>
+<span class="c1">#include "drvAsynIPPort.dbd"</span>
+<span class="c1">#include "drvVxi11.dbd"</span>
+<span class="c1">#include "drvGsIP488.dbd"</span>
+<span class="c1">#include "drvIpac.dbd"</span>
+<span class="c1">#include "drvUSBTMC.dbd"</span>
 </pre></div>
 </div>
 <p>If you are building your application database definition file from the application
@@ -6695,12 +6695,12 @@ the lines appropriate to your application):</p>
 </pre></div>
 </div>
 <p>In the <code class="docutils literal notranslate"><span class="pre">st.cmd</span></code> file add:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">&quot;db/asynRecord.db&quot;</span><span class="p">,</span> <span class="s2">&quot;P=&lt;ioc&gt;, R=&lt;record&gt;, PORT=&lt;port&gt;, ADDR=&lt;addr&gt;, OMAX=&lt;omax&gt;, IMAX=&lt;imax&gt;&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">"db/asynRecord.db"</span><span class="p">,</span> <span class="s2">"P=&lt;ioc&gt;, R=&lt;record&gt;, PORT=&lt;port&gt;, ADDR=&lt;addr&gt;, OMAX=&lt;omax&gt;, IMAX=&lt;imax&gt;"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You must provide values for &lt;ioc&gt;, &lt;record&gt;, &lt;port&gt;, &lt;addr&gt;, &lt;omax&gt;, and &lt;imax&gt;.</p>
 <p>Once the application is running, medm displays for an ioc can be started by:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">&quot;P=&lt;ioc&gt;,R=&lt;record&gt;&quot;</span> <span class="o">&lt;</span><span class="n">asyntop</span><span class="o">&gt;/</span><span class="n">medm</span><span class="o">/</span><span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span> <span class="o">&amp;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">"P=&lt;ioc&gt;,R=&lt;record&gt;"</span> <span class="o">&lt;</span><span class="n">asyntop</span><span class="o">&gt;/</span><span class="n">medm</span><span class="o">/</span><span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span> <span class="o">&amp;</span>
 </pre></div>
 </div>
 <p>You must provide correct values for &lt;ioc&gt; and &lt;record&gt;. Once asynRecord
@@ -6715,9 +6715,9 @@ is started, it can be connected to different devices.</p>
 <span class="n">SOFTWARE</span> <span class="n">LICENSE</span> <span class="n">AGREEMENT</span>
 <span class="n">Software</span><span class="p">:</span> <span class="n">asynDriver</span>
 
- <span class="mf">1.</span> <span class="n">The</span> <span class="s2">&quot;Software&quot;</span><span class="p">,</span> <span class="n">below</span><span class="p">,</span> <span class="n">refers</span> <span class="n">to</span> <span class="n">asynDriver</span> <span class="p">(</span><span class="ow">in</span> <span class="n">either</span> <span class="n">source</span> <span class="n">code</span><span class="p">,</span> <span class="ow">or</span>
+ <span class="mf">1.</span> <span class="n">The</span> <span class="s2">"Software"</span><span class="p">,</span> <span class="n">below</span><span class="p">,</span> <span class="n">refers</span> <span class="n">to</span> <span class="n">asynDriver</span> <span class="p">(</span><span class="ow">in</span> <span class="n">either</span> <span class="n">source</span> <span class="n">code</span><span class="p">,</span> <span class="ow">or</span>
     <span class="n">binary</span> <span class="n">form</span> <span class="ow">and</span> <span class="n">accompanying</span> <span class="n">documentation</span><span class="p">)</span><span class="o">.</span> <span class="n">Each</span> <span class="n">licensee</span> <span class="ow">is</span>
-    <span class="n">addressed</span> <span class="k">as</span> <span class="s2">&quot;you&quot;</span> <span class="ow">or</span> <span class="s2">&quot;Licensee.&quot;</span>
+    <span class="n">addressed</span> <span class="k">as</span> <span class="s2">"you"</span> <span class="ow">or</span> <span class="s2">"Licensee."</span>
 
  <span class="mf">2.</span> <span class="n">The</span> <span class="n">copyright</span> <span class="n">holders</span> <span class="n">shown</span> <span class="n">above</span> <span class="ow">and</span> <span class="n">their</span> <span class="n">third</span><span class="o">-</span><span class="n">party</span> <span class="n">licensors</span>
     <span class="n">hereby</span> <span class="n">grant</span> <span class="n">Licensee</span> <span class="n">a</span> <span class="n">royalty</span><span class="o">-</span><span class="n">free</span> <span class="n">nonexclusive</span> <span class="n">license</span><span class="p">,</span> <span class="n">subject</span> <span class="n">to</span>
@@ -6751,7 +6751,7 @@ is started, it can be connected to different devices.</p>
     <span class="n">software</span> <span class="n">to</span> <span class="n">reproduce</span><span class="p">,</span> <span class="n">prepare</span> <span class="n">derivative</span> <span class="n">works</span><span class="p">,</span> <span class="ow">and</span> <span class="n">perform</span> <span class="n">publicly</span>
     <span class="ow">and</span> <span class="n">display</span> <span class="n">publicly</span><span class="o">.</span>
 
- <span class="mf">6.</span> <span class="n">WARRANTY</span> <span class="n">DISCLAIMER</span><span class="o">.</span> <span class="n">THE</span> <span class="n">SOFTWARE</span> <span class="n">IS</span> <span class="n">SUPPLIED</span> <span class="s2">&quot;AS IS&quot;</span> <span class="n">WITHOUT</span> <span class="n">WARRANTY</span>
+ <span class="mf">6.</span> <span class="n">WARRANTY</span> <span class="n">DISCLAIMER</span><span class="o">.</span> <span class="n">THE</span> <span class="n">SOFTWARE</span> <span class="n">IS</span> <span class="n">SUPPLIED</span> <span class="s2">"AS IS"</span> <span class="n">WITHOUT</span> <span class="n">WARRANTY</span>
     <span class="n">OF</span> <span class="n">ANY</span> <span class="n">KIND</span><span class="o">.</span> <span class="n">THE</span> <span class="n">COPYRIGHT</span> <span class="n">HOLDERS</span><span class="p">,</span> <span class="n">THEIR</span> <span class="n">THIRD</span> <span class="n">PARTY</span> <span class="n">LICENSORS</span><span class="p">,</span> <span class="n">THE</span>
     <span class="n">UNITED</span> <span class="n">STATES</span><span class="p">,</span> <span class="n">THE</span> <span class="n">UNITED</span> <span class="n">STATES</span> <span class="n">DEPARTMENT</span> <span class="n">OF</span> <span class="n">ENERGY</span><span class="p">,</span> <span class="n">AND</span> <span class="n">THEIR</span>
     <span class="n">EMPLOYEES</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">DISCLAIM</span> <span class="n">ANY</span> <span class="n">WARRANTIES</span><span class="p">,</span> <span class="n">EXPRESS</span> <span class="n">OR</span> <span class="n">IMPLIED</span><span class="p">,</span> <span class="n">INCLUDING</span>
@@ -6789,7 +6789,7 @@ is started, it can be connected to different devices.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Mark Rivers.
-      <span class="lastupdated">Last updated on 2026-August-07.
+      <span class="lastupdated">Last updated on 2026-August-17.
       </span></p>
   </div>
 

@@ -132,12 +132,12 @@ the longest messages you expect.</p>
 &lt;envPaths
 cd ${TOP}
 ## Register all support components
-dbLoadDatabase(&quot;dbd/serialTest.dbd&quot;,0,0)
+dbLoadDatabase("dbd/serialTest.dbd",0,0)
 serialTest_registerRecordDeviceDriver(pdbbase)
 ## Configure devices
-vxi11Configure(&quot;L0&quot;,&quot;164.54.8.129&quot;,0,0.0,&quot;gpib0&quot;,0,0)
+vxi11Configure("L0","164.54.8.129",0,0.0,"gpib0",0,0)
 ## Load record instances
-dbLoadRecords(&quot;db/asynRecord.db&quot;,&quot;P=norum:,R=asyn,PORT=L0,ADDR=24,IMAX=100,OMAX=100&quot;)
+dbLoadRecords("db/asynRecord.db","P=norum:,R=asyn,PORT=L0,ADDR=24,IMAX=100,OMAX=100")
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
 </pre></div>
@@ -145,18 +145,18 @@ iocInit()
 <p>If you are using a LAN/Serial adapter or network attached device which
 uses a raw TCP (‘telnet’ style) connection you would replace the <cite>vxi11Configure</cite>
 command with a line like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPPortConfigure</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="s2">&quot;192.168.0.23:4001&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPPortConfigure</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="s2">"192.168.0.23:4001"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you are using a local serial port or USB/Serial adapter replace the <cite>vxi11Configure</cite>
 command with something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="s2">&quot;/dev/tty.PL2303-000013FA&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;baud&quot;</span><span class="p">,</span> <span class="s2">&quot;9600&quot;</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;bits&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;parity&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;clocal&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">)</span>
-<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;crtscts&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="s2">"/dev/tty.PL2303-000013FA"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"baud"</span><span class="p">,</span> <span class="s2">"9600"</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"bits"</span><span class="p">,</span> <span class="s2">"8"</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"parity"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"stop"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"clocal"</span><span class="p">,</span> <span class="s2">"Y"</span><span class="p">)</span>
+<span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"crtscts"</span><span class="p">,</span> <span class="s2">"Y"</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -168,7 +168,7 @@ command with something like:</p>
 </div>
 </li>
 <li><p>From another window, start MEDM. Make sure that the P and R macro values match those from st.cmd.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span>  <span class="o">-</span><span class="n">macro</span> <span class="s2">&quot;P=norum:,R=asyn&quot;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">epics</span><span class="o">/</span><span class="n">R3</span><span class="mf">.14.11</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">asyn</span><span class="o">/</span><span class="n">medm</span><span class="o">/</span><span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span>  <span class="o">-</span><span class="n">macro</span> <span class="s2">"P=norum:,R=asyn"</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">epics</span><span class="o">/</span><span class="n">R3</span><span class="mf">.14.11</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">asyn</span><span class="o">/</span><span class="n">medm</span><span class="o">/</span><span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span>
 </pre></div>
 </div>
 </li>
@@ -241,7 +241,7 @@ for writing support for your instrument.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Mark Rivers.
-      <span class="lastupdated">Last updated on 2026-August-07.
+      <span class="lastupdated">Last updated on 2026-August-17.
       </span></p>
   </div>
 

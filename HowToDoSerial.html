@@ -183,14 +183,14 @@ set the definition to be empty:</p>
 </div>
 <p>You may have to fix an error in the HPE3631ASup/devHPE3631A.db file produced by
 the makeSupport.pl command. Verify that the IDNwf record description looks like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)IDNwf&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span> <span class="s2">"$(P)$(R)IDNwf"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;SCPI identification string&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getIDN(199) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">&quot;YES&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">FTVL</span><span class="p">,</span> <span class="s2">&quot;CHAR&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">NELM</span><span class="p">,</span> <span class="s2">&quot;200&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"SCPI identification string"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getIDN(199) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">"YES"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">FTVL</span><span class="p">,</span> <span class="s2">"CHAR"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">NELM</span><span class="p">,</span> <span class="s2">"200"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -230,7 +230,7 @@ What architecture do you want to use? darwin-x86
 The following applications are available:
     HPE3631Atest
 What application should the IOC(s) boot?
-The default uses the IOC&#39;s name, even if not listed above.
+The default uses the IOC's name, even if not listed above.
 Application name?
 norume&gt;
 </pre></div>
@@ -262,47 +262,47 @@ edit the st.cmd file. Here’s the file that I use:</p>
  <span class="mi">3</span> <span class="c1">###############################################################################</span>
  <span class="mi">4</span> <span class="c1"># Set up environment</span>
  <span class="mi">5</span> <span class="o">&lt;</span> <span class="n">envPaths</span>
- <span class="mi">6</span> <span class="n">epicsEnvSet</span> <span class="s2">&quot;STREAM_PROTOCOL_PATH&quot;</span> <span class="s2">&quot;$(TOP)/db&quot;</span>
+ <span class="mi">6</span> <span class="n">epicsEnvSet</span> <span class="s2">"STREAM_PROTOCOL_PATH"</span> <span class="s2">"$(TOP)/db"</span>
  <span class="mi">7</span>
 
  <span class="mi">8</span> <span class="c1">###############################################################################</span>
  <span class="mi">9</span> <span class="c1"># Allow PV name prefixes and serial port name to be set from the environment</span>
-<span class="mi">10</span> <span class="n">epicsEnvSet</span> <span class="s2">&quot;P&quot;</span> <span class="s2">&quot;$(P=hpE3631A)&quot;</span>
-<span class="mi">11</span> <span class="n">epicsEnvSet</span> <span class="s2">&quot;R&quot;</span> <span class="s2">&quot;$(R=Test)&quot;</span>
-<span class="mi">12</span> <span class="n">epicsEnvSet</span> <span class="s2">&quot;TTY&quot;</span> <span class="s2">&quot;$(TTY=/dev/tty.PL2303-000013FA)&quot;</span>
+<span class="mi">10</span> <span class="n">epicsEnvSet</span> <span class="s2">"P"</span> <span class="s2">"$(P=hpE3631A)"</span>
+<span class="mi">11</span> <span class="n">epicsEnvSet</span> <span class="s2">"R"</span> <span class="s2">"$(R=Test)"</span>
+<span class="mi">12</span> <span class="n">epicsEnvSet</span> <span class="s2">"TTY"</span> <span class="s2">"$(TTY=/dev/tty.PL2303-000013FA)"</span>
 <span class="mi">13</span>
 
 <span class="mi">14</span> <span class="c1">###############################################################################</span>
 <span class="mi">15</span> <span class="c1">## Register all support components</span>
-<span class="mi">16</span> <span class="n">cd</span> <span class="s2">&quot;$</span><span class="si">{TOP}</span><span class="s2">&quot;</span>
-<span class="mi">17</span> <span class="n">dbLoadDatabase</span> <span class="s2">&quot;dbd/HPE3631Atest.dbd&quot;</span>
+<span class="mi">16</span> <span class="n">cd</span> <span class="s2">"$</span><span class="si">{TOP}</span><span class="s2">"</span>
+<span class="mi">17</span> <span class="n">dbLoadDatabase</span> <span class="s2">"dbd/HPE3631Atest.dbd"</span>
 <span class="mi">18</span> <span class="n">HPE3631Atest_registerRecordDeviceDriver</span> <span class="n">pdbbase</span>
 <span class="mi">19</span>
 
 <span class="mi">20</span> <span class="c1">###############################################################################</span>
 <span class="mi">21</span> <span class="c1"># Set up ASYN ports</span>
 <span class="mi">22</span> <span class="c1"># drvAsynSerialPortConfigure port ipInfo priority noAutoconnect noProcessEos</span>
-<span class="mi">23</span> <span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="s2">&quot;$(TTY)&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="mi">24</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;baud&quot;</span><span class="p">,</span> <span class="s2">&quot;9600&quot;</span><span class="p">)</span>
-<span class="mi">25</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;bits&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">)</span>
-<span class="mi">26</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;parity&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
-<span class="mi">27</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">)</span>
-<span class="mi">28</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;clocal&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">)</span>
-<span class="mi">29</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;crtscts&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">)</span>
-<span class="mi">30</span> <span class="n">asynOctetSetInputEos</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="mi">31</span> <span class="n">asynOctetSetOutputEos</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="mi">32</span> <span class="n">asynSetTraceIOMask</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mh">0x2</span><span class="p">)</span>
-<span class="mi">33</span> <span class="n">asynSetTraceMask</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mh">0x9</span><span class="p">)</span>
+<span class="mi">23</span> <span class="n">drvAsynSerialPortConfigure</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="s2">"$(TTY)"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="mi">24</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"baud"</span><span class="p">,</span> <span class="s2">"9600"</span><span class="p">)</span>
+<span class="mi">25</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"bits"</span><span class="p">,</span> <span class="s2">"8"</span><span class="p">)</span>
+<span class="mi">26</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"parity"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">)</span>
+<span class="mi">27</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"stop"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">)</span>
+<span class="mi">28</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"clocal"</span><span class="p">,</span> <span class="s2">"Y"</span><span class="p">)</span>
+<span class="mi">29</span> <span class="n">asynSetOption</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"crtscts"</span><span class="p">,</span> <span class="s2">"Y"</span><span class="p">)</span>
+<span class="mi">30</span> <span class="n">asynOctetSetInputEos</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="mi">31</span> <span class="n">asynOctetSetOutputEos</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="mi">32</span> <span class="n">asynSetTraceIOMask</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mh">0x2</span><span class="p">)</span>
+<span class="mi">33</span> <span class="n">asynSetTraceMask</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mh">0x9</span><span class="p">)</span>
 <span class="mi">34</span>
 
 <span class="mi">35</span> <span class="c1">###############################################################################</span>
 <span class="mi">36</span> <span class="c1">## Load record instances</span>
-<span class="mi">37</span> <span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">&quot;db/devHPE3631A.db&quot;</span><span class="p">,</span><span class="s2">&quot;P=$(P),R=$(R),PORT=L0,A=0&quot;</span><span class="p">)</span>
+<span class="mi">37</span> <span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">"db/devHPE3631A.db"</span><span class="p">,</span><span class="s2">"P=$(P),R=$(R),PORT=L0,A=0"</span><span class="p">)</span>
 <span class="mi">38</span>
 
 <span class="mi">39</span> <span class="c1">###############################################################################</span>
 <span class="mi">40</span> <span class="c1">## Start EPICS</span>
-<span class="mi">41</span> <span class="n">cd</span> <span class="s2">&quot;$</span><span class="si">{TOP}</span><span class="s2">/iocBoot/$</span><span class="si">{IOC}</span><span class="s2">&quot;</span>
+<span class="mi">41</span> <span class="n">cd</span> <span class="s2">"$</span><span class="si">{TOP}</span><span class="s2">/iocBoot/$</span><span class="si">{IOC}</span><span class="s2">"</span>
 <span class="mi">42</span> <span class="n">iocInit</span>
 </pre></div>
 </div>
@@ -343,14 +343,14 @@ error messages only set the trace mask to 1 rather than 9.</p></td>
 <p>So, if you have a LAN/Serial adapter or network attached device which uses a raw
 TCP (‘telnet’ style) connection you would replace lines 23 through 29 with a single
 line like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPPortConfigure</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="s2">&quot;192.168.0.23:4001&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drvAsynIPPortConfigure</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="s2">"192.168.0.23:4001"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You would also change the application Makefile to specify drvAsynIPPort.dbd rather
 than drvAsynSerialPort.dbd.</p>
 <p>If you have a VXI-11 LAN/GPIB adapter or network attached device you would replace
 lines 23 through 31 with a single line like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vxi11Configure</span><span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span><span class="s2">&quot;192.168.0.24&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="s2">&quot;gpib0&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vxi11Configure</span><span class="p">(</span><span class="s2">"L0"</span><span class="p">,</span><span class="s2">"192.168.0.24"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="s2">"gpib0"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You would also change the application Makefile to specify drfvVxi11.dbd rather than
@@ -369,43 +369,43 @@ executable:</p>
 ###############################################################################
 # Set up environment
 &lt; envPaths
-epicsEnvSet(&quot;ARCH&quot;,&quot;darwin-x86&quot;)
-epicsEnvSet(&quot;IOC&quot;,&quot;iocHPE3631Atest&quot;)
-epicsEnvSet(&quot;TOP&quot;,&quot;/Users/wenorum/tmp/t/HPE3631A&quot;)
-epicsEnvSet(&quot;ASYN&quot;,&quot;/usr/local/epics/R3.14.11/modules/soft/synApps_5_5/support/asyn-4-14&quot;)
-epicsEnvSet(&quot;STREAM&quot;,&quot;/usr/local/epics/R3.14.11/modules/soft/synApps_5_5/support/stream-2-4-1&quot;)
-epicsEnvSet(&quot;EPICS_BASE&quot;,&quot;/usr/local/epics/R3.14.11/base&quot;)
-epicsEnvSet &quot;STREAM_PROTOCOL_PATH&quot; &quot;/Users/wenorum/tmp/t/HPE3631A/db&quot;
+epicsEnvSet("ARCH","darwin-x86")
+epicsEnvSet("IOC","iocHPE3631Atest")
+epicsEnvSet("TOP","/Users/wenorum/tmp/t/HPE3631A")
+epicsEnvSet("ASYN","/usr/local/epics/R3.14.11/modules/soft/synApps_5_5/support/asyn-4-14")
+epicsEnvSet("STREAM","/usr/local/epics/R3.14.11/modules/soft/synApps_5_5/support/stream-2-4-1")
+epicsEnvSet("EPICS_BASE","/usr/local/epics/R3.14.11/base")
+epicsEnvSet "STREAM_PROTOCOL_PATH" "/Users/wenorum/tmp/t/HPE3631A/db"
 ###############################################################################
 # Allow PV name prefixes and serial port name to be set from the environment
-epicsEnvSet &quot;P&quot; &quot;hpE3631A&quot;
-epicsEnvSet &quot;R&quot; &quot;Test&quot;
-epicsEnvSet &quot;TTY&quot; &quot;/dev/tty.PL2303-000013FA&quot;
+epicsEnvSet "P" "hpE3631A"
+epicsEnvSet "R" "Test"
+epicsEnvSet "TTY" "/dev/tty.PL2303-000013FA"
 ###############################################################################
 ## Register all support components
-cd &quot;/Users/wenorum/tmp/t/HPE3631A&quot;
-dbLoadDatabase &quot;dbd/HPE3631Atest.dbd&quot;
+cd "/Users/wenorum/tmp/t/HPE3631A"
+dbLoadDatabase "dbd/HPE3631Atest.dbd"
 HPE3631Atest_registerRecordDeviceDriver pdbbase
 ###############################################################################
 # Set up ASYN ports
 # drvAsynSerialPortConfigure port ipInfo priority noAutoconnect noProcessEos
-drvAsynSerialPortConfigure(&quot;L0&quot;,&quot;/dev/tty.PL2303-000013FA&quot;,0,0,0)
-asynSetOption(&quot;L0&quot;, -1, &quot;baud&quot;, &quot;9600&quot;)
-asynSetOption(&quot;L0&quot;, -1, &quot;bits&quot;, &quot;8&quot;)
-asynSetOption(&quot;L0&quot;, -1, &quot;parity&quot;, &quot;none&quot;)
-asynSetOption(&quot;L0&quot;, -1, &quot;stop&quot;, &quot;2&quot;)
-asynSetOption(&quot;L0&quot;, -1, &quot;clocal&quot;, &quot;Y&quot;)
-asynSetOption(&quot;L0&quot;, -1, &quot;crtscts&quot;, &quot;Y&quot;)
-asynOctetSetInputEos(&quot;L0&quot;, -1, &quot;\n&quot;)
-asynOctetSetOutputEos(&quot;L0&quot;, -1, &quot;\n&quot;)
-asynSetTraceIOMask(&quot;L0&quot;,-1,0x2)
-asynSetTraceMask(&quot;L0&quot;,-1,0x9)
+drvAsynSerialPortConfigure("L0","/dev/tty.PL2303-000013FA",0,0,0)
+asynSetOption("L0", -1, "baud", "9600")
+asynSetOption("L0", -1, "bits", "8")
+asynSetOption("L0", -1, "parity", "none")
+asynSetOption("L0", -1, "stop", "2")
+asynSetOption("L0", -1, "clocal", "Y")
+asynSetOption("L0", -1, "crtscts", "Y")
+asynOctetSetInputEos("L0", -1, "\n")
+asynOctetSetOutputEos("L0", -1, "\n")
+asynSetTraceIOMask("L0",-1,0x2)
+asynSetTraceMask("L0",-1,0x9)
 ###############################################################################
 ## Load record instances
-dbLoadRecords(&quot;db/devHPE3631A.db&quot;,&quot;P=hpE3631A,R=Test,PORT=L0,A=0&quot;)
+dbLoadRecords("db/devHPE3631A.db","P=hpE3631A,R=Test,PORT=L0,A=0")
 ###############################################################################
 ## Start EPICS
-cd &quot;/Users/wenorum/tmp/t/HPE3631A/iocBoot/iocHPE3631Atest&quot;
+cd "/Users/wenorum/tmp/t/HPE3631A/iocBoot/iocHPE3631Atest"
 iocInit
 Starting iocInit
 ############################################################################
@@ -470,7 +470,7 @@ to figure out just how a new device actually works.</p>
 </div>
 <p>to the application Makefile.</p>
 <p>Create the diagnostic record in the IOC by adding a line like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">&quot;db/asynRecord.db&quot;</span><span class="p">,</span><span class="s2">&quot;P=$(P)$(R),R=asyn,PORT=L0,ADDR=-1,OMAX=0,IMAX=0&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dbLoadRecords</span><span class="p">(</span><span class="s2">"db/asynRecord.db"</span><span class="p">,</span><span class="s2">"P=$(P)$(R),R=asyn,PORT=L0,ADDR=-1,OMAX=0,IMAX=0"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>to the application startup script. The PORT value must match the the value in the
@@ -479,13 +479,13 @@ ADDR value should be that of the instrument whose I/O you wish to monitor.</p>
 <p>To run the asynRecord screen, add&lt;&lt;i&gt;asynTop&gt;/opi/medm&lt;/i&gt; to your EPICS_DISPLAY_PATH
 environment variable and start medm with P, R, PORT and ADDR values matching those
 given in the dbLoadRecords command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">&quot;P=hpE3631ATest,R=asyn,PORT=L0,ADDR=-1&quot;</span> <span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">medm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">macro</span> <span class="s2">"P=hpE3631ATest,R=asyn,PORT=L0,ADDR=-1"</span> <span class="n">asynRecord</span><span class="o">.</span><span class="n">adl</span>
 </pre></div>
 </div>
 <p>If you have edm installed then you need to use the asynRecord.edl file instead.
 Ensure that&lt;&lt;i&gt;asynTop&gt;/opi/medm&lt;/i&gt; is in the EDMDATAFILES environment variable.
 Start edm with the arguments appropriate for your IOC:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;P=hpE3631ATest, R=asyn,PORT=L1_TCP,ADDR=-1&quot;</span> <span class="n">asynRecord</span><span class="o">.</span><span class="n">edl</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edm</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"P=hpE3631ATest, R=asyn,PORT=L1_TCP,ADDR=-1"</span> <span class="n">asynRecord</span><span class="o">.</span><span class="n">edl</span>
 </pre></div>
 </div>
 </section>
@@ -497,22 +497,22 @@ useful hints for adding commands for your particular device.</p>
 <h3>5.1 Add a record to set the device to local or remote control<a class="headerlink" href="#add-a-record-to-set-the-device-to-local-or-remote-control" title="Link to this heading"></a></h3>
 <p>First add an entry to HPE3631ASup/devHPE3631A.proto:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setLocRem</span> <span class="p">{</span>
-    <span class="n">out</span> <span class="s2">&quot;SYST:%{LOC|REM}&quot;</span><span class="p">;</span>
+    <span class="n">out</span> <span class="s2">"SYST:%{LOC|REM}"</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>This uses the StreamDevice ENUM converter to send one of two strings to the device
 based on the PV value. The corresponding addition to HPE3631ASup/devHPE3631A.db
 is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetRemote&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetRemote"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Set into local/remote mode&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setLocRem $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span> <span class="s2">&quot;Local&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span> <span class="s2">&quot;Remote&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">&quot;YES&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">VAL</span><span class="p">,</span>  <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Set into local/remote mode"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setLocRem $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span> <span class="s2">"Local"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span> <span class="s2">"Remote"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">PINI</span><span class="p">,</span> <span class="s2">"YES"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">VAL</span><span class="p">,</span>  <span class="s2">"1"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -527,21 +527,21 @@ it works.</p>
 <p>These are simple since they use StreamDevice protocol entries that already exist.
 The setD and getD entries set and get the value of a single integer parameter whose
 command is passed as the argument to the protocol entry:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetOnOff&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">bo</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetOnOff"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Turn output off/on&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setD(OUTP) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span> <span class="s2">&quot;Off&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span> <span class="s2">&quot;On&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Turn output off/on"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setD(OUTP) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span> <span class="s2">"Off"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span> <span class="s2">"On"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)GetOnOff&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">bi</span><span class="p">,</span> <span class="s2">"$(P)$(R)GetOnOff"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Is output on?&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getD(OUTP) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span> <span class="s2">&quot;Off&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span> <span class="s2">&quot;On&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Is output on?"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">INP</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getD(OUTP) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ZNAM</span><span class="p">,</span> <span class="s2">"Off"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">ONAM</span><span class="p">,</span> <span class="s2">"On"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -550,11 +550,11 @@ command is passed as the argument to the protocol entry:</p>
 <h3>5.3 Add records to set and check the output voltage and current setpoints<a class="headerlink" href="#add-records-to-set-and-check-the-output-voltage-and-current-setpoints" title="Link to this heading"></a></h3>
 <p>Add two entries to HPE3631ASup/devHPE3631A.proto:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setVI</span> <span class="p">{</span>
-    <span class="n">out</span> <span class="s2">&quot;INST \$1;\$2 </span><span class="si">%g</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="n">out</span> <span class="s2">"INST \$1;\$2 </span><span class="si">%g</span><span class="s2">"</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="n">getVI</span> <span class="p">{</span>
-    <span class="n">out</span> <span class="s2">&quot;INST \$1;\$2?&quot;</span><span class="p">;</span>
-    <span class="ow">in</span> <span class="s2">&quot;</span><span class="si">%g</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="n">out</span> <span class="s2">"INST \$1;\$2?"</span><span class="p">;</span>
+    <span class="ow">in</span> <span class="s2">"</span><span class="si">%g</span><span class="s2">"</span><span class="p">;</span>
     <span class="n">ExtraInput</span> <span class="o">=</span> <span class="n">Ignore</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
@@ -562,149 +562,149 @@ command is passed as the argument to the protocol entry:</p>
 <p>These entries set and get the floating point value for the channel passed as the
 first argument and for the parameter passed as the second argument.</p>
 <p>The corresponding additions to HPE3631ASup/devHPE3631A.db are:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetP6Volts&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetP6Volts"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Set +6V output volage&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setVI(P6V,VOLT) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Volts&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;6.18&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;6.18&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">&quot;6.18&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Set +6V output volage"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setVI(P6V,VOLT) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Volts"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"6.18"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"6.18"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">"6.18"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetP6Amps&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetP6Amps"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Set +6V output current&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setVI(P6V,CURR) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Amps&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;5.15&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;5.15&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">&quot;5.15&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Set +6V output current"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setVI(P6V,CURR) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Amps"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"5.15"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"5.15"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">"5.15"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetP25Volts&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetP25Volts"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Set +25V output volage&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setVI(P25V,VOLT) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Volts&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;25.75&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;25.75&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">&quot;25.75&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Set +25V output volage"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setVI(P25V,VOLT) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Volts"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"25.75"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"25.75"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">"25.75"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetP25Amps&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetP25Amps"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Set +25V output current&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setVI(P25V,CURR) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Amps&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Set +25V output current"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setVI(P25V,CURR) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Amps"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetN25Volts&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetN25Volts"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Set -25V output volage&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setVI(N25V,VOLT) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Volts&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;-25.75&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;-25.75&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">&quot;-25.75&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Set -25V output volage"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setVI(N25V,VOLT) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Volts"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"-25.75"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"-25.75"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">"-25.75"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)SetN25Amps&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)SetN25Amps"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Set -25V output current&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto setVI(N25V,CURR) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Amps&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Set -25V output current"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto setVI(N25V,CURR) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Amps"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DRVH</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)GetP6Volts&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)GetP6Volts"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Get +6V output volage&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getVI(P6V,VOLT) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Volts&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;6.18&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;6.18&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Get +6V output volage"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getVI(P6V,VOLT) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Volts"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"6.18"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"6.18"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)GetP6Amps&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)GetP6Amps"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Get +6V output current&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getVI(P6V,CURR) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Amps&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;5.15&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;5.15&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Get +6V output current"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getVI(P6V,CURR) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Amps"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"5.15"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"5.15"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)GetP25Volts&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)GetP25Volts"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Get +25V output volage&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getVI(P25V,VOLT) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Volts&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;25.75&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;25.75&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Get +25V output volage"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getVI(P25V,VOLT) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Volts"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"25.75"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"25.75"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)GetP25Amps&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)GetP25Amps"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Get +25V output current&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getVI(P25V,CURR) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Amps&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Get +25V output current"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getVI(P25V,CURR) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Amps"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)GetN25Volts&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)GetN25Volts"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Get -25V output volage&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getVI(N25V,VOLT) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Volts&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;-25.75&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;-25.75&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Get -25V output volage"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getVI(N25V,VOLT) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Volts"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"-25.75"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"-25.75"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;$(P)$(R)GetN25Amps&quot;</span><span class="p">)</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">"$(P)$(R)GetN25Amps"</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">&quot;Get -25V output current&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">&quot;@devHPE3631A.proto getVI(N25V,CURR) $(PORT) $(A)&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">&quot;Amps&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
-    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">&quot;1.03&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DESC</span><span class="p">,</span> <span class="s2">"Get -25V output current"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">DTYP</span><span class="p">,</span> <span class="s2">"stream"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span>  <span class="s2">"@devHPE3631A.proto getVI(N25V,CURR) $(PORT) $(A)"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGU</span><span class="p">,</span>  <span class="s2">"Amps"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">LOPR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">HOPR</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUL</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">EGUF</span><span class="p">,</span> <span class="s2">"1.03"</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -726,7 +726,7 @@ setpoint readbacks up to date.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Mark Rivers.
-      <span class="lastupdated">Last updated on 2026-August-07.
+      <span class="lastupdated">Last updated on 2026-August-17.
       </span></p>
   </div>
 
