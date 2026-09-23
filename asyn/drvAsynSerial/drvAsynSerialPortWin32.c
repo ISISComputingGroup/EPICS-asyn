@@ -183,6 +183,7 @@ static int waitForBytes(ttyController_t *tty, asynUser* pasynUser, double timeou
 		{
 			epicsTimeGetCurrent(&ts);
 			timeout -= epicsTimeDiffInSeconds(&ts, &ts_start);
+			ts_start = ts;
 		}
 		else
 		{
